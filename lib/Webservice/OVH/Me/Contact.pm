@@ -2,6 +2,7 @@ package Webservice::OVH::Me::Contact;
 
 use strict;
 use warnings;
+use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
