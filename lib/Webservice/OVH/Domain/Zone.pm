@@ -8,13 +8,13 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Domain::Zone::Record;
 
-sub new {
+sub _new {
 
     my ( $class, $api_wrapper, $zone_name ) = @_;
 
     croak "Missing zone_name" unless $zone_name;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _name => $zone_name, _service_info => undef, _properties => undef, _records = {} }, $class;
+    my $self = bless { _api_wrapper => $api_wrapper, _name => $zone_name, _service_info => undef, _properties => undef, _records => {} }, $class;
 
     return $self;
 }
@@ -51,28 +51,60 @@ sub properties {
 sub records {
 
     my ( $self, %filter ) = @_;
+
+    my $filter_type      = $filter{type} || "";
+    my $filter_subdomain = $filter{subdomain} || "";
     
+    my $filter_vars = "";
+    $filter_vars = sprintf("?fieldType=%s&subDomain=%s", $filter_type, $filter_subdomain) if $filter_type && $filter_subdomain;
+    $filter_vars = sprintf("?fieldType=%s", $filter_type) if $filter_type && !$filter_subdomain;
+    $filter_vars = sprintf("?subDomain=%s", $filter_subdomain) if !$filter_type && $filter_subdomain;
+    
+
     my $api = $self->{_api_wrapper};
-    my $response = $api->rawCall( method => 'get', path => "/domain/zone/record", noSignature => 0 );
+    my $zone_name = $self->name;
+    my $response = $api->rawCall( method => 'get', path => "/domain/zone/$zone_name/record$filter_vars", noSignature => 0 );
     croak $response->error if $response->error;
-    
+
     my $record_ids = $response->content;
-    my $records = [];
-    
+    my $records    = [];
+
     foreach my $record_id (@$record_ids) {
 
-        my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->new( $api, $record_id );
+        my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self, $record_id );
         push @$records, $record;
     }
 
     return $records;
 }
 
+sub record {
+
+    my ( $self, $record_id ) = @_;
+    
+    croak "Missing record_id" unless $record_id;
+    
+    my $api = $self->{_api_wrapper};
+    my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self, $record_id );
+    
+    return $record;
+}
+
 sub new_record {
 
     my ( $self, %params ) = @_;
+    
+    my $api = $self->{_api_wrapper};
+    my $record = Webservice::OVH::Domain::Zone::Record->_new($api, $self, %params);
 
     return undef;
+}
+
+sub name {
+    
+    my ( $self ) = @_;
+    
+    return $self->{_name};
 }
 
 1;
