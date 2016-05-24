@@ -7,7 +7,7 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Me::Contact;
 
-sub new {
+sub _new {
     
     my ( $class, $api_wrapper ) = @_;
     

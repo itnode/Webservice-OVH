@@ -10,7 +10,7 @@ use Carp qw{ carp croak };
 use Webservice::OVH::Domain::Service;
 use Webservice::OVH::Domain::Zone;
 
-sub new {
+sub _new {
 
     my ( $class, $api_wrapper ) = @_;
 
@@ -32,7 +32,7 @@ sub services {
 
     foreach my $service_name (@$service_array) {
 
-        my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->new( $api, $service_name );
+        my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name );
         push @$services, $service;
     }
 
@@ -52,7 +52,7 @@ sub zones {
     
     foreach my $zone_name (@$zone_names) {
 
-        my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->new( $api, $zone_name );
+        my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name );
         push @$zones, $zone;
     }
 
@@ -64,7 +64,7 @@ sub service {
     my ( $self, $service_name ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->new( $api, $service_name );
+    my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name );
     return $service;
 }
 
@@ -73,7 +73,7 @@ sub zone {
     my ( $self, $zone_name ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Service->new( $api, $zone_name );
+    my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name );
 
     return $zone;
 }

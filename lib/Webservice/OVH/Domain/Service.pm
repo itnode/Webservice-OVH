@@ -8,7 +8,7 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Me::Contact;
 
-sub new {
+sub _new {
 
     my ( $class, $api_wrapper, $service_name ) = @_;
 
@@ -63,7 +63,7 @@ sub owner {
     my $api        = $self->{_api_wrapper};
     my $properties = $self->{_properties} || $self->properties;
     my $owner_id   = $properties->{whoisOwner};
-    my $owner      = $self->{_owner} = $self->{_owner} || Webservice::OVH::Me::Contact->_new( $api, $owner_id );
+    my $owner      = $self->{_owner} = $self->{_owner} || Webservice::OVH::Me::Contact->_new_existing( $api, $owner_id );
 
     return $self->{_owner};
 }
