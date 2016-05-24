@@ -27,9 +27,9 @@ sub new {
     }
 
     my $api_wrapper = OvhApi->new( 'type' => "https://eu.api.ovh.com/1.0", applicationKey => $params{application_key}, applicationSecret => $params{application_secret}, consumerKey => $params{consumer_key} );
-    my $domain      = Webservice::OVH::Domain->new($api_wrapper);
-    my $me          = Webservice::OVH::Me->new($api_wrapper);
-    my $order       = Webservice::OVH::Order->new($api_wrapper);
+    my $domain      = Webservice::OVH::Domain->_new($api_wrapper);
+    my $me          = Webservice::OVH::Me->_new($api_wrapper);
+    my $order       = Webservice::OVH::Order->_new($api_wrapper);
 
     OvhApi->setRequestTimeout( timeout => $params{timeout} || 120 );
 
