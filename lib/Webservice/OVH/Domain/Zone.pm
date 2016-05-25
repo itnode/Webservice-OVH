@@ -6,6 +6,7 @@ use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
+use Webservice::OVH::Helper;
 use Webservice::OVH::Domain::Zone::Record;
 
 sub _new {
@@ -52,17 +53,13 @@ sub records {
 
     my ( $self, %filter ) = @_;
 
-    my $filter_type      = $filter{type}      || "";
-    my $filter_subdomain = $filter{subdomain} || "";
-
-    my $filter_vars = "";
-    $filter_vars = sprintf( "?fieldType=%s&subDomain=%s", $filter_type, $filter_subdomain ) if $filter_type  && $filter_subdomain;
-    $filter_vars = sprintf( "?fieldType=%s",              $filter_type )                    if $filter_type  && !$filter_subdomain;
-    $filter_vars = sprintf( "?subDomain=%s",              $filter_subdomain )               if !$filter_type && $filter_subdomain;
+    my $filter_type      = (exists $filter{field_type} && !$filter{field_type}) ? "_empty_" : $filter{field_type};
+    my $filter_subdomain = (exists $filter{subdomain} && !$filter{subdomain}) ? "_empty_" : $filter{subdomain};
+    my $filter = Webservice::OVH::Helper->construct_filter( "fieldType" => $filter_type, "subDomain" => $filter_subdomain );
 
     my $api       = $self->{_api_wrapper};
     my $zone_name = $self->name;
-    my $response  = $api->rawCall( method => 'get', path => "/domain/zone/$zone_name/record$filter_vars", noSignature => 0 );
+    my $response  = $api->rawCall( method => 'get', path => sprintf("/domain/zone/$zone_name/record%s", $filter), noSignature => 0 );
     croak $response->error if $response->error;
 
     my $record_ids = $response->content;

@@ -3,6 +3,7 @@ package Webservice::OVH::Me;
 use strict;
 use warnings;
 use Carp qw{ carp croak };
+use Webservice::OVH::Helper;
 
 our $VERSION = 0.1;
 

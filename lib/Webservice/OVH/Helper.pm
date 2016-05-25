@@ -13,10 +13,13 @@ sub construct_filter {
         my $value = $params{$param};
         next unless $value;
         
+        $value = $value eq '_empty_' ? "" : $value;
+        
         if( $filter ne '?') {
             
             $filter.= '&';
         }
+        
         $filter .= sprintf("%s=%s", $param, $value);
     }
     
