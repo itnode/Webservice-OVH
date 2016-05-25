@@ -93,7 +93,7 @@ sub new_record {
     my $api = $self->{_api_wrapper};
     my $record = Webservice::OVH::Domain::Zone::Record->_new( $api, $self, %params );
 
-    return undef;
+    return $record;
 }
 
 sub name {

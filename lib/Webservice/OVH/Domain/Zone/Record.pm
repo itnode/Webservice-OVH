@@ -19,7 +19,7 @@ sub _new_existing {
 
     my $porperties = $response->content;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _id => $record_id, _properties => $porperties, _zone => $zone }, $class;
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $porperties, _zone => $zone }, $class;
 
     return $self;
 }
@@ -43,15 +43,31 @@ sub _new {
     $body->{target}    = $params{target};
     $body->{ttl}       = $params{ttl} if exists $params{ttl};
     $body->{fieldType} = $params{field_type} if exists $params{field_type};
-    my $response = $api_wrapper->rawCall( method => 'post', path => "/domain/zone/$zone_name/record", noSignature => 0 );
+    my $response = $api_wrapper->rawCall( method => 'post', path => "/domain/zone/$zone_name/record", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
     my $record_id  = $response->content->{id};
     my $properties = $response->content;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _id => $record_id, _properties => $properties, _zone => $zone }, $class;
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $properties, _zone => $zone }, $class;
 
     return $self;
+}
+
+sub is_valid {
+
+    my ($self) = @_;
+
+    return $self->{_valid};
+}
+
+sub _is_valid {
+    
+    my ($self) = @_;
+
+    my $record_id = $self->id;
+    carp "Record $record_id is not valid anymore";
+    return $self->is_valid;
 }
 
 sub id {
@@ -72,6 +88,8 @@ sub properties {
 
     my ($self) = @_;
 
+    return unless $self->_is_valid;
+
     my $api       = $self->{_api_wrapper};
     my $zone_name = $self->zone->name;
     my $record_id = $self->id;
@@ -84,17 +102,23 @@ sub properties {
 sub delete {
 
     my ($self) = @_;
+    
+    return unless $self->_is_valid;
 
     my $api       = $self->{_api_wrapper};
     my $zone_name = $self->{_zone}->name;
     my $record_id = $self->id;
     my $response  = $api->rawCall( method => 'delete', path => "/domain/zone/$zone_name/record/$record_id", noSignature => 0 );
     croak $response->error if $response->error;
+
+    $self->{_valid} = 0;
 }
 
 sub change {
 
     my ( $self, %params ) = @_;
+    
+    return unless $self->_is_valid;
 
     if ( scalar keys %params != 0 ) {
 
