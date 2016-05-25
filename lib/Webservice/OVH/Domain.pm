@@ -20,9 +20,9 @@ sub _new {
 
 sub service_exists {
 
-    my ( $self, $service_name, $recheck_list ) = @_;
+    my ( $self, $service_name, $no_recheck ) = @_;
 
-    if ($recheck_list) {
+    if (!$no_recheck) {
 
         my $api = $self->{_api_wrapper};
         my $response = $api->rawCall( method => 'get', path => "/domain", noSignature => 0 );
@@ -42,9 +42,9 @@ sub service_exists {
 
 sub zone_exists {
 
-    my ( $self, $zone_name, $recheck_list ) = @_;
+    my ( $self, $zone_name, $no_recheck ) = @_;
 
-    if ($recheck_list) {
+    if (!$no_recheck) {
 
         my $api = $self->{_api_wrapper};
         my $response = $api->rawCall( method => 'get', path => "/domain/zone", noSignature => 0 );
@@ -75,7 +75,7 @@ sub services {
     $self->{_aviable_services} = $service_array;
 
     foreach my $service_name (@$service_array) {
-        if ( $self->service_exists($service_name) ) {
+        if ( $self->service_exists($service_name, 1) ) {
             my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name );
             push @$services, $service;
         }
@@ -98,7 +98,7 @@ sub zones {
 
     foreach my $zone_name (@$zone_names) {
 
-        if ( $self->zone_exists($zone_name) ) {
+        if ( $self->zone_exists($zone_name, 1) ) {
             my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name );
             push @$zones, $zone;
         }
@@ -111,7 +111,7 @@ sub service {
 
     my ( $self, $service_name ) = @_;
 
-    if ( $self->service_exists( $service_name, 1 ) ) {
+    if ( $self->service_exists( $service_name ) ) {
 
         my $api = $self->{_api_wrapper};
         my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name );
@@ -128,7 +128,7 @@ sub zone {
 
     my ( $self, $zone_name ) = @_;
 
-    if ( $self->zone_exists( $zone_name, 1 ) ) {
+    if ( $self->zone_exists( $zone_name ) ) {
 
         my $api = $self->{_api_wrapper};
         my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name );
