@@ -1,4 +1,4 @@
 .project
 .includepath
 local
-webservice-ovh.pl
+credentials.json
