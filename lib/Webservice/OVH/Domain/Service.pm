@@ -70,13 +70,17 @@ sub owner {
 
 sub change_contact {
 
-    my ( $self, $new_contact ) = @_;
-
-    croak "Missing new_contact" unless $new_contact;
+    my ( $self, %params ) = @_;
+    
+    croak "at least one parameter needed: contact_billing contact_admin contact_tech" unless %params;
 
     my $api          = $self->{_api_wrapper};
     my $service_name = $self->name;
-    my $response     = $api->rawCall( method => 'post', path => "/domain/$service_name/changeContact", body => { contactBilling => $new_contact }, noSignature => 0 );
+    my $body = {};
+    $body->{contactBilling} = $params{contact_billing} if exists $params{contact_billing};
+    $body->{contactAdmin} = $params{contact_admin} if exists $params{contact_admin};
+    $body->{contactTech} = $params{contact_tech} if exists $params{contact_tech};
+    my $response     = $api->rawCall( method => 'post', path => "/domain/$service_name/changeContact", body => $body, noSignature => 0 );
 
     croak $response->error if $response->error;
 
