@@ -102,15 +102,4 @@ sub order {
     return $self->{_order};
 }
 
-sub new_account {
-
-    my ( $self, $email, $firstname, $birthday ) = @_;
-
-    my $body = { birthday => $birthday, firstname => $firstname, country => 'DE', email => $email, legalform => 'individual', ovhCompany => 'ovh', ovhSubsidiary => 'DE' };
-
-    my $api = $self->{_api_wrapper};
-    my $response = $api->rawCall( method => 'post', path => "/newAccount", noSignature => 0 );
-    croak $response->error if $response->error;
-}
-
 1;
