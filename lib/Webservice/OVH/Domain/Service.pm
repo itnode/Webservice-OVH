@@ -71,20 +71,28 @@ sub owner {
 sub change_contact {
 
     my ( $self, %params ) = @_;
-    
+
     croak "at least one parameter needed: contact_billing contact_admin contact_tech" unless %params;
 
     my $api          = $self->{_api_wrapper};
     my $service_name = $self->name;
-    my $body = {};
+    my $body         = {};
     $body->{contactBilling} = $params{contact_billing} if exists $params{contact_billing};
-    $body->{contactAdmin} = $params{contact_admin} if exists $params{contact_admin};
-    $body->{contactTech} = $params{contact_tech} if exists $params{contact_tech};
-    my $response     = $api->rawCall( method => 'post', path => "/domain/$service_name/changeContact", body => $body, noSignature => 0 );
+    $body->{contactAdmin}   = $params{contact_admin}   if exists $params{contact_admin};
+    $body->{contactTech}    = $params{contact_tech}    if exists $params{contact_tech};
+    my $response = $api->rawCall( method => 'post', path => "/domain/$service_name/changeContact", body => $body, noSignature => 0 );
 
     croak $response->error if $response->error;
 
-    return $response->content;
+    my $tasks    = [];
+    my $task_ids = $response->content;
+    foreach my $task_id (@$task_ids) {
+
+        my $task = $api->me->task_contact_change($task_id);
+        push @$tasks, $task;
+    }
+
+    return $tasks;
 }
 
 1;

@@ -52,18 +52,17 @@ sub records {
 
     my ( $self, %filter ) = @_;
 
-    my $filter_type      = $filter{type} || "";
+    my $filter_type      = $filter{type}      || "";
     my $filter_subdomain = $filter{subdomain} || "";
-    
-    my $filter_vars = "";
-    $filter_vars = sprintf("?fieldType=%s&subDomain=%s", $filter_type, $filter_subdomain) if $filter_type && $filter_subdomain;
-    $filter_vars = sprintf("?fieldType=%s", $filter_type) if $filter_type && !$filter_subdomain;
-    $filter_vars = sprintf("?subDomain=%s", $filter_subdomain) if !$filter_type && $filter_subdomain;
-    
 
-    my $api = $self->{_api_wrapper};
+    my $filter_vars = "";
+    $filter_vars = sprintf( "?fieldType=%s&subDomain=%s", $filter_type, $filter_subdomain ) if $filter_type  && $filter_subdomain;
+    $filter_vars = sprintf( "?fieldType=%s",              $filter_type )                    if $filter_type  && !$filter_subdomain;
+    $filter_vars = sprintf( "?subDomain=%s",              $filter_subdomain )               if !$filter_type && $filter_subdomain;
+
+    my $api       = $self->{_api_wrapper};
     my $zone_name = $self->name;
-    my $response = $api->rawCall( method => 'get', path => "/domain/zone/$zone_name/record$filter_vars", noSignature => 0 );
+    my $response  = $api->rawCall( method => 'get', path => "/domain/zone/$zone_name/record$filter_vars", noSignature => 0 );
     croak $response->error if $response->error;
 
     my $record_ids = $response->content;
@@ -81,48 +80,55 @@ sub records {
 sub record {
 
     my ( $self, $record_id ) = @_;
-    
+
     croak "Missing record_id" unless $record_id;
-    
+
     my $api = $self->{_api_wrapper};
     my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self, $record_id );
-    
+
     return $record;
 }
 
 sub new_record {
 
     my ( $self, %params ) = @_;
-    
+
     my $api = $self->{_api_wrapper};
-    my $record = Webservice::OVH::Domain::Zone::Record->_new($api, $self, %params);
+    my $record = Webservice::OVH::Domain::Zone::Record->_new( $api, $self, %params );
 
     return undef;
 }
 
 sub name {
-    
-    my ( $self ) = @_;
-    
+
+    my ($self) = @_;
+
     return $self->{_name};
 }
 
 sub change_contact {
 
     my ( $self, %params ) = @_;
-    
     croak "at least one parameter needed: contact_billing contact_admin contact_tech" unless %params;
 
-    my $api          = $self->{_api_wrapper};
+    my $api       = $self->{_api_wrapper};
     my $zone_name = $self->name;
-    my $body = {};
+    my $body      = {};
     $body->{contactBilling} = $params{contact_billing} if exists $params{contact_billing};
-    $body->{contactAdmin} = $params{contact_admin} if exists $params{contact_admin};
-    $body->{contactTech} = $params{contact_tech} if exists $params{contact_tech};
-    my $response     = $api->rawCall( method => 'post', path => "/domain/zone/$zone_name/changeContact", body => $body, noSignature => 0 );
+    $body->{contactAdmin}   = $params{contact_admin}   if exists $params{contact_admin};
+    $body->{contactTech}    = $params{contact_tech}    if exists $params{contact_tech};
+    my $response = $api->rawCall( method => 'post', path => "/domain/zone/$zone_name/changeContact", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    return $response->content;
+    my $tasks    = [];
+    my $task_ids = $response->content;
+    foreach my $task_id (@$task_ids) {
+
+        my $task = $api->me->task_contact_change($task_id);
+        push @$tasks, $task;
+    }
+
+    return $tasks;
 }
 
 1;
