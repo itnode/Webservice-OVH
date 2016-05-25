@@ -12,7 +12,7 @@ sub _new {
 
     my ( $class, $api_wrapper ) = @_;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _contacts => {}, _tasks_contact_change => {} }, $class;
+    my $self = bless { _api_wrapper => $api_wrapper, _contacts => {}, _tasks_contact_change => {}, _orders => {} }, $class;
 
     return $self;
 }
@@ -76,6 +76,40 @@ sub task_contact_change {
 
     return $task;
 
+}
+
+sub orders {
+    
+    my ( $self, $date_from, $date_to ) = @_;
+    
+    my $str_date_from = $date_from ? $date_from->strftime("%Y-%m-%d") : "";
+    my $str_date_to = $date_to ? $date_to->strftime("%Y-%m-%d") : "";
+    my $filter = Webservice::OVH::Helper->construct_filter( "date.from" => $str_date_from, "date.to" => $str_date_to );
+    
+    my $api = $self->{_api_wrapper};
+    my $response = $api->rawCall( method => 'get', path => "/me/order$filter", noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $order_ids = $response->content;
+    my $orders    = [];
+
+    foreach my $order_id (@$order_ids) {
+
+        my $order = $self->{_orders}{$order_id} = $self->{_orders}{$order_id} || Webservice::OVH::Me::Order->_new( $api, $order_id );
+        push @$orders, $order;
+    }
+
+    return $orders;
+}
+
+sub order {
+    
+    my ( $self, $order_id ) = @_;
+
+    my $api = $self->{_api_wrapper};
+    my $order = $self->{_orders}{$order_id} = $self->{_orders}{$order_id} || Webservice::OVH::Me::Order->_new( $api, $order_id );
+
+    return $order;
 }
 
 1;

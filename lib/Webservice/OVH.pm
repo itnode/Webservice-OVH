@@ -33,7 +33,7 @@ sub new {
 
     OvhApi->setRequestTimeout( timeout => $params{timeout} || 120 );
 
-    my $self = bless {}, $class;
+    my $self = bless { _api_wrapper => $api_wrapper }, $class;
 
     $self->{_domain}      = $domain;
     $self->{_me}          = $me;
@@ -69,6 +69,17 @@ sub order {
     my ($self) = @_;
 
     return $self->{_order};
+}
+
+sub new_account {
+    
+    my ($self, $email, $firstname, $birthday) = @_;
+    
+    my $body =  { birthday => $birthday, firstname => $firstname, country => 'DE', email => $email, legalform => 'individual', ovhCompany => 'ovh', ovhSubsidiary => 'DE' };
+    
+    my $api = $self->{_api_wrapper};
+    my $response = $api->rawCall( method => 'post', path => "/newAccount", noSignature => 0 );
+    croak $response->error if $response->error;
 }
 
 1;
