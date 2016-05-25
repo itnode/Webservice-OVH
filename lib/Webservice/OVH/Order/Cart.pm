@@ -1,4 +1,4 @@
-package Webservice::OVH::Order::Card;
+package Webservice::OVH::Order::Cart;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
-use Webservice::OVH::Order::Card::Item;
+use Webservice::OVH::Order::Cart::Item;
 
 sub _new_existing {
 
@@ -27,7 +27,7 @@ sub _new {
 
     my ( $class, $api_wrapper, %params ) = @_;
 
-    croak "Missing ovh_subsidiary";
+    croak "Missing ovh_subsidiary" unless exists $params{ovh_subsidiary};
 
     my $body = {};
     $body->{description} = $params{description} if exists $params{description};
@@ -39,7 +39,7 @@ sub _new {
     my $card_id    = $response->content->{cartId};
     my $properties = $response->content;
 
-    my $response_assign = $api_wrapper->rawCall( method => 'post', path => "/order/cart/$card_id/assign ", noSignature => 0 );
+    my $response_assign = $api_wrapper->rawCall( method => 'post', path => "/order/cart/$card_id/assign", body => {}, noSignature => 0 );
     croak $response_assign->error if $response_assign->error;
 
     my $self = bless { _api_wrapper => $api_wrapper, _id => $card_id, _properties => $properties, _items => {} }, $class;
@@ -92,7 +92,7 @@ sub info_domain {
     my $api     = $self->{_api_wrapper};
     my $cart_id = $self->id;
 
-    my $response = $api->rawCall( method => 'get', path => "/order/cart/$cart_id/domain", noSignature => 0 );
+    my $response = $api->rawCall( method => 'get', path => sprintf("/order/cart/%s/domain?domain=%s", $cart_id, $domain), noSignature => 0 );
     croak $response->error if $response->error;
 
     return $response->content;

@@ -1,4 +1,4 @@
-package Webservice::OVH::Order::Card::Item;
+package Webservice::OVH::Order::Cart::Item;
 
 use strict;
 use warnings;
