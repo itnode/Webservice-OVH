@@ -8,6 +8,7 @@ use Webservice::OVH::Helper;
 our $VERSION = 0.1;
 
 use Webservice::OVH::Me::Contact;
+use Webservice::OVH::Me::Order;
 
 sub _new {
 
