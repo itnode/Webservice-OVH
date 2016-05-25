@@ -41,7 +41,12 @@ sub new_from_json {
     
     OvhApi->setRequestTimeout( timeout => $data->{timeout} || 120 );
 
-    my $self = bless { _api_wrapper => $api_wrapper }, $class;
+    my $self = bless {}, $class;
+    
+    $self->{_domain}      = $domain;
+    $self->{_me}          = $me;
+    $self->{_order}       = $order;
+    $self->{_api_wrapper} = $api_wrapper;
     
     return $self;
 }
@@ -64,7 +69,7 @@ sub new {
 
     OvhApi->setRequestTimeout( timeout => $params{timeout} || 120 );
 
-    my $self = bless { _api_wrapper => $api_wrapper }, $class;
+    my $self = bless {}, $class;
 
     $self->{_domain}      = $domain;
     $self->{_me}          = $me;
