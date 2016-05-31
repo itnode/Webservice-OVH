@@ -26,7 +26,7 @@ sub _new {
 
     my ( $class, $api_wrapper, $domain, %params ) = @_;
 
-    my @keys_needed = qw{ from target local_copy to };
+    my @keys_needed = qw{ from local_copy to };
 
     die "Missing domain" unless $domain;
 
@@ -103,7 +103,7 @@ sub delete {
     return unless $self->_is_valid;
 
     my $api            = $self->{_api_wrapper};
-    my $domain_name    = $self->{_domain}->name;
+    my $domain_name    = $self->domain->name;
     my $redirection_id = $self->id;
     my $response       = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/redirection/$redirection_id", noSignature => 0 );
     croak $response->error if $response->error;
@@ -120,12 +120,15 @@ sub change {
     croak "Missing to as parameter" unless $to;
 
     my $api       = $self->{_api_wrapper};
-    my $domain_name = $self->{_zone}->name;
+    my $domain_name = $self->domain->name;
     my $redirection_id = $self->id;
     my $body      = {};
     $body->{to} = $to;
-    my $response = $api->rawCall( method => 'post', path => " /email/domain/$domain_name/redirection/$redirection_id/changeRedirection", body => $body, noSignature => 0 );
+    my $response = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/redirection/$redirection_id/changeRedirection", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+    
+    $self->{_id} = $response->content->{id};
+    $self->{_properties} = $response->content;
 }
 
 1;
