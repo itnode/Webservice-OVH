@@ -81,13 +81,13 @@ sub task_contact_change {
 }
 
 sub orders {
-    
+
     my ( $self, $date_from, $date_to ) = @_;
-    
+
     my $str_date_from = $date_from ? $date_from->strftime("%Y-%m-%d") : "";
-    my $str_date_to = $date_to ? $date_to->strftime("%Y-%m-%d") : "";
+    my $str_date_to   = $date_to   ? $date_to->strftime("%Y-%m-%d")   : "";
     my $filter = Webservice::OVH::Helper->construct_filter( "date.from" => $str_date_from, "date.to" => $str_date_to );
-    
+
     my $api = $self->{_api_wrapper};
     my $response = $api->rawCall( method => 'get', path => "/me/order$filter", noSignature => 0 );
     croak $response->error if $response->error;
@@ -105,7 +105,7 @@ sub orders {
 }
 
 sub order {
-    
+
     my ( $self, $order_id ) = @_;
 
     my $api = $self->{_api_wrapper};
