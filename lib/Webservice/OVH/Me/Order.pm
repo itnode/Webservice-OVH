@@ -144,4 +144,16 @@ sub pay_with_registered_payment_mean {
     croak $response->error if $response->error;
 }
 
+sub status {
+
+    my ($self) = @_;
+
+    my $api      = $self->{_api_wrapper};
+    my $order_id = $self->id;
+    my $response = $api->rawCall( method => 'get', path => "/me/order/$order_id/status", noSignature => 0 );
+    croak $response->error if $response->error;
+
+    return $response->content;
+}
+
 1;
