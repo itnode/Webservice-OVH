@@ -66,7 +66,7 @@ sub _is_valid {
     my ($self) = @_;
 
     my $record_id = $self->id;
-    carp "Record $record_id is not valid anymore";
+    carp "Record $record_id is not valid anymore" unless $self->is_valid;
     return $self->is_valid;
 }
 
