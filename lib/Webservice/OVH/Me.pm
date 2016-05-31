@@ -9,12 +9,13 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Me::Contact;
 use Webservice::OVH::Me::Order;
+use Webservice::OVH::Me::Bill;
 
 sub _new {
 
     my ( $class, $api_wrapper ) = @_;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _contacts => {}, _tasks_contact_change => {}, _orders => {} }, $class;
+    my $self = bless { _api_wrapper => $api_wrapper, _contacts => {}, _tasks_contact_change => {}, _orders => {}, _bills => {} }, $class;
 
     return $self;
 }
@@ -113,5 +114,40 @@ sub order {
 
     return $order;
 }
+
+sub bill {
+
+    my ( $self, $bill_id ) = @_;
+
+    my $api = $self->{_api_wrapper};
+    my $bill = $self->{_bills}{$bill_id} = $self->{_bills}{$bill_id} || Webservice::OVH::Me::Bill->_new( $api, $bill_id );
+
+    return $bill;
+}
+
+sub bills {
+
+    my ( $self, $date_from, $date_to ) = @_;
+
+    my $str_date_from = $date_from ? $date_from->strftime("%Y-%m-%d") : "";
+    my $str_date_to   = $date_to   ? $date_to->strftime("%Y-%m-%d")   : "";
+    my $filter = Webservice::OVH::Helper->construct_filter( "date.from" => $str_date_from, "date.to" => $str_date_to );
+
+    my $api = $self->{_api_wrapper};
+    my $response = $api->rawCall( method => 'get', path => sprintf("/me/bill%s", $filter), noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $bill_ids = $response->content;
+    my $bills    = [];
+
+    foreach my $bill_id (@$bill_ids) {
+
+        my $bill = $self->{_bills}{$bill_id} = $self->{_bills}{$bill_id} || Webservice::OVH::Me::Bill->_new( $api, $bill_id );
+        push @$bills, $bill;
+    }
+
+    return $bills;
+}
+
 
 1;
