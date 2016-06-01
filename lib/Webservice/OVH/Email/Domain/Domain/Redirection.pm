@@ -43,10 +43,10 @@ sub _new {
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/redirection/", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $redirection_id = $response->content->{id};
-    my $properties     = $response->content;
+    my $redirection = $domain->redirections( from => $params{from}, to => $params{to} )->[0];
+    my $properties = $redirection->properties;
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $redirection_id, _properties => $properties, _domain => $domain }, $class;
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $redirection->id, _properties => $properties, _domain => $domain }, $class;
 
     return $self;
 }
@@ -96,6 +96,20 @@ sub properties {
     return $self->{_properties};
 }
 
+sub from {
+
+    my ($self) = @_;
+
+    return $self->{_properties}->{from};
+}
+
+sub to {
+
+    my ($self) = @_;
+
+    return $self->{_properties}->{to};
+}
+
 sub delete {
 
     my ($self) = @_;
@@ -114,21 +128,21 @@ sub delete {
 sub change {
 
     my ( $self, $to ) = @_;
-
     return unless $self->_is_valid;
 
     croak "Missing to as parameter" unless $to;
 
-    my $api       = $self->{_api_wrapper};
-    my $domain_name = $self->domain->name;
+    my $api            = $self->{_api_wrapper};
+    my $domain_name    = $self->domain->name;
     my $redirection_id = $self->id;
-    my $body      = {};
+    my $body           = {};
     $body->{to} = $to;
     my $response = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/redirection/$redirection_id/changeRedirection", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
-    
-    $self->{_id} = $response->content->{id};
-    $self->{_properties} = $response->content;
+
+    my $redirection = $self->domain->redirections( from => $self->from, to => $to )->[0];
+    $self->{_properties} = $redirection->properties;
+    $self->{_id}         = $redirection->id;
 }
 
 1;
