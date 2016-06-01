@@ -62,7 +62,7 @@ sub is_valid {
 }
 
 sub _is_valid {
-    
+
     my ($self) = @_;
 
     my $record_id = $self->id;
@@ -99,10 +99,38 @@ sub properties {
     return $self->{_properties};
 }
 
+sub field_type {
+
+    my ($self) = @_;
+
+    return $self->{_properties}->{fieldType};
+}
+
+sub sub_domain {
+
+    my ($self) = @_;
+
+    return $self->{_properties}->{subDomain};
+}
+
+sub target {
+
+    my ($self) = @_;
+
+    return $self->{_properties}->{target};
+}
+
+sub ttl {
+
+    my ($self) = @_;
+
+    return $self->{_properties}->{ttl};
+}
+
 sub delete {
 
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
 
     my $api       = $self->{_api_wrapper};
@@ -117,7 +145,7 @@ sub delete {
 sub change {
 
     my ( $self, %params ) = @_;
-    
+
     return unless $self->_is_valid;
 
     if ( scalar keys %params != 0 ) {
@@ -131,6 +159,8 @@ sub change {
         $body->{ttl}       = $params{ttl}        if exists $params{ttl};
         my $response = $api->rawCall( method => 'put', path => "/domain/zone/$zone_name/record/$record_id", body => $body, noSignature => 0 );
         croak $response->error if $response->error;
+        
+        $self->properties;
     }
 }
 
