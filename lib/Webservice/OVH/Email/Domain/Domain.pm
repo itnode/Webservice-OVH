@@ -35,6 +35,13 @@ sub service_infos {
     return $self->{_service_infos};
 }
 
+sub name {
+
+    my ($self) = @_;
+
+    return $self->{_name};
+}
+
 sub properties {
 
     my ($self) = @_;
@@ -49,11 +56,34 @@ sub properties {
     return $self->{_properties};
 }
 
-sub name {
+sub allowed_account_size {
 
     my ($self) = @_;
 
-    return $self->{_name};
+    return $self->{_properties}->{allowedAccountSize};
+}
+
+sub creation_date {
+
+    my ($self) = @_;
+
+    my $str_datetime = $self->{_properties}->{creationDate};
+    my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
+    return $datetime;
+}
+
+sub filerz {
+
+    my ($self) = @_;
+
+    return $self->{_properties}->{filerz};
+}
+
+sub status {
+
+    my ($self) = @_;
+
+    return $self->{_properties}->{status};
 }
 
 sub redirections {
@@ -61,12 +91,12 @@ sub redirections {
     my ( $self, %filter ) = @_;
 
     my $filter_from = ( exists $filter{from} && !$filter{from} )      ? "_empty_" : $filter{from};
-    my $filter_to   = ( exists $filter{to}   && !$filter{subdomain} ) ? "_empty_" : $filter{to};
+    my $filter_to   = ( exists $filter{to}   && !$filter{to} ) ? "_empty_" : $filter{to};
     my $filter = Webservice::OVH::Helper->construct_filter( "from" => $filter_from, "to" => $filter_to );
 
-    my $api       = $self->{_api_wrapper};
+    my $api         = $self->{_api_wrapper};
     my $domain_name = $self->name;
-    my $response  = $api->rawCall( method => 'get', path => sprintf( "/email/domain/$domain_name/redirection%s", $filter ), noSignature => 0 );
+    my $response    = $api->rawCall( method => 'get', path => sprintf( "/email/domain/$domain_name/redirection%s", $filter ), noSignature => 0 );
     croak $response->error if $response->error;
 
     my $redirection_ids = $response->content;
@@ -94,7 +124,7 @@ sub redirection {
 }
 
 sub new_redirection {
-    
+
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
