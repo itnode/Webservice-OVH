@@ -159,7 +159,7 @@ sub change {
         $body->{ttl}       = $params{ttl}        if exists $params{ttl};
         my $response = $api->rawCall( method => 'put', path => "/domain/zone/$zone_name/record/$record_id", body => $body, noSignature => 0 );
         croak $response->error if $response->error;
-        
+
         $self->properties;
     }
 }
