@@ -3,8 +3,11 @@ package Webservice::OVH::Domain::Service;
 use strict;
 use warnings;
 use Carp qw{ carp croak };
+use DateTime;
 
 our $VERSION = 0.1;
+
+use Webservice::OVH::Helper;
 
 use Webservice::OVH::Me::Contact;
 
@@ -17,6 +20,13 @@ sub _new {
     my $self = bless { _api_wrapper => $api_wrapper, _name => $service_name, _owner => undef, _service_info => undef, _properties => undef }, $class;
 
     return $self;
+}
+
+sub name {
+
+    my ($self) = @_;
+
+    return $self->{_name};
 }
 
 sub service_infos {
@@ -49,14 +59,99 @@ sub properties {
     return $self->{_properties};
 }
 
-sub name {
+sub dnssec_supported {
 
     my ($self) = @_;
 
-    return $self->{_name};
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{dnssecSupported} ? 1 : 0;
 }
 
-sub owner {
+sub domain {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{domain};
+}
+
+sub glue_record_ipv6_supported {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{glueRecordIpv6Supported} ? 1 : 0;
+}
+
+sub glue_record_multi_ip_supported {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{glueRecordMultiIpSupported} ? 1 : 0;
+}
+
+sub last_update {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    my $str_datetime = $self->{_properties}->{lastUpdate};
+    my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
+    return $datetime;
+}
+
+sub name_server_type {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{nameServerType};
+}
+
+sub offer {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{offer};
+}
+
+sub owo_supported {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{owoSupported} ? 1 : 0;
+}
+
+sub parent_service {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{parentService};
+}
+
+sub transfer_lock_status {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    return $self->{_properties}->{transferLockStatus};
+}
+
+sub whois_owner {
 
     my ($self) = @_;
 

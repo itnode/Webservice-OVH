@@ -15,10 +15,6 @@ use Webservice::OVH::Email;
 use JSON;
 use File::Slurp qw(read_file);
 
-# Class variables
-
-# End - Class variables
-
 sub new_from_json {
 
     my ( $class, $file_json ) = @_;
