@@ -15,5 +15,6 @@ ok ( $api, "api object creation" );
 ok ( $api->domain, "domain object exists" );
 ok ( $api->order, "order object exists" );
 ok ( $api->me, "me object exists" );
+ok ( $api->email, "email object exists" );
 
 done_testing();
