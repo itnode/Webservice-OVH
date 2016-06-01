@@ -49,6 +49,44 @@ sub properties {
     return $self->{_properties};
 }
 
+sub dnssec_supported {
+    
+    my ($self) = @_;
+    
+    $self->properties unless $self->{_properties};
+    
+    return $self->{_properties}->{dnssecSupported} ? 1 : 0;
+}
+
+sub has_dns_anycast {
+    
+    my ($self) = @_;
+    
+    $self->properties unless $self->{_properties};
+    
+    return $self->{_properties}->{hasDnsAnycast} ? 1 : 0;
+}
+
+sub last_update {
+
+    my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+
+    my $str_datetime = $self->{_properties}->{lastUpdate};
+    my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
+    return $datetime;
+}
+
+sub name_servers {
+    
+    my ($self) = @_;
+    
+    $self->properties unless $self->{_properties};
+    
+    return $self->{_properties}->{nameServers};
+}
+
 sub records {
 
     my ( $self, %filter ) = @_;
