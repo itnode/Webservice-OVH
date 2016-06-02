@@ -15,7 +15,7 @@ sub _new {
 
     croak "Missing domain name" unless $domain;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _name => $domain, _service_infos => undef, _properties => undef, _redirections => {} }, $class;
+    my $self = bless { _api_wrapper => $api_wrapper, _name => $domain, _service_infos => undef, _properties => undef, _redirections => {}, _accounts => {}, _mailing_lists => {} }, $class;
 
     return $self;
 }
@@ -90,8 +90,8 @@ sub redirections {
 
     my ( $self, %filter ) = @_;
 
-    my $filter_from = ( exists $filter{from} && !$filter{from} )      ? "_empty_" : $filter{from};
-    my $filter_to   = ( exists $filter{to}   && !$filter{to} ) ? "_empty_" : $filter{to};
+    my $filter_from = ( exists $filter{from} && !$filter{from} ) ? "_empty_" : $filter{from};
+    my $filter_to   = ( exists $filter{to}   && !$filter{to} )   ? "_empty_" : $filter{to};
     my $filter = Webservice::OVH::Helper->construct_filter( "from" => $filter_from, "to" => $filter_to );
 
     my $api         = $self->{_api_wrapper};
@@ -131,6 +131,92 @@ sub new_redirection {
     my $redirection = Webservice::OVH::Email::Domain::Domain::Redirection->_new( $api, $self, %params );
 
     return $redirection;
+}
+
+sub accounts {
+
+    my ($self) = @_;
+
+    my $api         = $self->{_api_wrapper};
+    my $domain_name = $self->name;
+    my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/account", noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $account_names = $response->content;
+    my $accounts      = [];
+
+    foreach my $account_name (@$account_names) {
+
+        my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $account_name );
+        push @$accounts, $account;
+    }
+
+    return $accounts;
+}
+
+sub account {
+
+    my ( $self, $account_name ) = @_;
+
+    croak "Missing account_name" unless $account_name;
+
+    my $api = $self->{_api_wrapper};
+    my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $account_name );
+
+    return $account;
+}
+
+sub new_account {
+
+    my ( $self, %params ) = @_;
+
+    my $api = $self->{_api_wrapper};
+    my $account = Webservice::OVH::Email::Domain::Domain::Account->_new( $api, $self, %params );
+
+    return $account;
+}
+
+sub mailing_lists {
+
+    my ($self) = @_;
+
+    my $api         = $self->{_api_wrapper};
+    my $domain_name = $self->name;
+    my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/account", noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $mailing_list_names = $response->content;
+    my $mailing_lists      = [];
+
+    foreach my $mailing_list_name (@$mailing_list_names) {
+
+        my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $mailing_list_name );
+        push @$mailing_lists, $mailing_list;
+    }
+
+    return $mailing_lists;
+}
+
+sub mailing_list {
+
+    my ( $self, $mailing_list_name ) = @_;
+
+    croak "Missing mailing_list_name" unless $mailing_list_name;
+
+    my $api = $self->{_api_wrapper};
+    my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $mailing_list_name );
+
+    return $mailing_list;
+}
+
+sub new_mailing_list {
+
+    my ( $self, %params ) = @_;
+
+    my $api = $self->{_api_wrapper};
+    my $mailing_list = Webservice::OVH::Email::Domain::Domain::MailingList->_new( $api, $self, %params );
+
+    return $mailing_list;
 }
 
 1;
