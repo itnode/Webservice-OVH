@@ -7,6 +7,8 @@ use Carp qw{ carp croak };
 our $VERSION = 0.1;
 
 use Webservice::OVH::Email::Domain::Domain::Redirection;
+use Webservice::OVH::Email::Domain::Domain::Account;
+use Webservice::OVH::Email::Domain::Domain::MailingList;
 use Webservice::OVH::Helper;
 
 sub _new {
@@ -146,8 +148,7 @@ sub accounts {
     my $accounts      = [];
 
     foreach my $account_name (@$account_names) {
-
-        my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $account_name );
+        my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name );
         push @$accounts, $account;
     }
 
@@ -157,11 +158,11 @@ sub accounts {
 sub account {
 
     my ( $self, $account_name ) = @_;
-
     croak "Missing account_name" unless $account_name;
+    $account_name = lc $account_name;
 
     my $api = $self->{_api_wrapper};
-    my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $account_name );
+    my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name );
 
     return $account;
 }
@@ -190,7 +191,7 @@ sub mailing_lists {
 
     foreach my $mailing_list_name (@$mailing_list_names) {
 
-        my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $mailing_list_name );
+        my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name );
         push @$mailing_lists, $mailing_list;
     }
 
@@ -204,7 +205,7 @@ sub mailing_list {
     croak "Missing mailing_list_name" unless $mailing_list_name;
 
     my $api = $self->{_api_wrapper};
-    my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $mailing_list_name );
+    my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name );
 
     return $mailing_list;
 }

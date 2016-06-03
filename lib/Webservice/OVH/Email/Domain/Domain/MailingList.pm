@@ -18,7 +18,7 @@ sub _new_existing {
     croak $response->error if $response->error;
 
     my $porperties = $response->content;
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $mailing_list_name, _properties => $porperties, _domain => $domain }, $class;
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $porperties->{id}, _name => $mailing_list_name, _properties => $porperties, _domain => $domain }, $class;
 
     return $self;
 }
@@ -43,12 +43,11 @@ sub _new {
     $body->{options}    = $params{options};
     $body->{ownerEmail} = $params{owner_email};
     $body->{replyTo}    = $params{reply_to} if exists $params{reply_to};
-    my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/account", body => $body, noSignature => 0 );
+    my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $properties = $response->properties;
-
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $properties->{id}, _name => $params{name}, _properties => $properties, _domain => $domain }, $class;
+    my $mailing_list = $domain->mailing_list( $params{name} );
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $mailing_list->id, _porperties => $mailing_list->properties, _name => $params{name}, _domain => $domain }, $class;
 
     return $self;
 }

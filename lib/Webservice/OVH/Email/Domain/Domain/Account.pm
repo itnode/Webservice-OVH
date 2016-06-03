@@ -9,10 +9,11 @@ our $VERSION = 0.1;
 sub _new_existing {
 
     my ( $class, $api_wrapper, $domain, $account_name ) = @_;
-
     die "Missing account_name" unless $account_name;
+    $account_name = lc $account_name;
+
     my $domain_name = $domain->name;
-    my $response = $api_wrapper->rawCall( method => 'get', path => "/email/domain/$domain_name/responder/$account_name", noSignature => 0 );
+    my $response = $api_wrapper->rawCall( method => 'get', path => "/email/domain/$domain_name/account/$account_name", noSignature => 0 );
     croak $response->error if $response->error;
 
     my $porperties = $response->content;
@@ -43,7 +44,7 @@ sub _new {
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/account", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $properties = $response->properties;
+    my $properties = $response->content;
 
     my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $params{account_name}, _properties => $properties, _domain => $domain }, $class;
 
@@ -154,8 +155,6 @@ sub delete {
 
 }
 
-# needs some string validation
-# password (length : [9;30], no space at begin and end, no accent)
 sub change_password {
 
     my ( $self, $password ) = @_;
