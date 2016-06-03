@@ -46,4 +46,11 @@ sub parse_datetime {
     return $strp->parse_datetime($str_datetime);
 }
 
+sub format_datetime {
+    
+    my ( $class, $dt ) = @_;
+    
+    return $dt->strftime('%FT%T%z');
+}
+
 1;
