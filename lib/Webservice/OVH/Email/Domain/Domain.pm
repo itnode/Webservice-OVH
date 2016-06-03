@@ -180,10 +180,9 @@ sub new_account {
 sub mailing_lists {
 
     my ($self) = @_;
-
     my $api         = $self->{_api_wrapper};
     my $domain_name = $self->name;
-    my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/account", noSignature => 0 );
+    my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList", noSignature => 0 );
     croak $response->error if $response->error;
 
     my $mailing_list_names = $response->content;
