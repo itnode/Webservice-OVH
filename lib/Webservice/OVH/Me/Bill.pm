@@ -56,4 +56,55 @@ sub properties {
     return $self->{_properties};
 }
 
+sub date {
+    
+    my ($self) = @_;
+    
+    my $str_datetime = $self->{_properties}->{date};
+    my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
+    return $datetime;
+}
+
+sub password {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{password};
+}
+
+sub pdf_url {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{pdfUrl};
+}
+
+sub price_without_tax {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{priceWithoutTax};
+}
+
+sub price_with_tax {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{priceWithTax};
+}
+
+sub tax {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{tax};
+}
+
+sub url {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{url};
+}
+
 1;
