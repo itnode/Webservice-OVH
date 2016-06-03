@@ -43,6 +43,67 @@ sub properties {
     return $self->{_properties};
 }
 
+sub date {
+    
+    my ($self) = @_;
+    
+    my $str_datetime = $self->{_properties}->{date};
+    my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
+    return $datetime;
+}
+
+sub expiration_date {
+    
+    my ($self) = @_;
+    
+    my $str_datetime = $self->{_properties}->{expirationDate};
+    my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
+    return $datetime;
+}
+
+sub password {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{password};
+}
+
+sub pdf_url {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{pdfUrl};
+}
+
+sub price_without_tax {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{priceWithoutTax};
+}
+
+sub price_with_tax {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{priceWithTax};
+}
+
+sub tax {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{tax};
+}
+
+sub url {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{url};
+}
+
+
 sub associated_object {
 
     my ($self) = @_;
@@ -69,14 +130,24 @@ sub available_registered_payment_mean {
 
 sub bill {
 
-    my ($self) = @_;
+    my ($self, $module) = @_;
 
     my $api      = $self->{_api_wrapper};
     my $order_id = $self->id;
-    my $response = $api->rawCall( method => 'get', path => "/me/order/$order_id/bill", noSignature => 0 );
-    croak $response->error if $response->error;
-
-    return $response->content;
+    #my $response = $api->rawCall( method => 'get', path => "/me/order/$order_id/bill", noSignature => 0 );
+    #croak $response->error if $response->error;
+    
+    my $object = $self->associated_object;
+    
+    if( $object->{type} eq 'Bill' ) {
+        
+        my $bill = $module->me->bill( $object->{id} );
+        
+        return $bill;
+    } else {
+        
+        return undef;
+    }
 }
 
 sub details {
