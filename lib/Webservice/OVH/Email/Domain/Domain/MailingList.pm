@@ -82,6 +82,13 @@ sub id {
     return $self->{_id};
 }
 
+sub domain {
+    
+    my ($self) = @_;
+    
+    return $self->{_domain};
+}
+
 sub properties {
 
     my ($self) = @_;
@@ -150,11 +157,13 @@ sub change {
     my $domain_name       = $self->domain->name;
     my $mailing_list_name = $self->name;
     my $body              = {};
-    $body->{language}   = $params{language};
-    $body->{ownerEmail} = $params{owner_email};
-    $body->{replyTo}    = $params{reply_to};
+    $body->{language}   = $params{language} if exists $params{language};
+    $body->{ownerEmail} = $params{owner_email} if exists $params{owner_email};
+    $body->{replyTo}    = $params{reply_to} if exists $params{reply_to};
     my $response = $api->rawCall( method => 'put', path => "/email/domain/$domain_name/mailingList/$mailing_list_name", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+    
+    $self->properties;
 }
 
 sub delete {
@@ -171,16 +180,25 @@ sub delete {
 sub change_options {
 
     my ( $self, %params ) = @_;
+    
+    my @keys_needed = qw{ moderator_message subscribe_by_moderator users_post_only };
+
+    if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
+
+        croak "Missing parameter: @missing_parameters";
+    }
 
     my $api               = $self->{_api_wrapper};
     my $domain_name       = $self->domain->name;
     my $mailing_list_name = $self->name;
-    my $body              = {};
-    $body->{moderatorMessage}     = $params{moderator_message};
-    $body->{subscribeByModerator} = $params{subscribe_by_moderator};
-    $body->{usersPostOnly}        = $params{users_post_only};
+    my $body              = { options => {} };
+    $body->{options}->{moderatorMessage}     = $params{moderator_message} if exists $params{moderator_message};
+    $body->{options}->{subscribeByModerator} = $params{subscribe_by_moderator} if exists $params{subscribe_by_moderator};
+    $body->{options}->{usersPostOnly}        = $params{users_post_only} if exists $params{users_post_only};
     my $response = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/changeOptions", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+    
+    $self->properties;
 }
 
 sub moderators {
