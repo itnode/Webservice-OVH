@@ -47,5 +47,10 @@ ok( $bills && ref $bills eq 'ARRAY', 'bills ok' );
 ok( $example_bill, 'one bill exists ok' );
 ok( $search_bill, 'bill found ok' );
 
+ok( scalar keys %{$api->me->{_contacts}} == scalar @$contacts, 'intern contacts ok' );
+ok( scalar keys %{$api->me->{_tasks_contact_change}} == scalar @$tasks_contact_change, 'intern tasks ok' );
+ok( scalar keys %{$api->me->{_orders}} == scalar @$orders, 'intern orders ok' );
+ok( scalar keys %{$api->me->{_bills}} == scalar @$bills, 'intern bills ok' );
+
 done_testing();
 
