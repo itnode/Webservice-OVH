@@ -13,7 +13,6 @@ use Webservice::OVH;
 
     You need to choose an email domain with an additional email package wich allows mailing lists
     This test can take up to 5 minutes to complete, because ovh need up to 5 minutes to delete a mailing list
-    
 
 =cut
 
