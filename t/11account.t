@@ -20,7 +20,7 @@ use Webservice::OVH;
 my $api = Webservice::OVH->new_from_json("../credentials.json");
 ok($api, "module ok");
 
-my $email_domain = $api->email->domain->domain('buuild.space');
+my $email_domain = $api->email->domain->domain('');
 ok ($email_domain, 'email_domain ok');
 
 my $new_account = $email_domain->new_account( account_name => 'testaccount', password => '%%12345$tets$s089', description => 'Ein Account');
