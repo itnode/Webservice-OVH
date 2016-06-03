@@ -13,13 +13,20 @@ sub _new_existing {
     die "Missing redirection_id" unless $redirection_id;
     my $domain_name = $domain->name;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/email/domain/$domain_name/redirection/$redirection_id", noSignature => 0 );
-    croak $response->error if $response->error;
+    carp $response->error if $response->error;
 
-    my $porperties = $response->content;
+    if ( !$response->error ) {
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $redirection_id, _properties => $porperties, _domain => $domain }, $class;
+        my $porperties = $response->content;
 
-    return $self;
+        my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $redirection_id, _properties => $porperties, _domain => $domain }, $class;
+
+        return $self;
+
+    } else {
+
+        return undef;
+    }
 }
 
 sub _new {

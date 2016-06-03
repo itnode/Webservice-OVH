@@ -14,12 +14,18 @@ sub _new_existing {
 
     my $domain_name = $domain->name;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/email/domain/$domain_name/account/$account_name", noSignature => 0 );
-    croak $response->error if $response->error;
+    carp $response->error if $response->error;
 
-    my $porperties = $response->content;
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $account_name, _properties => $porperties, _domain => $domain }, $class;
+    if ( !$response->error ) {
 
-    return $self;
+        my $porperties = $response->content;
+        my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $account_name, _properties => $porperties, _domain => $domain }, $class;
+
+        return $self;
+    } else {
+
+        return undef;
+    }
 }
 
 sub _new {
@@ -141,6 +147,8 @@ sub change {
     my $response = $api->rawCall( method => 'put', path => "/email/domain/$domain_name/account/$account_name", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
+    $self->properties;
+
 }
 
 sub delete {
@@ -153,6 +161,7 @@ sub delete {
     my $response     = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/account/$account_name", noSignature => 0 );
     croak $response->error if $response->error;
 
+    $self->{_valid} = 0;
 }
 
 sub change_password {

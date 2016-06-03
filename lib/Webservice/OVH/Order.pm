@@ -56,7 +56,8 @@ sub cart {
     my ( $self, $card_id ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $card = $self->{_cards}{$card_id} = $self->{_cards}{$card_id} || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id );
+    my $from_array_card = $self->{_cards}{$card_id} if $self->{_cards}{$card_id} && $self->{_cards}{$card_id}->is_valid;
+    my $card = $self->{_cards}{$card_id} = $from_array_card || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id );
     return $card;
 }
 

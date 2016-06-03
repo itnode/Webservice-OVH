@@ -14,13 +14,19 @@ sub _new_existing {
 
     die "Missing card_id" unless $card_id;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/order/cart/$card_id", noSignature => 0 );
-    croak $response->error if $response->error;
+    carp $response->error if $response->error;
 
-    my $properties = $response->content;
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $card_id, _properties => $properties, _items => {} }, $class;
+    if ( !$response->error ) {
 
-    return $self;
+        my $properties = $response->content;
+        my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $card_id, _properties => $properties, _items => {} }, $class;
 
+        return $self;
+
+    } else {
+
+        return undef;
+    }
 }
 
 sub _new {

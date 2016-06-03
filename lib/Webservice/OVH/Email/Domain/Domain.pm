@@ -120,7 +120,8 @@ sub redirection {
     croak "Missing redirection_id" unless $redirection_id;
 
     my $api = $self->{_api_wrapper};
-    my $redirection = $self->{_redirections}{$redirection_id} = $self->{_redirections}{$redirection_id} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id );
+    my $from_array_redirection = $self->{_redirections}{$redirection_id} if $self->{_redirections}{$redirection_id} && $self->{_redirections}{$redirection_id}->is_valid;
+    my $redirection = $self->{_redirections}{$redirection_id} = $from_array_redirection || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id );
 
     return $redirection;
 }
@@ -162,7 +163,8 @@ sub account {
     $account_name = lc $account_name;
 
     my $api = $self->{_api_wrapper};
-    my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name );
+    my $from_array_account =  $self->{_accounts}{$account_name} if $self->{_accounts}{$account_name} && $self->{_accounts}{$account_name}->is_valid;
+    my $account = $self->{_accounts}{$account_name} = $from_array_account || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name );
 
     return $account;
 }
@@ -204,7 +206,8 @@ sub mailing_list {
     croak "Missing mailing_list_name" unless $mailing_list_name;
 
     my $api = $self->{_api_wrapper};
-    my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name );
+    my $from_array_mailing_list =  $self->{_mailing_lists}{$mailing_list_name} if $self->{_mailing_lists}{$mailing_list_name} && $self->{_mailing_lists}{$mailing_list_name}->is_valid;
+    my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $from_array_mailing_list || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name );
 
     return $mailing_list;
 }

@@ -119,7 +119,8 @@ sub record {
     croak "Missing record_id" unless $record_id;
 
     my $api = $self->{_api_wrapper};
-    my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self, $record_id );
+    my $from_array_record = $self->{_records}{$record_id} if $self->{_records}{$record_id} && $self->{_records}{$record_id}->is_valid;
+    my $record = $self->{_records}{$record_id} = $from_array_record || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self, $record_id );
 
     return $record;
 }

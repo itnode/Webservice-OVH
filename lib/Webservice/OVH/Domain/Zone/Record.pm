@@ -15,13 +15,18 @@ sub _new_existing {
     die "Missing record_id" unless $record_id;
     my $zone_name = $zone->name;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/domain/zone/$zone_name/record/$record_id", noSignature => 0 );
-    croak $response->error if $response->error;
+    carp $response->error if $response->error;
 
-    my $porperties = $response->content;
+    if ( !$response->error ) {
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $porperties, _zone => $zone }, $class;
+        my $porperties = $response->content;
+        my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $porperties, _zone => $zone }, $class;
 
-    return $self;
+        return $self;
+    } else {
+
+        return undef;
+    }
 }
 
 sub _new {
