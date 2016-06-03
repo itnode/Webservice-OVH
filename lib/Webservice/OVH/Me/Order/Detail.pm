@@ -50,4 +50,39 @@ sub properties {
     return $self->{_properties};
 }
 
+sub description {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{description};
+}
+
+sub domain {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{domain};
+}
+
+sub quantity {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{quantity};
+}
+
+sub total_price {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{totalPrice};
+}
+
+sub unit_price {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{unitPrice};
+}
+
 1;

@@ -13,9 +13,9 @@ use Webservice::OVH::Order::Email;
 sub _new {
 
     my ( $class, $api_wrapper ) = @_;
-    
+
     my $hosting = Webservice::OVH::Order::Hosting->_new($api_wrapper);
-    my $email = Webservice::OVH::Order::Email->_new($api_wrapper);
+    my $email   = Webservice::OVH::Order::Email->_new($api_wrapper);
 
     my $self = bless { _api_wrapper => $api_wrapper, _cards => {}, _hosting => $hosting, _email => $email }, $class;
 
@@ -27,8 +27,8 @@ sub new_cart {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $card = Webservice::OVH::Order::Cart->_new( $api, %params );
-    return $card;
+    my $cart = Webservice::OVH::Order::Cart->_new( $api, %params );
+    return $cart;
 }
 
 sub carts {
@@ -55,23 +55,23 @@ sub cart {
 
     my ( $self, $card_id ) = @_;
 
-    my $api = $self->{_api_wrapper};
+    my $api             = $self->{_api_wrapper};
     my $from_array_card = $self->{_cards}{$card_id} if $self->{_cards}{$card_id} && $self->{_cards}{$card_id}->is_valid;
-    my $card = $self->{_cards}{$card_id} = $from_array_card || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id );
+    my $card            = $self->{_cards}{$card_id} = $from_array_card || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id );
     return $card;
 }
 
 sub hosting {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_hosting};
 }
 
 sub email {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_email};
 }
 

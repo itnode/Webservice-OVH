@@ -34,7 +34,6 @@ sub _new {
     my ( $class, $api_wrapper, %params ) = @_;
 
     croak "Missing ovh_subsidiary" unless exists $params{ovh_subsidiary};
-
     my $body = {};
     $body->{description} = $params{description} if exists $params{description};
     $body->{expire}      = $params{expire}      if exists $params{expire};
@@ -51,6 +50,34 @@ sub _new {
     my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $card_id, _properties => $properties, _items => {} }, $class;
 
     return $self;
+}
+
+sub properties {
+
+    my ($self) = @_;
+
+    return $self->{_properties};
+}
+
+sub description {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{description};
+}
+
+sub expire {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{expire};
+}
+
+sub read_only {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{readOnly} ? 1 : 0;
 }
 
 sub change {
@@ -71,7 +98,7 @@ sub change {
         my $response = $api->rawCall( method => 'put', path => "/order/cart/$cart_id", body => $body, noSignature => 0 );
         croak $response->error if $response->error;
 
-        $self->{_properties} = $response->content;
+        $self->properties;
     }
 }
 
