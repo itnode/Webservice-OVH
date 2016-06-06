@@ -41,13 +41,13 @@ sub _new {
     my $response = $api_wrapper->rawCall( method => 'post', path => "/order/cart", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $card_id    = $response->content->{cartId};
+    my $cart_id    = $response->content->{cartId};
     my $properties = $response->content;
 
-    my $response_assign = $api_wrapper->rawCall( method => 'post', path => "/order/cart/$card_id/assign", body => {}, noSignature => 0 );
+    my $response_assign = $api_wrapper->rawCall( method => 'post', path => "/order/cart/$cart_id/assign", body => {}, noSignature => 0 );
     croak $response_assign->error if $response_assign->error;
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $card_id, _properties => $properties, _items => {} }, $class;
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $cart_id, _properties => $properties, _items => {} }, $class;
 
     return $self;
 }
@@ -56,27 +56,33 @@ sub properties {
 
     my ($self) = @_;
 
+    my $api      = $self->{_api_wrapper};
+    my $cart_id  = $self->id;
+    my $response = $api->rawCall( method => 'get', path => "/order/cart/$cart_id", noSignature => 0 );
+    croak $response->error if $response->error;
+
+    $self->{_properties} = $response->content;
     return $self->{_properties};
 }
 
 sub description {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{description};
 }
 
 sub expire {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{expire};
 }
 
 sub read_only {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{readOnly} ? 1 : 0;
 }
 
@@ -89,17 +95,17 @@ sub change {
     my $api     = $self->{_api_wrapper};
     my $cart_id = $self->id;
 
-    if ( exists $params{description} || exists $params{expire} ) {
+    croak "Missing Parameter description" unless exists $params{description};
+    croak "Missing Parameter description" unless exists $params{expire};
 
-        my $body = {};
-        $body->{description} = $params{description} if $params{description};
-        $body->{expire}      = $params{expire}      if $params{expire};
+    my $body = {};
+    $body->{description} = $params{description} if $params{description};
+    $body->{expire}      = $params{expire}      if $params{expire};
 
-        my $response = $api->rawCall( method => 'put', path => "/order/cart/$cart_id", body => $body, noSignature => 0 );
-        croak $response->error if $response->error;
+    my $response = $api->rawCall( method => 'put', path => "/order/cart/$cart_id", body => $body, noSignature => 0 );
+    croak $response->error if $response->error;
 
-        $self->properties;
-    }
+    $self->properties;
 }
 
 sub is_valid {

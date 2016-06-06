@@ -42,7 +42,7 @@ sub cart {
 
     my ($self) = @_;
 
-    return $self->{_card};
+    return $self->{_cart};
 }
 
 sub id {
@@ -66,6 +66,55 @@ sub properties {
 
     $self->{_properties} = $response->content;
     return $self->{_properties};
+}
+
+sub configurations {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{configurations};
+}
+
+sub duration {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{duration};
+}
+
+sub offer_id {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{offerId};
+}
+
+sub options {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{options};
+}
+
+sub prices {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{prices};
+}
+
+sub product_id {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{productId};
+}
+
+sub settings {
+    
+    my ($self) = @_;
+    
+    return $self->{_properties}->{settings};
 }
 
 sub delete {
