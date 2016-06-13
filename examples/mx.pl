@@ -9,12 +9,39 @@ use lib "$Bin/../lib";
 use lib "$Bin/../inc";
 use Webservice::OVH;
 
+sub load_csv {
+    
+    my ($file) = @_;
+    
+    my $domain_list = [];
+    
+    open(my $fh, '<:encoding(UTF-8)', $file) or die "Could not open file '$file' $!";
+
+    while (my $row = <$fh>) {
+        
+        $row =~ s/\r\n//g;
+        my @row = split(',', $row);
+        my $object = { area => $row[0], domain => $row[1], status => $row[2], auth => $row[3] };
+        push @$domain_list, $object;
+    }
+    
+    close $fh;
+    
+    return $domain_list;
+}
+
+my $domains = load_csv('domains.csv');
+
 my $api = Webservice::OVH->new_from_json("../credentials.json");
 
 my $zones = $api->zones;
 
-foreach my $zone (@$zones) {
+foreach my $domain (@$domains) {
     
+    next unless $api->domain->zone_exists($domain->{domain});
+
+    my $zone = $api->domain->zone($domain->{domain});
+
     my $mx_records = $zone->records(field_type => 'MX');
     
     foreach my $record (@$mx_records) {
