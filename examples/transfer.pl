@@ -40,7 +40,13 @@ foreach my $domain (@$domains) {
     
     if( $domain->{status} eq 'connect' && $domain->{auth} ) {
         
-        $cart->add_domain( $domain->{domain}, auth_info => $domain->{auth} );
+        my $offers = $cart->offers_domain($domain->{status});
+        
+        my @offer = grep { $_->{offer} eq 'gold' } @$offers;
+        my $offer_id = $offer[0]->{offerId};
+        my $orderable = $offer[0]->{orderable};
+        
+        $cart->add_domain( $domain->{domain}, offer_id => $offer_id, auth_info => $domain->{auth} );
     }
 }
 
