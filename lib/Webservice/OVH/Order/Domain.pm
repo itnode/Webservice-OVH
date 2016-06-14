@@ -6,7 +6,7 @@ use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
-package Webservice::OVH::Order::Domain::Zone;
+use Webservice::OVH::Order::Domain::Zone;
 
 sub _new {
 
