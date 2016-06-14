@@ -62,7 +62,7 @@ foreach my $domain (@$domains) {
     
     if( $domain->{status} eq 'connect' && $domain->{auth} ) {
         
-        my $order = $api->order->domain->zone->order($domain->{domain});
+        my $order = $api->order->domain->zone->order($domain->{domain}, 'true');
         $order->pay_with_registered_payment_mean('fidelityAccount');
     }
 }

@@ -43,11 +43,11 @@ sub info_order {
 
 sub order {
 
-    my ( $self, $module, $zone_name ) = @_;
+    my ( $self, $module, $zone_name, $minimized ) = @_;
 
     my $api = $self->{_api_wrapper};
 
-    my $response = $api->rawCall( method => 'post', path => "/order/domain/zone/new", body => { zoneName => $zone_name }, noSignature => 0 );
+    my $response = $api->rawCall( method => 'post', path => "/order/domain/zone/new", body => { zoneName => $zone_name, minimized => $minimized }, noSignature => 0 );
     croak $response->error if $response->error;
 
     my $order = $module->me->order( $response->content->{orderId} );
