@@ -9,6 +9,9 @@ use lib "$Bin/../lib";
 use lib "$Bin/../inc";
 use Webservice::OVH;
 
+my $csv_file = $ARGV[0];
+die "The script expects a filepath to a csv file as first argument" unless $csv_file;
+
 sub load_csv {
     
     my ($file) = @_;
@@ -32,7 +35,7 @@ sub load_csv {
 
 my $api = Webservice::OVH->new_from_json("../credentials.json");
 
-my $domains = load_csv('domains.csv');
+my $domains = load_csv($csv_file);
 
 my $cart = $api->order->new_card;
 
