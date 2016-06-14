@@ -9,6 +9,7 @@ our $VERSION = 0.1;
 use Webservice::OVH::Order::Cart;
 use Webservice::OVH::Order::Hosting;
 use Webservice::OVH::Order::Email;
+use Webservice::OVH::Order::Domain;
 
 sub _new {
 
@@ -16,8 +17,9 @@ sub _new {
 
     my $hosting = Webservice::OVH::Order::Hosting->_new($api_wrapper);
     my $email   = Webservice::OVH::Order::Email->_new($api_wrapper);
+    my $domain  = Webservice::OVH::Order::Domain->_new($api_wrapper);
 
-    my $self = bless { _api_wrapper => $api_wrapper, _cards => {}, _hosting => $hosting, _email => $email }, $class;
+    my $self = bless { _api_wrapper => $api_wrapper, _cards => {}, _hosting => $hosting, _email => $email, _domain => $domain }, $class;
 
     return $self;
 }
@@ -73,6 +75,13 @@ sub email {
     my ($self) = @_;
 
     return $self->{_email};
+}
+
+sub domain {
+    
+    my ($self) = @_;
+
+    return $self->{_domain};
 }
 
 1;
