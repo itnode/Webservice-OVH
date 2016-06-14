@@ -44,6 +44,8 @@ sub info_order {
 sub order {
 
     my ( $self, $module, $zone_name, $minimized ) = @_;
+    
+    $minimized ||= 'false';
 
     my $api = $self->{_api_wrapper};
 
