@@ -57,4 +57,14 @@ p $checkout;
 
 $cart->delete;
 
+=head2
+foreach my $domain (@$domains) {
+    
+    if( $domain->{status} eq 'connect' && $domain->{auth} ) {
+        
+        my $order = $api->order->domain->zone->order($domain->{domain});
+        $order->pay_with_registered_payment_mean('fidelityAccount');
+    }
+}
+=cut
 
