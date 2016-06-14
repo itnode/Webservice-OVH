@@ -117,6 +117,22 @@ sub settings {
     return $self->{_properties}->{settings};
 }
 
+sub available_configuration {
+    
+    my ($self) = @_;
+    
+    return unless $self->_is_valid;
+    
+    my $api      = $self->{_api_wrapper};
+    my $cart_id  = $self->{_cart}->id;
+    my $item_id  = $self->id;
+    
+    my $response = $api->rawCall( method => 'get', path => "/order/cart/$cart_id/item/$item_id/configuration", noSignature => 0 );
+    croak $response->error if $response->error;
+    
+    return $response->content;
+}
+
 sub delete {
 
     my ($self) = @_;
