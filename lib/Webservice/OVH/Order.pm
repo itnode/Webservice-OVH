@@ -6,6 +6,20 @@ package Webservice::OVH::Order;
 
 Webservice::OVH::Order
 
+=head1 SYNOPSIS
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $carts = $ovh->order->carts;
+my $cart_id = $carts->[0]->id;
+my $cart = $ovh->order->cart($cart_id);
+
+my $new_cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
+
+$ovh->order->hosting->web;
+$ovh->order->email->domain;
+$ovh->order->domain->zone;
+
 =head1 DESCRIPTION
 
 Module that support carts and domain/transfer orders at the moment
