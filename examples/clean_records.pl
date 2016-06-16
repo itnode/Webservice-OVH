@@ -34,23 +34,28 @@ sub load_csv {
 }
 
 my $domains = load_csv($csv_file);
-
 my $api = Webservice::OVH->new_from_json("../credentials.json");
 
-my $zones = $api->domain->zones;
-
-foreach my $domain (keys %$domains) {
+foreach my $domain_str (keys %$domains) {
     
-    next unless $api->domain->zone_exists($domains->{$domain}{domain});
-
-    my $zone = $api->domain->zone($domains->{$domain}{domain});
+    next unless $api->domain->zone_exists($domain_str);
+    my $zone = $api->domain->zone($domain_str);
     
-    print STDERR $domain."\n";
-
-    my $mx_records = $zone->records(field_type => 'MX');
+    my $records = $zone->records;
+    my $exclude = $zone->records(field_type => 'NX');
     
-    foreach my $record (@$mx_records) {
+    
+    foreach my $record (@$records) {
         
-        $record->change(target => '1 mailserver.nak.org.');
+        next if grep {$_->name eq $record->name} @$exclude;
+        
+        p $record;
+        
+        #$record->delete;
     }
+    
+    #$zone->new_record(field_type => 'A', target => '149.202.75.11', TTL => 3600, sub_domain => '');
+    #$zone->new_record(field_type => 'A', target => '149.202.75.11', TTL => 3600, sub_domain => 'www');
+    #$zone->new_record(field_tpye => 'MX', target => 'mailserver.nak.org');
+    #$zone->new_record(field_type => 'CNAME', target => $domain_str, sub_domain => 'www');
 }
