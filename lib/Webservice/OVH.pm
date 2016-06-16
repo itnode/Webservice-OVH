@@ -1,5 +1,31 @@
 package Webservice::OVH;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH
+
+=head1 DESCRIPTION
+
+The base object from which every api call is done.
+The object structure represents the ovh api structure.
+This module uses the perl api module provided by ovh 
+
+=head1 METHODS
+
+=over
+=item * new_from_json
+=item * new
+=item * set_timeout
+=item * domain
+=item * me
+=item * order
+=item * email
+=back
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -19,48 +45,22 @@ use Webservice::OVH::Email;
 use JSON;
 use File::Slurp qw(read_file);
 
-=head1 NAME
-
-Webservice::OVH
-
-=head1 DESCRIPTION
-
-The base object from which every api call is done.
-The object structure represents the ovh api structure.
-This module uses the perl api module provided by ovh 
-
-=head1 METHODS
-
-new_from_json
-new
-set_timeout
-domain
-me
-order
-email
-
-=cut
-
 =head2 new_from_json
 
 Creates an api Object based on credentials in a json File
 
-=head3 Parameter
 =over
-
-=item $file_json dir to json file
-
+=item * Parameter: $file_json - dir to json file
+=item * Return: L<Webservice::OVH>
+=item * Synopsis: Webservice::OVH->new_from_json("path/file");
 =back
-
 
 =head3 JSON file
 =over
-
-=item application_key      is generated when creating an application via ovh web interface
-=item application_secret   is generated when creating an application via ovh web interface
-=item consumer_key         must be requested through ovh authentification
-=item timeout              timeout in milliseconds, warning some request may take a while
-
+=item * application_key      is generated when creating an application via ovh web interface
+=item * application_secret   is generated when creating an application via ovh web interface
+=item * consumer_key         must be requested through ovh authentification
+=item * timeout              timeout in milliseconds, warning some request may take a while
 =back
 
 =cut
@@ -83,18 +83,19 @@ sub new_from_json {
         croak "Missing parameter: @missing_parameters";
     }
 
+    my $self = bless {}, $class;
+
     # Create internal objects to mirror the web api of ovh
     my $api_wrapper = OvhApi->new( 'type' => "https://eu.api.ovh.com/1.0", applicationKey => $data->{application_key}, applicationSecret => $data->{application_secret}, consumerKey => $data->{consumer_key} );
-    my $domain      = Webservice::OVH::Domain->_new($api_wrapper);
-    my $me          = Webservice::OVH::Me->_new($api_wrapper);
-    my $order       = Webservice::OVH::Order->_new($api_wrapper);
-    my $email       = Webservice::OVH::Email->_new($api_wrapper);
+    my $domain = Webservice::OVH::Domain->_new( $api_wrapper, $self );
+    my $me = Webservice::OVH::Me->_new( $api_wrapper, $self );
+    my $order = Webservice::OVH::Order->_new( $api_wrapper, $self );
+    my $email = Webservice::OVH::Email->_new( $api_wrapper, $self );
 
     # Timeout can be also set in the json file
     OvhApi->setRequestTimeout( timeout => $data->{timeout} || 120 );
 
-    # Creating the class
-    my $self = bless {}, $class;
+    # Setting private variables
     $self->{_domain}      = $domain;
     $self->{_me}          = $me;
     $self->{_order}       = $order;
@@ -107,15 +108,14 @@ sub new_from_json {
 =head2 new
 
 Create the api object. Credentials are given directly via %params
+Credentials can be generated via ovh web interface and ovh authentification
 
-=head3 Parameter
 =over
-
-=item application_key     is generated when creating an application via ovh web interface
-=item application_secret  is generated when creating an application via ovh web interface
-=item consumer_key        must be requested through ovh authentification
-
+=item * Parameter: %params - application_key => value, application_secret => value, consumer_key => value
+=item * Return: Return: L<Webservice::OVH>
+=item * Synopsis: Webservice::OVH->new(application_key => $key, application_secret => $secret, consumer_key => $token);
 =back
+
 =cut
 
 sub new {
@@ -150,11 +150,9 @@ sub new {
 
 Sets the timeout of the underlying LWP::Agent
 
-=head3 Parameter
 =over
-
-=item timeout     in milliseconds
-
+=item * Parameter: timeout - in milliseconds default 120
+=item * Synopsis: Webservice::OVH->set_timeout(120);
 =back
 
 =cut
@@ -170,6 +168,11 @@ sub set_timeout {
 
 Main access to all /domain/ api methods 
 
+=over
+=item * Return: Return: L<Webservice::OVH::Domain>
+=item * Synopsis: $ovh->domain;
+=back
+
 =cut
 
 sub domain {
@@ -181,7 +184,12 @@ sub domain {
 
 =head2 me
 
-    Main access to all /me/ api methods 
+Main access to all /me/ api methods 
+
+=over
+=item * Return: Return: L<Webservice::OVH::Me>
+=item * Synopsis: $ovh->me;
+=back
 
 =cut
 
@@ -196,6 +204,11 @@ sub me {
 
 Main access to all /order/ api methods 
 
+=over
+=item * Return: Return: L<Webservice::OVH::Order>
+=item * Synopsis: $ovh->order;
+=back
+
 =cut
 
 sub order {
@@ -208,6 +221,11 @@ sub order {
 =head2 email
 
 Main access to all /email/ api methods 
+
+=over
+=item * Return: Return: L<Webservice::OVH::Email>
+=item * Synopsis: $ovh->email;
+=back
 
 =cut
 

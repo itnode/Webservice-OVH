@@ -1,5 +1,31 @@
 package Webservice::OVH::Me;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Me
+
+=head1 DESCRIPTION
+
+Module support for now only basic retrieval methods for contacs, tasks, orders and bills
+
+=head1 METHODS
+
+=over
+=item * _new
+=item * contacts
+=item * contact
+=item * tasks_contact_change
+=item * task_contact_change
+=item * orders
+=item * order
+=item * bill
+=item * bills
+=back
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -7,18 +33,43 @@ use Webservice::OVH::Helper;
 
 our $VERSION = 0.1;
 
+# sub modules
 use Webservice::OVH::Me::Contact;
 use Webservice::OVH::Me::Order;
 use Webservice::OVH::Me::Bill;
 
+=head2 _new
+
+Internal Method to create the me helper object.
+This method is not ment to be called from extern.
+
+=over
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+=item * Return: L<Webservice::OVH::Me>
+=item * Synopsis: Webservice::OVH::Me->new($ovh_api_wrapper, $self);
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper ) = @_;
+    my ( $class, $api_wrapper, $module ) = @_;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _contacts => {}, _tasks_contact_change => {}, _orders => {}, _bills => {} }, $class;
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _contacts => {}, _tasks_contact_change => {}, _orders => {}, _bills => {} }, $class;
 
     return $self;
 }
+
+=head2 contacts
+
+Produces an array of all available contacts that are stored for the used account.
+
+=over
+=item * Return: L<ARRAY>
+=item * Synopsis: my $contacts = $ovh->me->contacs();
+=back
+
+=cut
 
 sub contacts {
 
@@ -40,6 +91,18 @@ sub contacts {
     return $contacts;
 }
 
+=head2 contact
+
+Returns a single contact by id
+
+=over
+=item * Parameter: $contact_id - id
+=item * Return: L<Webservice::OVH::Me::Contact>
+=item * Synopsis: my $contact = $ovh->me->contact(1234567);
+=back
+
+=cut
+
 sub contact {
 
     my ( $self, $contact_id ) = @_;
@@ -49,6 +112,17 @@ sub contact {
 
     return $contact;
 }
+
+=head2 tasks_contact_change
+
+Produces an array of all available contact change tasks.
+
+=over
+=item * Return: L<ARRAY>
+=item * Synopsis: my $tasks = $ovh->me->tasks_contact_change();
+=back
+
+=cut
 
 sub tasks_contact_change {
 
@@ -70,6 +144,18 @@ sub tasks_contact_change {
     return $tasks;
 }
 
+=head2 task_contact_change
+
+Returns a single contact change task by id
+
+=over
+=item * Parameter: $task_id - id
+=item * Return: L<Webservice::OVH::Me::Task>
+=item * Synopsis: my $contact = $ovh->me->task_contact_change(1234567);
+=back
+
+=cut
+
 sub task_contact_change {
 
     my ( $self, $task_id ) = @_;
@@ -80,6 +166,19 @@ sub task_contact_change {
     return $task;
 
 }
+
+=head2 orders
+
+Produces an array of all available orders.
+Orders can be optionally filtered by date.
+
+=over
+=item * Parameter: $date_from - optional filter DateTime, $date_to - optional filter DateTime
+=item * Return: L<ARRAY>
+=item * Synopsis: my $orders = $ovh->me->orders(DateTime->new(), DateTime->new());
+=back
+
+=cut
 
 sub orders {
 
@@ -105,6 +204,18 @@ sub orders {
     return $orders;
 }
 
+=head2 order
+
+Returns a single order by id
+
+=over
+=item * Parameter: $order_id - id
+=item * Return: L<Webservice::OVH::Me::Order>
+=item * Synopsis: my $order = $ovh->me->order(1234567);
+=back
+
+=cut
+
 sub order {
 
     my ( $self, $order_id ) = @_;
@@ -114,6 +225,18 @@ sub order {
 
     return $order;
 }
+
+=head2 bill
+
+Returns a single bill by id
+
+=over
+=item * Parameter: $bill_id - id
+=item * Return: L<Webservice::OVH::Me::Bill>
+=item * Synopsis: my $order = $ovh->me->bill(1234567);
+=back
+
+=cut
 
 sub bill {
 
@@ -125,6 +248,19 @@ sub bill {
     return $bill;
 }
 
+=head2 bills
+
+Produces an array of all available bills.
+Bills can be optionally filtered by date.
+
+=over
+=item * Parameter: $date_from - optional filter DateTime, $date_to - optional filter DateTime
+=item * Return: L<ARRAY>
+=item * Synopsis: my $bills = $ovh->me->bills(DateTime->new(), DateTime->new());
+=back
+
+=cut
+
 sub bills {
 
     my ( $self, $date_from, $date_to ) = @_;
@@ -134,7 +270,7 @@ sub bills {
     my $filter = Webservice::OVH::Helper->construct_filter( "date.from" => $str_date_from, "date.to" => $str_date_to );
 
     my $api = $self->{_api_wrapper};
-    my $response = $api->rawCall( method => 'get', path => sprintf("/me/bill%s", $filter), noSignature => 0 );
+    my $response = $api->rawCall( method => 'get', path => sprintf( "/me/bill%s", $filter ), noSignature => 0 );
     croak $response->error if $response->error;
 
     my $bill_ids = $response->content;
@@ -148,6 +284,5 @@ sub bills {
 
     return $bills;
 }
-
 
 1;

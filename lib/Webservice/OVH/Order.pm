@@ -1,28 +1,79 @@
 package Webservice::OVH::Order;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Order
+
+=head1 DESCRIPTION
+
+Module that support carts and domain/transfer orders at the moment
+
+=head1 METHODS
+
+=over
+=item * _new
+=item * new_cart
+=item * carts
+=item * cart
+=item * hosting
+=item * email
+=item * domain
+=back
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
+# sub modules
 use Webservice::OVH::Order::Cart;
 use Webservice::OVH::Order::Hosting;
 use Webservice::OVH::Order::Email;
 use Webservice::OVH::Order::Domain;
 
+=head2 _new
+
+Internal Method to create the order helper object.
+This method is not ment to be called from extern.
+
+=over
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+=item * Return: L<Webservice::OVH::Order>
+=item * Synopsis: Webservice::OVH::Order->new($ovh_api_wrapper, $self);
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper ) = @_;
+    my ( $class, $api_wrapper, $module ) = @_;
 
-    my $hosting = Webservice::OVH::Order::Hosting->_new($api_wrapper);
-    my $email   = Webservice::OVH::Order::Email->_new($api_wrapper);
-    my $domain  = Webservice::OVH::Order::Domain->_new($api_wrapper);
+    my $hosting = Webservice::OVH::Order::Hosting->_new($api_wrapper, $module);
+    my $email   = Webservice::OVH::Order::Email->_new($api_wrapper, $module);
+    my $domain  = Webservice::OVH::Order::Domain->_new($api_wrapper, $module);
 
-    my $self = bless { _api_wrapper => $api_wrapper, _cards => {}, _hosting => $hosting, _email => $email, _domain => $domain }, $class;
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _cards => {}, _hosting => $hosting, _email => $email, _domain => $domain }, $class;
 
     return $self;
 }
+
+=head2 new_cart
+
+Creates a new 'shopping' cart.
+Items can be put into it, to create orders. 
+
+=over
+=item * Parameter: %params - ovh_subsidiary => 'DE' (required) expire => DateTime-str (optional) description => "shopping" (optional)
+=item * Return: L<Webservice::OVH::Order::Cart>
+=item * Synopsis: my $cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
+=back
+
+=cut
 
 sub new_cart {
 
@@ -32,6 +83,17 @@ sub new_cart {
     my $cart = Webservice::OVH::Order::Cart->_new( $api, %params );
     return $cart;
 }
+
+=head2 carts
+
+Produces an array of all available carts that are connected to the used account.
+
+=over
+=item * Return: L<ARRAY>
+=item * Synopsis: my $carts = $ovh->order->carts();
+=back
+
+=cut
 
 sub carts {
 
@@ -53,6 +115,18 @@ sub carts {
     return $cards;
 }
 
+=head2 cart
+
+Returns a single cart by id
+
+=over
+=item * Parameter: cart_id - cart id
+=item * Return: L<Webservice::OVH::Order::Cart>
+=item * Synopsis: my $cart = $ovh->order->cart(1234567);
+=back
+
+=cut
+
 sub cart {
 
     my ( $self, $card_id ) = @_;
@@ -63,6 +137,17 @@ sub cart {
     return $card;
 }
 
+=head2 hosting
+
+Gives Acces to the /order/hosting/ methods of the ovh api
+
+=over
+=item * Return: L<Webservice::OVH::Order::Hosting>
+=item * Synopsis: $ovh->order->hosting
+=back
+
+=cut
+
 sub hosting {
 
     my ($self) = @_;
@@ -70,12 +155,34 @@ sub hosting {
     return $self->{_hosting};
 }
 
+=head2 email
+
+Gives Acces to the /order/email/ methods of the ovh api
+
+=over
+=item * Return: L<Webservice::OVH::Order::Email>
+=item * Synopsis: $ovh->order->email
+=back
+
+=cut
+
 sub email {
 
     my ($self) = @_;
 
     return $self->{_email};
 }
+
+=head2 domain
+
+Gives Acces to the /order/domain/ methods of the ovh api
+
+=over
+=item * Return: L<Webservice::OVH::Order::Domain>
+=item * Synopsis: $ovh->order->domain
+=back
+
+=cut
 
 sub domain {
     
