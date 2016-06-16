@@ -1,10 +1,42 @@
 package Webservice::OVH::Helper;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Helper
+
+=head1 DESCRIPTION
+
+Some Helper Methods
+
+=head1 METHODS
+
+=over
+=item * construct_filter
+=item * parse_datetime
+=item * format_datetime
+=back
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
 
 use DateTime::Format::Strptime;
+
+=head2 construct_filter
+
+Helper method to construct uri parameter
+
+=over
+=item * Parameter: key => value
+=item * Return: L<VALUE>
+=item * Synopsis: Webservice::OVH::Helper->construct_filter();
+=back
+
+=cut
 
 sub construct_filter {
 
@@ -32,6 +64,19 @@ sub construct_filter {
     return $filter;
 }
 
+=head2 construct_filter
+
+Returns a DateTime Object.
+Methods uses special pattern to match ovhs DT format.
+
+=over
+=item * Parameter: $str_datetime - datetime string, $locale - locale like 'en_EN', $timezone - timezone
+=item * Return: L<DateTime>
+=item * Synopsis: Webservice::OVH::Helper->parse_datetime("2016-05-15T19:30:23", 'de_DE', 'Europe/Berlin');
+=back
+
+=cut
+
 sub parse_datetime {
 
     my ( $class, $str_datetime, $locale, $timezone ) = @_;
@@ -45,6 +90,18 @@ sub parse_datetime {
 
     return $strp->parse_datetime($str_datetime);
 }
+
+=head2 format_datetime
+
+Returns a date time string fitting ovhs requirements
+
+=over
+=item * Parameter: $dt - DateTime object
+=item * Return: L<VALUE>
+=item * Synopsis: my $dt_str = Webservice::OVH::Helper->format_datetime(DateTime->today());
+=back
+
+=cut
 
 sub format_datetime {
     
