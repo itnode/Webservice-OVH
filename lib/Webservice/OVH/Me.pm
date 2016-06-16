@@ -60,8 +60,8 @@ use Webservice::OVH::Me::Bill;
 
 =head2 _new
 
-Internal Method to create the me helper object.
-This method is not ment to be called from extern.
+Internal Method to create the me object.
+This method is not ment to be called external.
 
 =over
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object

@@ -1,5 +1,48 @@
 package Webservice::OVH::Domain;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Domain
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $services = $ovh->domain->services;
+foreach my $service (@$services) {
+    
+    print $service->name;
+}
+
+my $ = $ovh->domain->zones;
+foreach my $zone (@$zones) {
+    
+    print $zone->name;
+}
+
+print "I have a zone" if $ovh->domain->zone_exists("myaddress.de");
+print "I have a service" if $ovh->domain->service_exists("myaddress.de");
+
+=head1 DESCRIPTION
+
+Module that support limited access to email methods of the ovh api
+The methods that are supported are marked as deprecated by ovh. 
+But unitl now they didn't produce a alternative.
+For now the MX order Methods are functional.  
+
+=head1 METHODS
+
+=over
+=item * _new
+=item * domain
+=back
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -9,14 +52,39 @@ our $VERSION = 0.1;
 use Webservice::OVH::Domain::Service;
 use Webservice::OVH::Domain::Zone;
 
+=head2 _new
+
+Internal Method to create the domain object.
+This method is not ment to be called external.
+
+=over
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+=item * Return: L<Webservice::OVH::Order>
+=item * Synopsis: Webservice::OVH::Order->new($ovh_api_wrapper, $self);
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper ) = @_;
+    my ( $class, $api_wrapper, $module ) = @_;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _services => {}, _zones => {}, _aviable_services => [], _aviable_zones => [] }, $class;
+    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _services => {}, _zones => {}, _aviable_services => [], _aviable_zones => [] }, $class;
 
     return $self;
 }
+
+=head2 service_exists
+
+Returns 1 if service is available for the connected account, 0 if not.
+
+=over
+=item * Parameter: $service_name - Domain name, $no_recheck - (optional)only for internal usage 
+=item * Return: L<VALUE>
+=item * Synopsis: print "mydomain.com exists" if $ovh->domain->service_exists("mydomain.com");
+=back
+
+=cut
 
 sub service_exists {
 
@@ -40,6 +108,18 @@ sub service_exists {
     }
 }
 
+=head2 zone_exists
+
+Returns 1 if zone is available for the connected account, 0 if not.
+
+=over
+=item * Parameter: $zone_name - Domain name, $no_recheck - (optional)only for internal usage 
+=item * Return: L<VALUE>
+=item * Synopsis: print "zone mydomain.com exists" if $ovh->domain->zone_exists("mydomain.com");
+=back
+
+=cut
+
 sub zone_exists {
 
     my ( $self, $zone_name, $no_recheck ) = @_;
@@ -62,6 +142,17 @@ sub zone_exists {
     }
 }
 
+=head2 services
+
+Produces an array of all available services that are connected to the used account.
+
+=over
+=item * Return: L<ARRAY>
+=item * Synopsis: my $services = $ovh->order->services();
+=back
+
+=cut
+
 sub services {
 
     my ($self) = @_;
@@ -83,6 +174,17 @@ sub services {
 
     return $services;
 }
+
+=head2 zones
+
+Produces an array of all available zones that are connected to the used account.
+
+=over
+=item * Return: L<ARRAY>
+=item * Synopsis: my $zones = $ovh->order->zones();
+=back
+
+=cut
 
 sub zones {
 
@@ -107,6 +209,18 @@ sub zones {
     return $zones;
 }
 
+=head2 service
+
+Returns a single service by name
+
+=over
+=item * Parameter: $service_name - domain name
+=item * Return: L<Webservice::OVH::Domain::Service>
+=item * Synopsis: my $service = $ovh->domain->service("mydomain.com");
+=back
+
+=cut
+
 sub service {
 
     my ( $self, $service_name ) = @_;
@@ -124,12 +238,23 @@ sub service {
     }
 }
 
+=head2 service
+
+Returns a single zone by name
+
+=over
+=item * Parameter: $zone_name - domain name
+=item * Return: L<Webservice::OVH::Domain::Zone>
+=item * Synopsis: my $zone = $ovh->domain->zone("mydomain.com");
+=back
+
+=cut
+
 sub zone {
 
     my ( $self, $zone_name ) = @_;
 
     if ( $self->zone_exists($zone_name) ) {
-
         my $api = $self->{_api_wrapper};
         my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name );
 

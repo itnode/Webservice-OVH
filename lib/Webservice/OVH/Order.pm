@@ -54,8 +54,8 @@ use Webservice::OVH::Order::Domain;
 
 =head2 _new
 
-Internal Method to create the order helper object.
-This method is not ment to be called from extern.
+Internal Method to create the order object.
+This method is not ment to be called external.
 
 =over
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object

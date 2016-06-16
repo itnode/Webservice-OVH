@@ -45,7 +45,7 @@ use Webservice::OVH::Email::Domain;
 
 =head2 _new
 
-Internal Method to create the email helper object.
+Internal Method to create the email object.
 This method is not ment to be called external.
 
 =over
