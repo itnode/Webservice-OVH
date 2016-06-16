@@ -1,5 +1,61 @@
 package Webservice::OVH::Domain::Zone::Record;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Domain::Zone::Record
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $zone = $ovh->domain->zone("myzone.de");
+
+my $a_record = $zone->new_record(field_type => 'A', target => '0.0.0.0', ttl => 1000 );
+my $mx_record = $zone->new_record(field_type => 'MX', target => '1 my.mail.server.de.');
+
+my $records = $zone->records(filed_type => 'A', sub_domain => 'www');
+
+foreach my $record (@$records) {
+
+    $record->change( target => '0.0.0.0' );
+    $record->zone->refresh;
+    $record->change( sub_domain => 'www', refresh => 'true' );
+}
+
+$record->delete('true');
+
+print "Not Valid anymore" unless $record->is_valid;
+
+=head1 DESCRIPTION
+
+Provides all api Record Methods available in the api.
+Delete deletes the record object in the api and makes the object invalid.
+No actions be done with it, when it is invalid.
+
+=head1 METHODS
+
+=over
+=item * _new_existing
+=item * _new
+=item * is_valid
+=item * _is_valid
+=item * id
+=item * zone
+=item * properties
+=item * field_type
+=item * sub_domain
+=item * target
+=item * ttl
+=item * delete
+=item * change
+=back
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -8,9 +64,22 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Me::Contact;
 
+=head2 _new_existing
+
+Internal Method to create a Record object.
+This method should never be called directly.
+
+=over
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $zone - parent zone Objekt, $record_id => api intern id
+=item * Return: L<Webservice::OVH::Domain::Zone::Record>
+=item * Synopsis: Webservice::OVH::Domain::Zone::Record->_new_existing($ovh_api_wrapper, $module, $zone, $record_id);
+=back
+
+=cut
+
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $zone, $record_id ) = @_;
+    my ( $class, $api_wrapper, $module, $zone, $record_id ) = @_;
 
     die "Missing record_id" unless $record_id;
     my $zone_name = $zone->name;
@@ -20,7 +89,7 @@ sub _new_existing {
     if ( !$response->error ) {
 
         my $porperties = $response->content;
-        my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $porperties, _zone => $zone }, $class;
+        my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $porperties, _zone => $zone }, $class;
 
         return $self;
     } else {
@@ -29,9 +98,22 @@ sub _new_existing {
     }
 }
 
+=head2 _new
+
+Internal Method to create the zone object.
+This method should never be called directly.
+
+=over
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $zone - parent zone, %params - key => value
+=item * Return: L<Webservice::OVH::Domain::Zone::Record>
+=item * Synopsis: Webservice::OVH::Domain::Zone::Recrod->_new($ovh_api_wrapper, $module, $zone_name, target => '0.0.0.0', field_type => 'A', sub_domain => 'www');
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper, $zone, %params ) = @_;
+    my ( $class, $api_wrapper, $module, $zone, %params ) = @_;
 
     my @keys_needed = qw{ field_type target };
 
@@ -57,10 +139,21 @@ sub _new {
     my $refresh = $params{'refresh'} || 'false';
     $zone->refresh if $refresh eq 'true';
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $properties, _zone => $zone }, $class;
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $properties, _zone => $zone }, $class;
 
     return $self;
 }
+
+=head2 is_valid
+
+When this record is deleted on the api side, this method returns 0.
+
+=over
+=item * Return: L<VALUE>
+=item * print "Valid" if $record->is_valid;
+=back
+
+=cut
 
 sub is_valid {
 

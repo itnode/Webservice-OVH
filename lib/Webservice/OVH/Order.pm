@@ -60,7 +60,7 @@ This method is not ment to be called external.
 =over
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
 =item * Return: L<Webservice::OVH::Order>
-=item * Synopsis: Webservice::OVH::Order->new($ovh_api_wrapper, $self);
+=item * Synopsis: Webservice::OVH::Order->_new($ovh_api_wrapper, $self);
 =back
 
 =cut

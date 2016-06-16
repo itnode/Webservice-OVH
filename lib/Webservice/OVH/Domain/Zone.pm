@@ -24,6 +24,9 @@ foreach my $record (@$records) {
     $record->change( target => '0.0.0.0' );
 }
 
+$zone->refresh;
+$zone->reset;
+
 $zone->change_contact(contact_billing => 'account-ovh', contact_tech => 'account-ovh', contact_admin => 'account-ovh');
 
 =head1 DESCRIPTION
@@ -68,7 +71,7 @@ This method is not ment to be called external.
 =over
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
 =item * Return: L<Webservice::OVH::Domain::Zone>
-=item * Synopsis: Webservice::OVH::Domain::Zone->new($ovh_api_wrapper, $zone_name, $module);
+=item * Synopsis: Webservice::OVH::Domain::Zone->_new($ovh_api_wrapper, $zone_name, $module);
 =back
 
 =cut
@@ -249,7 +252,7 @@ sub records {
 
     foreach my $record_id (@$record_ids) {
 
-        my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self, $record_id );
+        my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self->{_module}, $self, $record_id );
         push @$records, $record;
     }
 
@@ -276,7 +279,7 @@ sub record {
 
     my $api               = $self->{_api_wrapper};
     my $from_array_record = $self->{_records}{$record_id} if $self->{_records}{$record_id} && $self->{_records}{$record_id}->is_valid;
-    my $record            = $self->{_records}{$record_id} = $from_array_record || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self, $record_id );
+    my $record            = $self->{_records}{$record_id} = $from_array_record || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self->{_module}, $self, $record_id );
 
     return $record;
 }
@@ -299,7 +302,7 @@ sub new_record {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $record = Webservice::OVH::Domain::Zone::Record->_new( $api, $self, %params );
+    my $record = Webservice::OVH::Domain::Zone::Record->_new( $api, $self->{_module}, $self, %params );
 
     return $record;
 }

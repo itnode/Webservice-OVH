@@ -29,10 +29,7 @@ print "I have a service" if $ovh->domain->service_exists("myaddress.de");
 
 =head1 DESCRIPTION
 
-Module that support limited access to email methods of the ovh api
-The methods that are supported are marked as deprecated by ovh. 
-But unitl now they didn't produce a alternative.
-For now the MX order Methods are functional.  
+Gives access to services and zones connected to the uses account.
 
 =head1 METHODS
 
@@ -60,7 +57,7 @@ This method is not ment to be called external.
 =over
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
 =item * Return: L<Webservice::OVH::Order>
-=item * Synopsis: Webservice::OVH::Order->new($ovh_api_wrapper, $self);
+=item * Synopsis: Webservice::OVH::Order->_new($ovh_api_wrapper, $self);
 =back
 
 =cut
@@ -167,7 +164,7 @@ sub services {
 
     foreach my $service_name (@$service_array) {
         if ( $self->service_exists( $service_name, 1 ) ) {
-            my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name );
+            my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name, $self->{_module} );
             push @$services, $service;
         }
     }
@@ -201,7 +198,7 @@ sub zones {
     foreach my $zone_name (@$zone_names) {
 
         if ( $self->zone_exists( $zone_name, 1 ) ) {
-            my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name );
+            my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name, $self->{_module} );
             push @$zones, $zone;
         }
     }
@@ -228,7 +225,7 @@ sub service {
     if ( $self->service_exists($service_name) ) {
 
         my $api = $self->{_api_wrapper};
-        my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name );
+        my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name, $self->{_module} );
 
         return $service;
     } else {
@@ -256,7 +253,7 @@ sub zone {
 
     if ( $self->zone_exists($zone_name) ) {
         my $api = $self->{_api_wrapper};
-        my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name );
+        my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name, $self->{_module} );
 
         return $zone;
 
