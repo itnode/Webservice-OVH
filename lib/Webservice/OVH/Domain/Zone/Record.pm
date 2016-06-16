@@ -54,6 +54,9 @@ sub _new {
     my $record_id  = $response->content->{id};
     my $properties = $response->content;
 
+    my $refresh = $params{'refresh'} || 'false';
+    $zone->refresh if $refresh eq 'true';
+
     my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $record_id, _properties => $properties, _zone => $zone }, $class;
 
     return $self;
@@ -134,7 +137,7 @@ sub ttl {
 
 sub delete {
 
-    my ($self) = @_;
+    my ( $self, $refresh ) = @_;
 
     return unless $self->_is_valid;
 
@@ -144,6 +147,8 @@ sub delete {
     my $response  = $api->rawCall( method => 'delete', path => "/domain/zone/$zone_name/record/$record_id", noSignature => 0 );
     croak $response->error if $response->error;
 
+    $refresh ||= 'false';
+    $self->zone->refresh if $refresh eq 'true';
     $self->{_valid} = 0;
 }
 
@@ -165,6 +170,8 @@ sub change {
         my $response = $api->rawCall( method => 'put', path => "/domain/zone/$zone_name/record/$record_id", body => $body, noSignature => 0 );
         croak $response->error if $response->error;
 
+        my $refresh = $params{refresh} || 'false';
+        $self->zone->refresh if $refresh eq 'true';
         $self->properties;
     }
 }
