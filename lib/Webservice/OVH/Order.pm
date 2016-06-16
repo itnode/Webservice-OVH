@@ -8,6 +8,8 @@ Webservice::OVH::Order
 
 =head1 SYNOPSIS
 
+use Webservice::OVH;
+
 my $ovh = Webservice::OVH->new_from_json("credentials.json");
 
 my $carts = $ovh->order->carts;
