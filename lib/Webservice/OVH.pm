@@ -6,6 +6,24 @@ package Webservice::OVH;
 
 Webservice::OVH
 
+=head2 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new("credentials.json");
+
+#######################
+
+my $ovh = Webservice::OVH->new(application_key => $key, application_secret => $secret, consumer_key => $token);
+
+my $services = $ovh->domain->services;
+
+foreach my $service (@$services) {
+    
+    my $last_update = $service->last_update;
+    print $last_update->datetime;
+}
+
 =head1 DESCRIPTION
 
 The base object from which every api call is done.
