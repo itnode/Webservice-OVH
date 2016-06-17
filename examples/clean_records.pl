@@ -36,26 +36,34 @@ sub load_csv {
 my $domains = load_csv($csv_file);
 my $api = Webservice::OVH->new_from_json("../credentials.json");
 
+$domains = {};
+$domains->{"nak-haeusern.de"} = 1;
+#$domains->{"nak-malsch.de"} = 1;
+
+
+
 foreach my $domain_str (keys %$domains) {
     
-    next unless $api->domain->zone_exists($domain_str);
+    print STDERR $domain_str."\n";
+    #next unless $api->domain->zone_exists($domain_str);
     my $zone = $api->domain->zone($domain_str);
+    my $service = $api->domain->service($domain_str);
     
     my $records = $zone->records;
-    my $exclude = $zone->records(field_type => 'NX');
+    #my $exclude = $zone->records(field_type => 'NS');
     
+    p $records;
     
-    foreach my $record (@$records) {
+    #foreach my $record (@$records) {
         
-        next if grep {$_->name eq $record->name} @$exclude;
-        
-        p $record;
+        #next if grep {$_->id eq $record->id} @$exclude;
         
         #$record->delete;
-    }
+    #}
+    #print STDERR "records deleted\n";
+    #$zone->new_record(field_type => 'A', target => '149.202.75.11', TTL => 3600, sub_domain => '', refresh => '');
+    #$zone->new_record(field_type => 'MX', target => '1 mailserver.nak.org.', refresh => 'false');
+    #$zone->new_record(field_type => 'CNAME', target => $domain_str.".", sub_domain => 'www', refresh => 'false');
     
-    #$zone->new_record(field_type => 'A', target => '149.202.75.11', TTL => 3600, sub_domain => '');
-    #$zone->new_record(field_type => 'A', target => '149.202.75.11', TTL => 3600, sub_domain => 'www');
-    #$zone->new_record(field_tpye => 'MX', target => 'mailserver.nak.org');
-    #$zone->new_record(field_type => 'CNAME', target => $domain_str, sub_domain => 'www');
+    #$zone->refresh;
 }
