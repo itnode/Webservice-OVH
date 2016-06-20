@@ -69,7 +69,7 @@ When the item is deleted on the api side, this method returns 0.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "Valid" if $item->is_valid;
 
@@ -91,7 +91,7 @@ Difference is that this method carps an error.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: $item->_is_valid;
 
@@ -135,7 +135,7 @@ Returns the api id.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $item->id;
 
@@ -157,7 +157,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $item->properties;
 
@@ -208,7 +208,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $duration = $item->duration;
 
@@ -229,7 +229,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $offer_id = $item->offer_id;
 
@@ -250,7 +250,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $options = $item->options;
 
@@ -271,7 +271,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $prices = $item->prices;
 
@@ -292,7 +292,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $product_id = $item->product_id;
 
@@ -313,7 +313,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $settings = $item->settings;
 

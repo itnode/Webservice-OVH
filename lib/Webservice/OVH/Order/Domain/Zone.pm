@@ -88,7 +88,7 @@ Gets information about a requested zone order.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $existing_zones = $ovh->order->domain->zone->existing;
 
@@ -149,7 +149,7 @@ Gets available options for the desired zone order.
 
 =item * Parameter: $zone_name - desired zone 
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $options = $ovh->order->domain->zone->options('mydomain.de');
 

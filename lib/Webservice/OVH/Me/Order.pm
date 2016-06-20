@@ -71,7 +71,7 @@ Returns the api id.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $order->id;
 
@@ -93,7 +93,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $order->properties;
 
@@ -120,7 +120,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<DateTime>
+=item * Return: DateTime
 
 =item * Synopsis: my $date = $order->is_blocked;
 
@@ -143,7 +143,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<DateTime>
+=item * Return: DateTime
 
 =item * Synopsis: my $expiration_date = $order->expiration_date;
 
@@ -166,7 +166,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $password = $order->password;
 
@@ -187,7 +187,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $pdf_url = $order->pdf_url;
 
@@ -208,7 +208,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $price_without_tax = $order->price_without_tax;
 
@@ -229,7 +229,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $price_with_tax = $order->price_with_tax;
 
@@ -250,7 +250,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $tax = $order->tax;
 
@@ -271,7 +271,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $url = $order->url;
 
@@ -292,7 +292,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $associated_object = $order->associated_object;
 
@@ -440,7 +440,7 @@ Gets details about payment.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $payment = $order->payment;
 
@@ -466,7 +466,7 @@ Gets details about payment_means.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $payment_means = $order->payment_means;
 
@@ -516,7 +516,7 @@ Status of the order.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $status = $order->status;
 

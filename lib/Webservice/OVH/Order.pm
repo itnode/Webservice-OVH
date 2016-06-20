@@ -104,7 +104,7 @@ Produces an array of all available carts that are connected to the used account.
 
 =over
 
-=item * Return: L<ARRAY>
+=item * Return: ARRAY
 
 =item * Synopsis: my $carts = $ovh->order->carts();
 

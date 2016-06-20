@@ -83,7 +83,7 @@ Infos that are not part of the properties
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $info = $zone->service_info;
 
@@ -113,7 +113,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $zone->properties;
 
@@ -141,7 +141,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $value = $zone->dnssec_supported;
 
@@ -164,7 +164,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $value = $zone->has_dns_anycast;
 
@@ -187,7 +187,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<DateTime>
+=item * Return: DateTime
 
 =item * Synopsis: my $value = $zone->last_update;
 
@@ -332,7 +332,7 @@ Name is the unique identifier.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $name = $zone->name;
 

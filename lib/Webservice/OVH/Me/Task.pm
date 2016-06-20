@@ -69,7 +69,7 @@ Returns intern type. At the moment only contact_change.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $type = $task->type;
 
@@ -90,7 +90,7 @@ Returns the api id.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $task->id;
 
@@ -112,7 +112,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $task->properties;
 

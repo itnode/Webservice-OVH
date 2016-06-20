@@ -68,7 +68,7 @@ Not part of the properties
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $info = $email_domain->service_infos;
 
@@ -97,7 +97,7 @@ Name is the unique identifier.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $name = $email_domain->name;
 
@@ -119,7 +119,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $email_domain->properties;
 
@@ -147,7 +147,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $allowed_account_size = $email_domain->allowed_account_size;
 
@@ -168,7 +168,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<DateTime>
+=item * Return: DateTime
 
 =item * Synopsis: my $creation_date = $email_domain->creation_date;
 
@@ -191,7 +191,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $filerz = $email_domain->filerz;
 
@@ -212,7 +212,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $status = $email_domain->status;
 

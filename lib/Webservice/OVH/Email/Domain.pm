@@ -75,7 +75,7 @@ Returns 1 if email-domain is available for the connected account, 0 if not.
 
 =item * Parameter: $domain - (required)Domain name, $no_recheck - (optional)only for internal usage 
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "mydomain.com exists" if $ovh->email->domain->domain_exists("mydomain.com");
 

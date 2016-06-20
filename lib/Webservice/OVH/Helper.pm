@@ -28,7 +28,7 @@ Helper method to construct uri parameter
 
 =item * Parameter: key => value
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: Webservice::OVH::Helper->construct_filter();
 
@@ -71,7 +71,7 @@ Methods uses special pattern to match ovhs DT format.
 
 =item * Parameter: $str_datetime - datetime string, $locale - locale like 'en_EN', $timezone - timezone
 
-=item * Return: L<DateTime>
+=item * Return: DateTime
 
 =item * Synopsis: Webservice::OVH::Helper->parse_datetime("2016-05-15T19:30:23", 'de_DE', 'Europe/Berlin');
 
@@ -101,7 +101,7 @@ Returns a date time string fitting ovhs requirements
 
 =item * Parameter: $dt - DateTime object
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $dt_str = Webservice::OVH::Helper->format_datetime(DateTime->today());
 

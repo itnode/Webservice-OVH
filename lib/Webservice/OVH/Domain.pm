@@ -78,7 +78,7 @@ Returns 1 if service is available for the connected account, 0 if not.
 
 =item * Parameter: $service_name - Domain name, $no_recheck - (optional)only for internal usage 
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "mydomain.com exists" if $ovh->domain->service_exists("mydomain.com");
 
@@ -116,7 +116,7 @@ Returns 1 if zone is available for the connected account, 0 if not.
 
 =item * Parameter: $zone_name - Domain name, $no_recheck - (optional)only for internal usage 
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "zone mydomain.com exists" if $ovh->domain->zone_exists("mydomain.com");
 
@@ -152,7 +152,7 @@ Produces an array of all available services that are connected to the used accou
 
 =over
 
-=item * Return: L<ARRAY>
+=item * Return: ARRAY
 
 =item * Synopsis: my $services = $ovh->order->services();
 
@@ -188,7 +188,7 @@ Produces an array of all available zones that are connected to the used account.
 
 =over
 
-=item * Return: L<ARRAY>
+=item * Return: ARRAY
 
 =item * Synopsis: my $zones = $ovh->order->zones();
 

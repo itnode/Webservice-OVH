@@ -95,7 +95,7 @@ Returns the api id.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $detail->id;
 
@@ -117,7 +117,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $detail->properties;
 
@@ -145,7 +145,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $description = $detail->description;
 
@@ -166,7 +166,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $domain = $detail->domain;
 
@@ -187,7 +187,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $quantity = $detail->quantity;
 
@@ -208,7 +208,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $total_price = $detail->total_price;
 
@@ -229,7 +229,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $unit_price = $detail->unit_price;
 

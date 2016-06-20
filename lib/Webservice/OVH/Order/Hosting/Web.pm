@@ -62,7 +62,7 @@ Gets information if free webhosting is available.
 
 =item * Parameter: $domain - target domain for free webhosting
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: Webservice::OVH::Order::Hosting::Web->_new('mydomain.de');
 

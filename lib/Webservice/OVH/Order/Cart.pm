@@ -119,7 +119,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $cart->properties;
 
@@ -146,7 +146,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $description = $cart->description;
 
@@ -167,7 +167,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $expire = $cart->expire;
 
@@ -188,7 +188,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $read_only = $cart->read_only;
 
@@ -245,7 +245,7 @@ When this cart is deleted on the api side, this method returns 0.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "Valid" if $cart->is_valid;
 
@@ -267,7 +267,7 @@ Difference is that this method carps an error.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: $cart->_is_valid;
 
@@ -317,7 +317,7 @@ Returns the api id.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $cart->id;
 
@@ -545,7 +545,7 @@ Returns checkout without generating an order.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $checkout = $cart->info_checkout;
 

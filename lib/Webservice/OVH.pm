@@ -58,12 +58,14 @@ Creates an api Object based on credentials in a json File
 =over
 
 =item * Parameter: $file_json - dir to json file
+
 =item * Return: L<Webservice::OVH>
+
 =item * Synopsis: Webservice::OVH->new_from_json("path/file");
 
 =back
 
-=over
+=over 2
 
 =item * application_key      is generated when creating an application via ovh web interface
 

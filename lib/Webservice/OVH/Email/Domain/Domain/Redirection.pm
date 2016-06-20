@@ -122,7 +122,7 @@ When this redirection is deleted on the api side, this method returns 0.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "Valid" if $redirection->is_valid;
 
@@ -144,7 +144,7 @@ Difference is that this method carps an error.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: $redirection->_is_valid;
 
@@ -167,7 +167,7 @@ Returns the api id.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $redirection->id;
 
@@ -210,7 +210,7 @@ This is the original return value of the web-api.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $record->properties;
 
@@ -239,7 +239,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $from = $record->from;
 
@@ -260,7 +260,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $to = $record->to;
 

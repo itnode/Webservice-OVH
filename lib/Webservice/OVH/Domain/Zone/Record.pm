@@ -142,7 +142,7 @@ When this record is deleted on the api side, this method returns 0.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "Valid" if $record->is_valid;
 
@@ -164,7 +164,7 @@ Difference is that this method carps an error.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: $record->_is_valid;
 
@@ -187,7 +187,7 @@ Returns the api id of this record
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $record->id;
 
@@ -230,7 +230,7 @@ This is the original return value of the web-api.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $record->properties;
 
@@ -259,7 +259,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $field_type = $record->field_type;
 
@@ -280,7 +280,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $sub_domain = $record->sub_domain;
 
@@ -301,7 +301,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $target = $record->target;
 
@@ -322,7 +322,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $ttl = $record->ttl;
 

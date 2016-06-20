@@ -122,7 +122,7 @@ When this account is deleted on the api side, this method returns 0.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "Valid" if $account->is_valid;
 
@@ -144,7 +144,7 @@ Difference is that this method carps an error.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: $account->_is_valid;
 
@@ -167,7 +167,7 @@ Unique identifier.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $name = $account->name;
 
@@ -189,7 +189,7 @@ This is the original return value of the web-api.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $account->properties;
 
@@ -219,7 +219,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $is_blocked = $account->is_blocked;
 
@@ -241,7 +241,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $email = $account->email;
 
@@ -284,7 +284,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $description = $account->description;
 
@@ -305,7 +305,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $size = $account->size;
 
@@ -413,7 +413,7 @@ Deletes the account api sided and sets this object invalid.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: $account->change_password($password);
 

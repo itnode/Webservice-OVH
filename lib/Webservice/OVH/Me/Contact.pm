@@ -74,7 +74,7 @@ Returns the api id.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $contact->id;
 
@@ -96,7 +96,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $contact->properties;
 
@@ -123,7 +123,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $address = $contact->address;
 
@@ -144,7 +144,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $birth_city = $contact->birth_city;
 
@@ -165,7 +165,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $birth_country = $contact->birth_country;
 
@@ -186,7 +186,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<DateTime>
+=item * Return: DateTime
 
 =item * Synopsis: my $birth_day = $contact->birth_day;
 
@@ -209,7 +209,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $birth_zip = $contact->birth_zip;
 
@@ -230,7 +230,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $cell_phone = $contact->cell_phone;
 
@@ -251,7 +251,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $company_national_identification_number = $contact->company_national_identification_number;
 
@@ -272,7 +272,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $email = $contact->email;
 
@@ -293,7 +293,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $fax = $contact->fax;
 
@@ -314,7 +314,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $first_name = $contact->first_name;
 
@@ -335,7 +335,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $gender = $contact->gender;
 
@@ -356,7 +356,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $language = $contact->language;
 
@@ -377,7 +377,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $last_name = $contact->last_name;
 
@@ -398,7 +398,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $legal_form = $contact->legal_form;
 
@@ -419,7 +419,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $national_identification_number = $contact->national_identification_number;
 
@@ -440,7 +440,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $nationality = $contact->nationality;
 
@@ -461,7 +461,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $organisation_name = $contact->organisation_name;
 
@@ -482,7 +482,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $organisation_type = $contact->organisation_type;
 
@@ -503,7 +503,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $phone = $contact->phone;
 
@@ -524,7 +524,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $vat = $contact->vat;
 

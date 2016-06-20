@@ -75,7 +75,7 @@ Returns the api id.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $bill->id;
 
@@ -123,7 +123,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $bill->properties;
 
@@ -150,7 +150,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<DateTime>
+=item * Return: DateTime
 
 =item * Synopsis: my $date = $bill->date;
 
@@ -173,7 +173,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $password = $bill->password;
 
@@ -194,7 +194,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $pdf_url = $bill->pdf_url;
 
@@ -215,7 +215,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $price_without_tax = $bill->price_without_tax;
 
@@ -236,7 +236,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $price_with_tax = $bill->price_with_tax;
 
@@ -257,7 +257,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $tax = $bill->tax;
 
@@ -278,7 +278,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $url = $bill->url;
 

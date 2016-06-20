@@ -70,7 +70,7 @@ Name is the unique identifier.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $name = $service->name;
 
@@ -92,7 +92,7 @@ Infos that are not part of the properties
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $info = $service->service_info;
 
@@ -122,7 +122,7 @@ This method updates the intern property variable.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $service->properties;
 
@@ -151,7 +151,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $dnssec_supported = $service->dnssec_supported;
 
@@ -174,7 +174,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $domain = $service->domain;
 
@@ -197,7 +197,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $glue_record_ipv6_supported = $service->glue_record_ipv6_supported;
 
@@ -220,7 +220,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $glue_record_multi_ip_supported = $service->glue_record_multi_ip_supported;
 
@@ -243,7 +243,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<DateTime>
+=item * Return: DateTime
 
 =item * Synopsis: my $last_update = $service->last_update;
 
@@ -268,7 +268,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $name_server_type = $service->name_server_type;
 
@@ -291,7 +291,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $offer = $service->offer;
 
@@ -314,7 +314,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $owo_supported = $service->owo_supported;
 
@@ -337,7 +337,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $parent_service = $service->parent_service;
 
@@ -360,7 +360,7 @@ Exposed Property Value. Readonly.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $transfer_lock_status = $service->transfer_lock_status;
 

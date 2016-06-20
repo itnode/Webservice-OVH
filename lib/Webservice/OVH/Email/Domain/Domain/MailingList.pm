@@ -122,7 +122,7 @@ When this mailinglist is deleted on the api side, this method returns 0.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: print "Valid" if $mailing_list->is_valid;
 
@@ -144,7 +144,7 @@ Difference is that this method carps an error.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: $mailing_list->_is_valid;
 
@@ -167,7 +167,7 @@ Unique identifier.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $name = $redirection->name;
 
@@ -188,7 +188,7 @@ Secondary unique identifier.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $id = $mailing_list->id;
 
@@ -231,7 +231,7 @@ This is the original return value of the web-api.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $mailing_list->properties;
 
@@ -260,7 +260,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $language = $mailing_list->language;
 
@@ -281,7 +281,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $options = $mailing_list->options;
 
@@ -302,7 +302,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $owner_email = $mailing_list->owner_email;
 
@@ -323,7 +323,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $reply_to = $mailing_list->reply_to;
 
@@ -344,7 +344,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $nb_subscribers_update_date = $mailing_list->nb_subscribers_update_date;
 
@@ -368,7 +368,7 @@ Exposed property value.
 
 =over
 
-=item * Return: L<VALUE>
+=item * Return: VALUE
 
 =item * Synopsis: my $nb_subscribers = $mailing_list->nb_subscribers;
 
@@ -512,7 +512,7 @@ Returns properties for a specified moderator E-Mail
 
 =item * Parameter: $email - email address
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $properties = $mailing_list->moderator('moderator@test.de');
 
@@ -659,7 +659,7 @@ Returns  the properties of a single subscriber.
 
 =item * Parameter: $email - E-Mail address
 
-=item * Return: L<HASH>
+=item * Return: HASH
 
 =item * Synopsis: my $subscriber = $mailing_list->subscriber('sub@test.de');
 

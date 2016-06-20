@@ -78,7 +78,7 @@ Produces an array of all available contacts that are stored for the used account
 
 =over
 
-=item * Return: L<ARRAY>
+=item * Return: ARRAY
 
 =item * Synopsis: my $contacts = $ovh->me->contacs();
 
@@ -138,7 +138,7 @@ Produces an array of all available contact change tasks.
 
 =over
 
-=item * Return: L<ARRAY>
+=item * Return: ARRAY
 
 =item * Synopsis: my $tasks = $ovh->me->tasks_contact_change();
 
@@ -202,7 +202,7 @@ Orders can be optionally filtered by date.
 
 =item * Parameter: $date_from - optional filter DateTime, $date_to - optional filter DateTime
 
-=item * Return: L<ARRAY>
+=item * Return: ARRAY
 
 =item * Synopsis: my $orders = $ovh->me->orders(DateTime->new(), DateTime->new());
 
@@ -295,7 +295,7 @@ Bills can be optionally filtered by date.
 
 =item * Parameter: $date_from - optional filter DateTime, $date_to - optional filter DateTime
 
-=item * Return: L<ARRAY>
+=item * Return: ARRAY
 
 =item * Synopsis: my $bills = $ovh->me->bills(DateTime->new(), DateTime->new());
 
