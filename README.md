@@ -14,8 +14,8 @@ my $services = $ovh->domain->services;
 
 foreach my $service (@$services) {
 
-    my $last_update = $service->last_update;
-    print $last_update->datetime;
+        my $last_update = $service->last_update;
+        print $last_update->datetime;
 }
 
 # DESCRIPTION
