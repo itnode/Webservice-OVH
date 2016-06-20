@@ -2,3 +2,11 @@
 .includepath
 local
 credentials.json
+/Webservice-OVH-*
+/.build
+/_build_params
+/Build
+/Build.bat
+!Build/
+!META.json
+!LICENSE

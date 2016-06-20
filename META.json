@@ -1,0 +1,70 @@
+{
+   "abstract" : "A perl representation of the ovh-api",
+   "author" : [
+      "Patrick Jendral"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Minilla/v3.0.2, CPAN::Meta::Converter version 2.150001",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Webservice-OVH",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples",
+         "author",
+         "builder"
+      ]
+   },
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "Module::Build::Tiny" : "0.035"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::CPAN::Meta" : "0",
+            "Test::MinimumVersion::Fast" : "0.04",
+            "Test::PAUSE::Permissions" : "0.04",
+            "Test::Pod" : "1.41",
+            "Test::Spellunker" : "v0.2.7"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "DateTime" : "0",
+            "DateTime::Format::Strptime" : "0",
+            "Digest::SHA1" : "0",
+            "File::Slurp" : "0",
+            "LWP::Protocol::https" : "0",
+            "LWP::UserAgent" : "0"
+         }
+      }
+   },
+   "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/itnode/Webservice-OVH/issues"
+      },
+      "homepage" : "https://github.com/itnode/Webservice-OVH",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/itnode/Webservice-OVH.git",
+         "web" : "https://github.com/itnode/Webservice-OVH"
+      }
+   },
+   "version" : "0.1",
+   "x_contributors" : [
+      "Patrick Jendral <pj@itnode.de>"
+   ]
+}

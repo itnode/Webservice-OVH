@@ -4,7 +4,7 @@ package Webservice::OVH;
 
 =head1 NAME
 
-Webservice::OVH
+Webservice::OVH  - A perl representation of the ovh-api
 
 =head1 SYNOPSIS
 
@@ -27,6 +27,14 @@ foreach my $service (@$services) {
 The base object from which every api call is done.
 The object structure represents the ovh api structure.
 This module uses the perl api module provided by ovh 
+
+=head1 AUTHOR
+
+Patrick Jendral
+
+=head1 COPYRIGHT AND LICENSE
+
+This library is free software; you may redistribute it and/or modify it under the same terms as Perl itself.
 
 =head1 METHODS
 
