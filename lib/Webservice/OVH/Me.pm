@@ -32,18 +32,6 @@ Module support for now only basic retrieval methods for contacs, tasks, orders a
 
 =head1 METHODS
 
-=over
-=item * _new
-=item * contacts
-=item * contact
-=item * tasks_contact_change
-=item * task_contact_change
-=item * orders
-=item * order
-=item * bill
-=item * bills
-=back
-
 =cut
 
 use strict;
@@ -64,9 +52,13 @@ Internal Method to create the me object.
 This method is not ment to be called external.
 
 =over
+
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
 =item * Return: L<Webservice::OVH::Me>
+
 =item * Synopsis: Webservice::OVH::Me->_new($ovh_api_wrapper, $self);
+
 =back
 
 =cut
@@ -85,8 +77,11 @@ sub _new {
 Produces an array of all available contacts that are stored for the used account.
 
 =over
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $contacts = $ovh->me->contacs();
+
 =back
 
 =cut
@@ -116,9 +111,13 @@ sub contacts {
 Returns a single contact by id
 
 =over
+
 =item * Parameter: $contact_id - id
+
 =item * Return: L<Webservice::OVH::Me::Contact>
+
 =item * Synopsis: my $contact = $ovh->me->contact(1234567);
+
 =back
 
 =cut
@@ -138,8 +137,11 @@ sub contact {
 Produces an array of all available contact change tasks.
 
 =over
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $tasks = $ovh->me->tasks_contact_change();
+
 =back
 
 =cut
@@ -169,9 +171,13 @@ sub tasks_contact_change {
 Returns a single contact change task by id
 
 =over
+
 =item * Parameter: $task_id - id
+
 =item * Return: L<Webservice::OVH::Me::Task>
+
 =item * Synopsis: my $contact = $ovh->me->task_contact_change(1234567);
+
 =back
 
 =cut
@@ -193,9 +199,13 @@ Produces an array of all available orders.
 Orders can be optionally filtered by date.
 
 =over
+
 =item * Parameter: $date_from - optional filter DateTime, $date_to - optional filter DateTime
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $orders = $ovh->me->orders(DateTime->new(), DateTime->new());
+
 =back
 
 =cut
@@ -229,9 +239,13 @@ sub orders {
 Returns a single order by id
 
 =over
+
 =item * Parameter: $order_id - id
+
 =item * Return: L<Webservice::OVH::Me::Order>
+
 =item * Synopsis: my $order = $ovh->me->order(1234567);
+
 =back
 
 =cut
@@ -251,9 +265,13 @@ sub order {
 Returns a single bill by id
 
 =over
+
 =item * Parameter: $bill_id - id
+
 =item * Return: L<Webservice::OVH::Me::Bill>
+
 =item * Synopsis: my $order = $ovh->me->bill(1234567);
+
 =back
 
 =cut
@@ -274,9 +292,13 @@ Produces an array of all available bills.
 Bills can be optionally filtered by date.
 
 =over
+
 =item * Parameter: $date_from - optional filter DateTime, $date_to - optional filter DateTime
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $bills = $ovh->me->bills(DateTime->new(), DateTime->new());
+
 =back
 
 =cut

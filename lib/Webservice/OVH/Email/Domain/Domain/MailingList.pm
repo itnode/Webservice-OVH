@@ -1,5 +1,29 @@
 package Webservice::OVH::Email::Domain::Domain::MailingList;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Email::Domain::Domain::MailingList
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $email_domain = $ovh->email->domain->domain('testdomain.de');
+
+my $mailing_list = $email_domain->new_redirection(language 'de', name => 'infos', options => {moderatorMessage => 'true', subscribeByModerator => 'true', usersPostOnly => 'false'}, owner_email => 'owner@test.de' );
+
+=head1 DESCRIPTION
+
+Provides ability to create, delete, change and manage mailinglists.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -7,6 +31,23 @@ use Carp qw{ carp croak };
 our $VERSION = 0.1;
 
 use Webservice::OVH::Helper;
+
+=head2 _new_existing
+
+Internal Method to create a MailingList object.
+This method should never be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $domain - parent domain Objekt, $mailing_list_name => unique name
+
+=item * Return: L<Webservice::OVH::Email::Domain::Domain::MailingList>
+
+=item * Synopsis: Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing($ovh_api_wrapper, $domain, $mailing_list_name, $module);
+
+=back
+
+=cut
 
 sub _new_existing {
 
@@ -28,6 +69,23 @@ sub _new_existing {
         return undef;
     }
 }
+
+=head2 _new
+
+Internal Method to create the MailingList object.
+This method should never be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $domain - parent domain, %params - key => value
+
+=item * Return: L<Webservice::OVH::Email::Domain::Domain::MailingList>
+
+=item * Synopsis: Webservice::OVH::Email::Domain::Domain::MailingList->_new($ovh_api_wrapper, $domain, $module, language 'DE', name => 'infos', options => {}, owner_email => 'owner@test.de', reply_to => 'test@test.de' );
+
+=back
+
+=cut
 
 sub _new {
 
@@ -58,12 +116,41 @@ sub _new {
     return $self;
 }
 
+=head2 is_valid
+
+When this mailinglist is deleted on the api side, this method returns 0.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: print "Valid" if $mailing_list->is_valid;
+
+=back
+
+=cut
+
 sub is_valid {
 
     my ($self) = @_;
 
     return $self->{_valid};
 }
+
+=head2 _is_valid
+
+Intern method to check validity.
+Difference is that this method carps an error.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: $mailing_list->_is_valid;
+
+=back
+
+=cut
 
 sub _is_valid {
 
@@ -74,12 +161,40 @@ sub _is_valid {
     return $self->is_valid;
 }
 
+=head2 name
+
+Unique identifier.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $name = $redirection->name;
+
+=back
+
+=cut
+
 sub name {
 
     my ($self) = @_;
 
     return $self->{_name};
 }
+
+=head2 id
+
+Secondary unique identifier.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $id = $mailing_list->id;
+
+=back
+
+=cut
 
 sub id {
 
@@ -88,12 +203,41 @@ sub id {
     return $self->{_id};
 }
 
+=head2 domain
+
+Returns the email-domain this redirection is attached to. 
+
+=over
+
+=item * Return: L<Webservice::Email::Domain::Domain>
+
+=item * Synopsis: my $email_domain = $mailing_list->domain;
+
+=back
+
+=cut
+
 sub domain {
 
     my ($self) = @_;
 
     return $self->{_domain};
 }
+
+=head2 properties
+
+Returns the raw properties as a hash. 
+This is the original return value of the web-api. 
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $mailing_list->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -110,12 +254,40 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 language
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $language = $mailing_list->language;
+
+=back
+
+=cut
+
 sub language {
 
     my ($self) = @_;
 
     return $self->{_properties}->{language};
 }
+
+=head2 options
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $options = $mailing_list->options;
+
+=back
+
+=cut
 
 sub options {
 
@@ -124,6 +296,20 @@ sub options {
     return $self->{_properties}->{options};
 }
 
+=head2 owner_email
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $owner_email = $mailing_list->owner_email;
+
+=back
+
+=cut
+
 sub owner_email {
 
     my ($self) = @_;
@@ -131,12 +317,40 @@ sub owner_email {
     return $self->{_properties}->{ownerEmail};
 }
 
+=head2 reply_to
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $reply_to = $mailing_list->reply_to;
+
+=back
+
+=cut
+
 sub reply_to {
 
     my ($self) = @_;
 
     return $self->{_properties}->{replyTo};
 }
+
+=head2 nb_subscribers_update_date
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $nb_subscribers_update_date = $mailing_list->nb_subscribers_update_date;
+
+=back
+
+=cut
 
 sub nb_subscribers_update_date {
 
@@ -148,12 +362,40 @@ sub nb_subscribers_update_date {
     return $datetime;
 }
 
+=head2 nb_subscribers
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $nb_subscribers = $mailing_list->nb_subscribers;
+
+=back
+
+=cut
+
 sub nb_subscribers {
 
     my ($self) = @_;
 
     return $self->{_properties}->{nbSubscribers};
 }
+
+=head2 change
+
+Changes the objcet.
+
+=over
+
+=item * Parameter: %params - key => value language owner_email reply_to
+
+=item * Synopsis: $mailing_list->change( language => 'en', owner_email => 'other@test.de', reply_to => 'reply@test.de');
+
+=back
+
+=cut
 
 sub change {
 
@@ -172,6 +414,18 @@ sub change {
     $self->properties;
 }
 
+=head2 delete
+
+Deletes the mailinglist api sided and sets this object invalid.
+
+=over
+
+=item * Synopsis: $mailing_list->delete;
+
+=back
+
+=cut
+
 sub delete {
 
     my ($self) = @_;
@@ -184,6 +438,20 @@ sub delete {
 
     $self->{_valid} = 0;
 }
+
+=head2 change_options
+
+Changes additional options.
+
+=over
+
+=item * Parameter: %params - key => value moderator_message subscribe_by_moderator users_post_only
+
+=item * Synopsis: $mailing_list->change_options( moderator_message => 'false', subscribe_by_moderator => 'false', users_post_only => 'true' );
+
+=back
+
+=cut
 
 sub change_options {
 
@@ -209,6 +477,20 @@ sub change_options {
     $self->properties;
 }
 
+=head2 moderators
+
+Returns an array of all moderators of this mailinglist.
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $moderators = $mailing_list->moderators();
+
+=back
+
+=cut
+
 sub moderators {
 
     my ($self) = @_;
@@ -221,6 +503,22 @@ sub moderators {
 
     return $response->content;
 }
+
+=head2 moderators
+
+Returns properties for a specified moderator E-Mail
+
+=over
+
+=item * Parameter: $email - email address
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $mailing_list->moderator('moderator@test.de');
+
+=back
+
+=cut
 
 sub moderator {
 
@@ -237,6 +535,20 @@ sub moderator {
     return $response->content;
 }
 
+=head2 add_moderator
+
+Adds a moderator via E-Mail address.
+
+=over
+
+=item * Parameter: $email - email address
+
+=item * Synopsis: my $properties = $mailing_list->add_moderator('moderator@test.de');
+
+=back
+
+=cut
+
 sub add_moderator {
 
     my ( $self, $email ) = @_;
@@ -251,6 +563,20 @@ sub add_moderator {
     croak $response->error if $response->error;
 }
 
+=head2 delete_moderator
+
+Deletes a moderator via E-Mail address.
+
+=over
+
+=item * Parameter: $email - email address
+
+=item * Synopsis: my $properties = $mailing_list->delete_moderator('moderator@test.de');
+
+=back
+
+=cut
+
 sub delete_moderator {
 
     my ( $self, $email ) = @_;
@@ -263,6 +589,20 @@ sub delete_moderator {
     my $response          = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/moderator/$email", noSignature => 0 );
     croak $response->error if $response->error;
 }
+
+=head2 delete_moderator
+
+Sends the subscriber and moderator list to a specified E-Mail address.
+
+=over
+
+=item * Parameter: $email - email address
+
+=item * Synopsis: my $properties = $mailing_list->send_list_by_email('moderator@test.de');
+
+=back
+
+=cut
 
 sub send_list_by_email {
 
@@ -277,6 +617,22 @@ sub send_list_by_email {
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/sendListByEmail", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 }
+
+=head2 subscribers
+
+Returns an array of all subscribers or a filtered list.
+
+=over
+
+=item * $email - filter for specified E-Mail address
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $subscribers = $mailing_list->subscribers();
+
+=back
+
+=cut
 
 sub subscribers {
 
@@ -295,6 +651,22 @@ sub subscribers {
     return $response->content;
 }
 
+=head2 subscriber
+
+Returns  the properties of a single subscriber.
+
+=over
+
+=item * Parameter: $email - E-Mail address
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $subscriber = $mailing_list->subscriber('sub@test.de');
+
+=back
+
+=cut
+
 sub subscriber {
 
     my ( $self, $email ) = @_;
@@ -311,6 +683,20 @@ sub subscriber {
     return $response->content;
 }
 
+=head2 add_subscriber
+
+Adds an subscriber to the mailinglist.
+
+=over
+
+=item * Parameter: $email - E-Mail address
+
+=item * Synopsis: $mailing_list->add_subscriber('sub@test.de');
+
+=back
+
+=cut
+
 sub add_subscriber {
 
     my ( $self, $email ) = @_;
@@ -324,6 +710,20 @@ sub add_subscriber {
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/subscriber", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 }
+
+=head2 delete_subscriber
+
+Deletes an subscriber to the mailinglist.
+
+=over
+
+=item * Parameter: $email - E-Mail address
+
+=item * Synopsis: $mailing_list->delete_subscriber('sub@test.de');
+
+=back
+
+=cut
 
 sub delete_subscriber {
 

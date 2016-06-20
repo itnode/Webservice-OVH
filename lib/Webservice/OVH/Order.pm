@@ -28,16 +28,6 @@ Module that support carts and domain/transfer orders at the moment
 
 =head1 METHODS
 
-=over
-=item * _new
-=item * new_cart
-=item * carts
-=item * cart
-=item * hosting
-=item * email
-=item * domain
-=back
-
 =cut
 
 use strict;
@@ -58,9 +48,13 @@ Internal Method to create the order object.
 This method is not ment to be called external.
 
 =over
+
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
 =item * Return: L<Webservice::OVH::Order>
+
 =item * Synopsis: Webservice::OVH::Order->_new($ovh_api_wrapper, $self);
+
 =back
 
 =cut
@@ -84,9 +78,13 @@ Creates a new 'shopping' cart.
 Items can be put into it, to create orders. 
 
 =over
+
 =item * Parameter: %params - ovh_subsidiary => 'DE' (required) expire => DateTime-str (optional) description => "shopping" (optional)
+
 =item * Return: L<Webservice::OVH::Order::Cart>
+
 =item * Synopsis: my $cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
+
 =back
 
 =cut
@@ -105,8 +103,11 @@ sub new_cart {
 Produces an array of all available carts that are connected to the used account.
 
 =over
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $carts = $ovh->order->carts();
+
 =back
 
 =cut
@@ -136,9 +137,13 @@ sub carts {
 Returns a single cart by id
 
 =over
+
 =item * Parameter: cart_id - cart id
+
 =item * Return: L<Webservice::OVH::Order::Cart>
+
 =item * Synopsis: my $cart = $ovh->order->cart(1234567);
+
 =back
 
 =cut
@@ -158,8 +163,11 @@ sub cart {
 Gives Acces to the /order/hosting/ methods of the ovh api
 
 =over
+
 =item * Return: L<Webservice::OVH::Order::Hosting>
+
 =item * Synopsis: $ovh->order->hosting
+
 =back
 
 =cut
@@ -176,8 +184,11 @@ sub hosting {
 Gives Acces to the /order/email/ methods of the ovh api
 
 =over
+
 =item * Return: L<Webservice::OVH::Order::Email>
+
 =item * Synopsis: $ovh->order->email
+
 =back
 
 =cut
@@ -194,8 +205,11 @@ sub email {
 Gives Acces to the /order/domain/ methods of the ovh api
 
 =over
+
 =item * Return: L<Webservice::OVH::Order::Domain>
+
 =item * Synopsis: $ovh->order->domain
+
 =back
 
 =cut

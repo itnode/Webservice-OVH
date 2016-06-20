@@ -1,5 +1,31 @@
 package Webservice::OVH::Domain::Service;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Domain::Service
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $service = $ovh->domain->service("mydomain.org");
+
+my $info = $service->service_info;
+my $last_update = $service->last_update;
+
+=head1 DESCRIPTION
+
+Provieds basic functionality for Services
+A service contact_change can be initialized.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -8,19 +34,49 @@ use DateTime;
 our $VERSION = 0.1;
 
 use Webservice::OVH::Helper;
-
 use Webservice::OVH::Me::Contact;
+
+=head2 _new
+
+Internal Method to create the service object.
+This method is not ment to be called external.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
+=item * Return: L<Webservice::OVH::Domain::Zone>
+
+=item * Synopsis: Webservice::OVH::Domain::Zone->_new($ovh_api_wrapper, $zone_name, $module);
+
+=back
+
+=cut
 
 sub _new {
 
-    my ( $class, $api_wrapper, $service_name ) = @_;
+    my ( $class, $api_wrapper, $service_name, $module ) = @_;
 
     croak "Missing service_name" unless $service_name;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _name => $service_name, _owner => undef, _service_info => undef, _properties => undef }, $class;
+    my $self = bless { module => $module,_api_wrapper => $api_wrapper, _name => $service_name, _owner => undef, _service_info => undef, _properties => undef }, $class;
 
     return $self;
 }
+
+=head2 name
+
+Name is the unique identifier.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $name = $service->name;
+
+=back
+
+=cut
 
 sub name {
 
@@ -28,6 +84,21 @@ sub name {
 
     return $self->{_name};
 }
+
+=head2 service_infos
+
+Retrieves additional infos about the service. 
+Infos that are not part of the properties
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $info = $service->service_info;
+
+=back
+
+=cut
 
 sub service_infos {
 
@@ -44,6 +115,21 @@ sub service_infos {
     return $self->{_service_info};
 }
 
+=head2 properties
+
+Retrieves properties of the service.
+This method updates the intern property variable.
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $service->properties;
+
+=back
+
+=cut
+
 sub properties {
 
     my ($self) = @_;
@@ -59,6 +145,20 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 dnssec_supported
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $dnssec_supported = $service->dnssec_supported;
+
+=back
+
+=cut
+
 sub dnssec_supported {
 
     my ($self) = @_;
@@ -67,6 +167,20 @@ sub dnssec_supported {
 
     return $self->{_properties}->{dnssecSupported} ? 1 : 0;
 }
+
+=head2 domain
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $domain = $service->domain;
+
+=back
+
+=cut
 
 sub domain {
 
@@ -77,6 +191,20 @@ sub domain {
     return $self->{_properties}->{domain};
 }
 
+=head2 glue_record_ipv6_supported
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $glue_record_ipv6_supported = $service->glue_record_ipv6_supported;
+
+=back
+
+=cut
+
 sub glue_record_ipv6_supported {
 
     my ($self) = @_;
@@ -86,6 +214,20 @@ sub glue_record_ipv6_supported {
     return $self->{_properties}->{glueRecordIpv6Supported} ? 1 : 0;
 }
 
+=head2 glue_record_multi_ip_supported
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $glue_record_multi_ip_supported = $service->glue_record_multi_ip_supported;
+
+=back
+
+=cut
+
 sub glue_record_multi_ip_supported {
 
     my ($self) = @_;
@@ -94,6 +236,20 @@ sub glue_record_multi_ip_supported {
 
     return $self->{_properties}->{glueRecordMultiIpSupported} ? 1 : 0;
 }
+
+=head2 last_update
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<DateTime>
+
+=item * Synopsis: my $last_update = $service->last_update;
+
+=back
+
+=cut
 
 sub last_update {
 
@@ -106,6 +262,20 @@ sub last_update {
     return $datetime;
 }
 
+=head2 name_server_type
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $name_server_type = $service->name_server_type;
+
+=back
+
+=cut
+
 sub name_server_type {
 
     my ($self) = @_;
@@ -114,6 +284,20 @@ sub name_server_type {
 
     return $self->{_properties}->{nameServerType};
 }
+
+=head2 offer
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $offer = $service->offer;
+
+=back
+
+=cut
 
 sub offer {
 
@@ -124,6 +308,20 @@ sub offer {
     return $self->{_properties}->{offer};
 }
 
+=head2 owo_supported
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $owo_supported = $service->owo_supported;
+
+=back
+
+=cut
+
 sub owo_supported {
 
     my ($self) = @_;
@@ -132,6 +330,20 @@ sub owo_supported {
 
     return $self->{_properties}->{owoSupported} ? 1 : 0;
 }
+
+=head2 parent_service
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $parent_service = $service->parent_service;
+
+=back
+
+=cut
 
 sub parent_service {
 
@@ -142,6 +354,20 @@ sub parent_service {
     return $self->{_properties}->{parentService};
 }
 
+=head2 transfer_lock_status
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $transfer_lock_status = $service->transfer_lock_status;
+
+=back
+
+=cut
+
 sub transfer_lock_status {
 
     my ($self) = @_;
@@ -150,6 +376,20 @@ sub transfer_lock_status {
 
     return $self->{_properties}->{transferLockStatus};
 }
+
+=head2 whois_owner
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<Webservice::Me::Contact>
+
+=item * Synopsis: my $owner = $service->whois_owner;
+
+=back
+
+=cut
 
 sub whois_owner {
 
@@ -162,6 +402,23 @@ sub whois_owner {
 
     return $self->{_owner};
 }
+
+=head2 change_contact
+
+Initializes a change_contact procedure.
+This generates a task. An email is sent to the other account-
+
+=over
+
+=item * Parameter: %params - key => value contact_billing contact_admin contact_tech - ovh account names
+
+=item * Return: L<Webservice::Me::Task>
+
+=item * Synopsis: $service->change_contact(contact_tech => 'otheraccount-ovh');
+
+=back
+
+=cut
 
 sub change_contact {
 

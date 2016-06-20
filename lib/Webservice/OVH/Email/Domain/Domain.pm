@@ -1,5 +1,27 @@
 package Webservice::OVH::Email::Domain::Domain;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Email::Domain::Domain
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $email_domain = $ovh->email->domain->domain('testdomain.de');
+
+=head1 DESCRIPTION
+
+Provides access to api email-domain methods like mailinglists, accounts and redirections.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -11,16 +33,48 @@ use Webservice::OVH::Email::Domain::Domain::Account;
 use Webservice::OVH::Email::Domain::Domain::MailingList;
 use Webservice::OVH::Helper;
 
+=head2 _new
+
+Internal Method to create the domain object.
+This method is not ment to be called external.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
+=item * Return: L<Webservice::OVH::Email::Domain>
+
+=item * Synopsis: Webservice::OVH::Email::Domain->_new($ovh_api_wrapper, $zone_name, $module);
+
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper, $domain ) = @_;
+    my ( $class, $api_wrapper, $domain, $module ) = @_;
 
     croak "Missing domain name" unless $domain;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _name => $domain, _service_infos => undef, _properties => undef, _redirections => {}, _accounts => {}, _mailing_lists => {} }, $class;
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _name => $domain, _service_infos => undef, _properties => undef, _redirections => {}, _accounts => {}, _mailing_lists => {} }, $class;
 
     return $self;
 }
+
+=head2 service_infos
+
+Retrieves additional infos about the email-domain. 
+Not part of the properties
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $info = $email_domain->service_infos;
+
+=back
+
+=cut
 
 sub service_infos {
 
@@ -37,12 +91,41 @@ sub service_infos {
     return $self->{_service_infos};
 }
 
+=head2 name
+
+Name is the unique identifier.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $name = $email_domain->name;
+
+=back
+
+=cut
+
 sub name {
 
     my ($self) = @_;
 
     return $self->{_name};
 }
+
+=head2 properties
+
+Retrieves properties of the email-domain.
+This method updates the intern property variable.
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $email_domain->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -58,12 +141,40 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 allowed_account_size
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $allowed_account_size = $email_domain->allowed_account_size;
+
+=back
+
+=cut
+
 sub allowed_account_size {
 
     my ($self) = @_;
 
     return $self->{_properties}->{allowedAccountSize};
 }
+
+=head2 creation_date
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<DateTime>
+
+=item * Synopsis: my $creation_date = $email_domain->creation_date;
+
+=back
+
+=cut
 
 sub creation_date {
 
@@ -74,6 +185,20 @@ sub creation_date {
     return $datetime;
 }
 
+=head2 filerz
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $filerz = $email_domain->filerz;
+
+=back
+
+=cut
+
 sub filerz {
 
     my ($self) = @_;
@@ -81,12 +206,40 @@ sub filerz {
     return $self->{_properties}->{filerz};
 }
 
+=head2 status
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $status = $email_domain->status;
+
+=back
+
+=cut
+
 sub status {
 
     my ($self) = @_;
 
     return $self->{_properties}->{status};
 }
+
+=head2 redirections
+
+Produces an array of all available redirections that are connected to the email-domain.
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $redirections = $email_domain->redirections();
+
+=back
+
+=cut
 
 sub redirections {
 
@@ -106,12 +259,28 @@ sub redirections {
 
     foreach my $redirection_id (@$redirection_ids) {
 
-        my $redirection = $self->{_redirections}{$redirection_id} = $self->{_redirections}{$redirection_id} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id );
+        my $redirection = $self->{_redirections}{$redirection_id} = $self->{_redirections}{$redirection_id} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id, $self->{_module} );
         push @$redirections, $redirection;
     }
 
     return $redirections;
 }
+
+=head2 redirection
+
+Returns a single redirection by id
+
+=over
+
+=item * Parameter: $redirection_id - id
+
+=item * Return: L<Webservice::OVH::Email::Domain::Domain::Redirection>
+
+=item * Synopsis: my $service = $email_domain->redirection(12345);
+
+=back
+
+=cut
 
 sub redirection {
 
@@ -121,20 +290,50 @@ sub redirection {
 
     my $api = $self->{_api_wrapper};
     my $from_array_redirection = $self->{_redirections}{$redirection_id} if $self->{_redirections}{$redirection_id} && $self->{_redirections}{$redirection_id}->is_valid;
-    my $redirection = $self->{_redirections}{$redirection_id} = $from_array_redirection || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id );
+    my $redirection = $self->{_redirections}{$redirection_id} = $from_array_redirection || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id, $self->{_module} );
 
     return $redirection;
 }
+
+=head2 new_redirection
+
+Creates a new redirection.
+
+=over
+
+=item * Parameter:  %params - key => value from to local_copy
+
+=item * Return: L<Webservice::Email::Domain::Domain::Redirection>
+
+=item * Synopsis: my $redirection = $email_domain->new_redirection(from => 'test@test.de', to => 'test2@test.de', local_copy => 'false');
+
+=back
+
+=cut
 
 sub new_redirection {
 
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $redirection = Webservice::OVH::Email::Domain::Domain::Redirection->_new( $api, $self, %params );
+    my $redirection = Webservice::OVH::Email::Domain::Domain::Redirection->_new( $api, $self, $self->{_module}, %params );
 
     return $redirection;
 }
+
+=head2 accounts
+
+Produces an array of all available accounts that are connected to the email-domain.
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $accounts = $email_domain->accounts();
+
+=back
+
+=cut
 
 sub accounts {
 
@@ -149,12 +348,28 @@ sub accounts {
     my $accounts      = [];
 
     foreach my $account_name (@$account_names) {
-        my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name );
+        my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name, $self->{_module} );
         push @$accounts, $account;
     }
 
     return $accounts;
 }
+
+=head2 account
+
+Returns a single account by name
+
+=over
+
+=item * Parameter: $account_name - name
+
+=item * Return: L<Webservice::OVH::Email::Domain::Domain::Account>
+
+=item * Synopsis: my $account = $email_domain->account('testaccount');
+
+=back
+
+=cut
 
 sub account {
 
@@ -164,20 +379,50 @@ sub account {
 
     my $api = $self->{_api_wrapper};
     my $from_array_account =  $self->{_accounts}{$account_name} if $self->{_accounts}{$account_name} && $self->{_accounts}{$account_name}->is_valid;
-    my $account = $self->{_accounts}{$account_name} = $from_array_account || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name );
+    my $account = $self->{_accounts}{$account_name} = $from_array_account || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name, $self->{_module} );
 
     return $account;
 }
+
+=head2 new_account
+
+Creates a new account.
+
+=over
+
+=item * Parameter:  %params - key => value account_name password description size
+
+=item * Return: L<Webservice::Email::Domain::Domain::Account>
+
+=item * Synopsis: my $account = $email_domain->new_account(account_name => 'testaccount', password => $password, description => 'a test account', size => 5000000 );
+
+=back
+
+=cut
 
 sub new_account {
 
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $account = Webservice::OVH::Email::Domain::Domain::Account->_new( $api, $self, %params );
+    my $account = Webservice::OVH::Email::Domain::Domain::Account->_new( $api, $self, $self->{_module}, %params );
 
     return $account;
 }
+
+=head2 mailing_lists
+
+Produces an array of all available mailing_lists that are connected to the email-domain.
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $mailing_lists = $email_domain->mailing_lists();
+
+=back
+
+=cut
 
 sub mailing_lists {
 
@@ -192,12 +437,28 @@ sub mailing_lists {
 
     foreach my $mailing_list_name (@$mailing_list_names) {
 
-        my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name );
+        my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name, $self->{_module} );
         push @$mailing_lists, $mailing_list;
     }
 
     return $mailing_lists;
 }
+
+=head2 mailing_list
+
+Returns a single account by name
+
+=over
+
+=item * Parameter: $mailing_list_name - name
+
+=item * Return: L<Webservice::OVH::Email::Domain::Domain::MailingList>
+
+=item * Synopsis: my $mailing_list = $email_domain->mailing_list('subscriber_list');
+
+=back
+
+=cut
 
 sub mailing_list {
 
@@ -207,17 +468,33 @@ sub mailing_list {
 
     my $api = $self->{_api_wrapper};
     my $from_array_mailing_list =  $self->{_mailing_lists}{$mailing_list_name} if $self->{_mailing_lists}{$mailing_list_name} && $self->{_mailing_lists}{$mailing_list_name}->is_valid;
-    my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $from_array_mailing_list || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name );
+    my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $from_array_mailing_list || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name, $self->{_module} );
 
     return $mailing_list;
 }
+
+=head2 new_mailing_list
+
+Creates a new mailing list.
+
+=over
+
+=item * Parameter:  %params - key => value language name options owner_email reply_to
+
+=item * Return: L<Webservice::Email::Domain::Domain::MailingList>
+
+=item * Synopsis: my $mailing_list = $email_domain->new_mailing_list(language 'DE', name => 'infos', options => {}, owner_email => 'owner@test.de', reply_to => 'test@test.de' );
+
+=back
+
+=cut
 
 sub new_mailing_list {
 
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $mailing_list = Webservice::OVH::Email::Domain::Domain::MailingList->_new( $api, $self, %params );
+    my $mailing_list = Webservice::OVH::Email::Domain::Domain::MailingList->_new( $api, $self, $self->{_module}, %params );
 
     return $mailing_list;
 }

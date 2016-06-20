@@ -1,5 +1,32 @@
 package Webservice::OVH::Email::Domain;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Email::Domain
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $email_domains = $ovh->email->domain->domains;
+
+foreach $email_domain (@$email_domains) {
+    
+    $email_domain->name;
+}
+
+=head1 DESCRIPTION
+
+Provides access to email domain objects.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -8,11 +35,28 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Email::Domain::Domain;
 
+=head2 _new
+
+Internal Method to create the domain object.
+This method is not ment to be called external.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
+=item * Return: L<Webservice::OVH::Email::Domain>
+
+=item * Synopsis: Webservice::OVH::Email::Domain->_new($ovh_api_wrapper, $zone_name, $module);
+
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper ) = @_;
+    my ( $class, $api_wrapper, $module ) = @_;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _domains => {}, _aviable_domains => [] }, $class;
+    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _domains => {}, _aviable_domains => [] }, $class;
 
     my $api = $self->{_api_wrapper};
     my $response = $api->rawCall( method => 'get', path => "/email/domain/", noSignature => 0 );
@@ -22,6 +66,22 @@ sub _new {
 
     return $self;
 }
+
+=head2 domain_exists
+
+Returns 1 if email-domain is available for the connected account, 0 if not.
+
+=over
+
+=item * Parameter: $domain - (required)Domain name, $no_recheck - (optional)only for internal usage 
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: print "mydomain.com exists" if $ovh->email->domain->domain_exists("mydomain.com");
+
+=back
+
+=cut
 
 sub domain_exists {
 
@@ -47,6 +107,20 @@ sub domain_exists {
     }
 }
 
+=head2 domains
+
+Produces an array of all available email-domains that are connected to the used account.
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $domains = $ovh->email->domain->domains();
+
+=back
+
+=cut
+
 sub domains {
 
     my ($self) = @_;
@@ -61,7 +135,7 @@ sub domains {
 
     foreach my $domain (@$domain_array) {
         if ( $self->domain_exists( $domain, 1 ) ) {
-            my $domain = $self->{_domains}{$domain} = $self->{_domains}{$domain} || Webservice::OVH::Email::Domain::Domain->_new( $api, $domain );
+            my $domain = $self->{_domains}{$domain} = $self->{_domains}{$domain} || Webservice::OVH::Email::Domain::Domain->_new( $api, $domain, $self->{_module} );
             push @$domains, $domain;
         }
     }
@@ -70,6 +144,22 @@ sub domains {
 
 }
 
+=head2 domain
+
+Returns a single email-domains by name
+
+=over
+
+=item * Parameter: $domain - domain name
+
+=item * Return: L<Webservice::OVH::Email::Domains::Domain>
+
+=item * Synopsis: my $email_domain = $ovh->email->domain->domain("mydomain.com");
+
+=back
+
+=cut
+
 sub domain {
 
     my ( $self, $domain ) = @_;
@@ -77,7 +167,7 @@ sub domain {
     if ( $self->domain_exists($domain) ) {
 
         my $api = $self->{_api_wrapper};
-        my $domain = $self->{_domains}{$domain} = $self->{_domains}{$domain} || Webservice::OVH::Email::Domain::Domain->_new( $api, $domain );
+        my $domain = $self->{_domains}{$domain} = $self->{_domains}{$domain} || Webservice::OVH::Email::Domain::Domain->_new( $api, $domain, $self->{_module} );
 
         return $domain;
     } else {

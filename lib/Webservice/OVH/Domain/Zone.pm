@@ -37,21 +37,6 @@ A zone contact_change can be initialized.
 
 =head1 METHODS
 
-=over
-=item * _new
-=item * service_infos
-=item * properties
-=item * dnssec_supported
-=item * has_dns_anycast
-=item * last_update
-=item * name_servers
-=item * records
-=item * record
-=item * new_record
-=item * name
-=item * change_contact
-=back
-
 =cut
 
 use strict;
@@ -69,9 +54,13 @@ Internal Method to create the zone object.
 This method is not ment to be called external.
 
 =over
+
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
 =item * Return: L<Webservice::OVH::Domain::Zone>
+
 =item * Synopsis: Webservice::OVH::Domain::Zone->_new($ovh_api_wrapper, $zone_name, $module);
+
 =back
 
 =cut
@@ -89,11 +78,15 @@ sub _new {
 
 =head2 service_infos
 
-Retrieves additional infos about the zone. Infos that are not part of the properties
+Retrieves additional infos about the zone. 
+Infos that are not part of the properties
 
 =over
+
 =item * Return: L<HASH>
+
 =item * Synopsis: my $info = $zone->service_info;
+
 =back
 
 =cut
@@ -115,12 +108,15 @@ sub service_infos {
 
 =head2 properties
 
-Retrieves additional infos about the zone. Infos that are not part of the properties.
-Additionally this method updates the intern property variable.
+Retrieves properties of the zone.
+This method updates the intern property variable.
 
 =over
+
 =item * Return: L<HASH>
+
 =item * Synopsis: my $properties = $zone->properties;
+
 =back
 
 =cut
@@ -144,8 +140,11 @@ sub properties {
 Exposed Property Value. Readonly.
 
 =over
+
 =item * Return: L<VALUE>
+
 =item * Synopsis: my $value = $zone->dnssec_supported;
+
 =back
 
 =cut
@@ -164,8 +163,11 @@ sub dnssec_supported {
 Exposed Property Value. Readonly.
 
 =over
+
 =item * Return: L<VALUE>
+
 =item * Synopsis: my $value = $zone->has_dns_anycast;
+
 =back
 
 =cut
@@ -184,8 +186,11 @@ sub has_dns_anycast {
 Exposed Property Value. Readonly.
 
 =over
+
 =item * Return: L<DateTime>
+
 =item * Synopsis: my $value = $zone->last_update;
+
 =back
 
 =cut
@@ -206,8 +211,11 @@ sub last_update {
 Exposed Property Value. Readonly.
 
 =over
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $value = $zone->name_servers;
+
 =back
 
 =cut
@@ -227,9 +235,13 @@ Produces an Array of record Objects.
 Can be filtered by field_type and sub_domain.
 
 =over
+
 =item * Parameter: %filter - (optional) - field_type => record type sub_domain => subdomain string
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $records = $zone->records(field_type => 'A', sub_domain => 'www');
+
 =back
 
 =cut
@@ -264,9 +276,13 @@ sub records {
 Returns a single record by id
 
 =over
+
 =item * Parameter: $record_id - id
+
 =item * Return: L<Webservice::OVH::Domain::Zone::Record>
+
 =item * Synopsis: my $record = $ovh->domain->zone->record(123456);
+
 =back
 
 =cut
@@ -286,13 +302,16 @@ sub record {
 
 =head2 new_record
 
-Creates a bew record.
-Refreshes the Domain Zone automaticly
+Creates a new record.
 
 =over
+
 =item * Parameter:  %params - refresh => 'true', 'false' - directly refreshes the zone target (required) => '0.0.0.0' ttl (optional) => 3000 sub_domain (optional) => 'www' field_type (required) => 'A'
+
 =item * Return: L<Webservice::OVH::Domain::Zone::Record>
+
 =item * Synopsis: my $record = $zone->new_record(field_type => 'MX', target => '1 my.mailserver.de.');
+
 =back
 
 =cut
@@ -312,8 +331,11 @@ sub new_record {
 Name is the unique identifier.
 
 =over
+
 =item * Return: L<VALUE>
-=item * Synopsis: my $name = $service->name;
+
+=item * Synopsis: my $name = $zone->name;
+
 =back
 
 =cut
@@ -331,9 +353,13 @@ Changes contact information for this zone.
 Contact must be another ovh account name.
 
 =over
+
 =item * Parameter: %params - contactBilling (optional) => 'account-ovh' contact_admin (optional) => 'account-ovh' contact_tech (optional)  => 'account-ovh'
+
 =item * Return: L<Webservice::OVH::Me::Task>
+
 =item * Synopsis: my $task = $zone->change_contact(contact_billing => 'another-ovh');
+
 =back
 
 =cut
@@ -368,7 +394,9 @@ sub change_contact {
 Refreshes the domain zone and applies changes.
 
 =over
+
 =item * Synopsis:$zone->refresh;
+
 =back
 
 =cut
@@ -388,8 +416,11 @@ sub refresh {
 Deletes all custom records and resetzt to default.
 
 =over
+
 =item * Parameter: $minimal - only creates nesseccary dns records 
+
 =item * Synopsis: $zone->reset;
+
 =back
 
 =cut

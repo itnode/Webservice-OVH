@@ -6,13 +6,11 @@ package Webservice::OVH;
 
 Webservice::OVH
 
-=head2 SYNOPSIS
+=head1 SYNOPSIS
 
 use Webservice::OVH;
 
 my $ovh = Webservice::OVH->new("credentials.json");
-
-#######################
 
 my $ovh = Webservice::OVH->new(application_key => $key, application_secret => $secret, consumer_key => $token);
 
@@ -31,16 +29,6 @@ The object structure represents the ovh api structure.
 This module uses the perl api module provided by ovh 
 
 =head1 METHODS
-
-=over
-=item * new_from_json
-=item * new
-=item * set_timeout
-=item * domain
-=item * me
-=item * order
-=item * email
-=back
 
 =cut
 
@@ -68,17 +56,23 @@ use File::Slurp qw(read_file);
 Creates an api Object based on credentials in a json File
 
 =over
+
 =item * Parameter: $file_json - dir to json file
 =item * Return: L<Webservice::OVH>
 =item * Synopsis: Webservice::OVH->new_from_json("path/file");
+
 =back
 
-=head3 JSON file
 =over
+
 =item * application_key      is generated when creating an application via ovh web interface
+
 =item * application_secret   is generated when creating an application via ovh web interface
+
 =item * consumer_key         must be requested through ovh authentification
+
 =item * timeout              timeout in milliseconds, warning some request may take a while
+
 =back
 
 =cut
@@ -129,9 +123,13 @@ Create the api object. Credentials are given directly via %params
 Credentials can be generated via ovh web interface and ovh authentification
 
 =over
+
 =item * Parameter: %params - application_key => value, application_secret => value, consumer_key => value
-=item * Return: Return: L<Webservice::OVH>
+
+=item * Return: L<Webservice::OVH>
+
 =item * Synopsis: Webservice::OVH->new(application_key => $key, application_secret => $secret, consumer_key => $token);
+
 =back
 
 =cut
@@ -169,8 +167,11 @@ sub new {
 Sets the timeout of the underlying LWP::Agent
 
 =over
+
 =item * Parameter: timeout - in milliseconds default 120
+
 =item * Synopsis: Webservice::OVH->set_timeout(120);
+
 =back
 
 =cut
@@ -187,8 +188,11 @@ sub set_timeout {
 Main access to all /domain/ api methods 
 
 =over
-=item * Return: Return: L<Webservice::OVH::Domain>
+
+=item * Return: L<Webservice::OVH::Domain>
+
 =item * Synopsis: $ovh->domain;
+
 =back
 
 =cut
@@ -205,8 +209,11 @@ sub domain {
 Main access to all /me/ api methods 
 
 =over
-=item * Return: Return: L<Webservice::OVH::Me>
+
+=item * Return: L<Webservice::OVH::Me>
+
 =item * Synopsis: $ovh->me;
+
 =back
 
 =cut
@@ -223,8 +230,11 @@ sub me {
 Main access to all /order/ api methods 
 
 =over
-=item * Return: Return: L<Webservice::OVH::Order>
+
+=item * Return: L<Webservice::OVH::Order>
+
 =item * Synopsis: $ovh->order;
+
 =back
 
 =cut
@@ -241,8 +251,11 @@ sub order {
 Main access to all /email/ api methods 
 
 =over
-=item * Return: Return: L<Webservice::OVH::Email>
+
+=item * Return: L<Webservice::OVH::Email>
+
 =item * Synopsis: $ovh->email;
+
 =back
 
 =cut

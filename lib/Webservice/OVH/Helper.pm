@@ -12,12 +12,6 @@ Some Helper Methods
 
 =head1 METHODS
 
-=over
-=item * construct_filter
-=item * parse_datetime
-=item * format_datetime
-=back
-
 =cut
 
 use strict;
@@ -31,9 +25,13 @@ use DateTime::Format::Strptime;
 Helper method to construct uri parameter
 
 =over
+
 =item * Parameter: key => value
+
 =item * Return: L<VALUE>
+
 =item * Synopsis: Webservice::OVH::Helper->construct_filter();
+
 =back
 
 =cut
@@ -70,9 +68,13 @@ Returns a DateTime Object.
 Methods uses special pattern to match ovhs DT format.
 
 =over
+
 =item * Parameter: $str_datetime - datetime string, $locale - locale like 'en_EN', $timezone - timezone
+
 =item * Return: L<DateTime>
+
 =item * Synopsis: Webservice::OVH::Helper->parse_datetime("2016-05-15T19:30:23", 'de_DE', 'Europe/Berlin');
+
 =back
 
 =cut
@@ -96,9 +98,13 @@ sub parse_datetime {
 Returns a date time string fitting ovhs requirements
 
 =over
+
 =item * Parameter: $dt - DateTime object
+
 =item * Return: L<VALUE>
+
 =item * Synopsis: my $dt_str = Webservice::OVH::Helper->format_datetime(DateTime->today());
+
 =back
 
 =cut

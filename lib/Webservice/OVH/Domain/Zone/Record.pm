@@ -38,22 +38,6 @@ No actions be done with it, when it is invalid.
 
 =head1 METHODS
 
-=over
-=item * _new_existing
-=item * _new
-=item * is_valid
-=item * _is_valid
-=item * id
-=item * zone
-=item * properties
-=item * field_type
-=item * sub_domain
-=item * target
-=item * ttl
-=item * delete
-=item * change
-=back
-
 =cut
 
 use strict;
@@ -70,9 +54,13 @@ Internal Method to create a Record object.
 This method should never be called directly.
 
 =over
+
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $zone - parent zone Objekt, $record_id => api intern id
+
 =item * Return: L<Webservice::OVH::Domain::Zone::Record>
+
 =item * Synopsis: Webservice::OVH::Domain::Zone::Record->_new_existing($ovh_api_wrapper, $module, $zone, $record_id);
+
 =back
 
 =cut
@@ -104,9 +92,13 @@ Internal Method to create the zone object.
 This method should never be called directly.
 
 =over
+
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $zone - parent zone, %params - key => value
+
 =item * Return: L<Webservice::OVH::Domain::Zone::Record>
-=item * Synopsis: Webservice::OVH::Domain::Zone::Recrod->_new($ovh_api_wrapper, $module, $zone_name, target => '0.0.0.0', field_type => 'A', sub_domain => 'www');
+
+=item * Synopsis: Webservice::OVH::Domain::Zone::Record->_new($ovh_api_wrapper, $module, $zone_name, target => '0.0.0.0', field_type => 'A', sub_domain => 'www');
+
 =back
 
 =cut
@@ -149,8 +141,11 @@ sub _new {
 When this record is deleted on the api side, this method returns 0.
 
 =over
+
 =item * Return: L<VALUE>
-=item * print "Valid" if $record->is_valid;
+
+=item * Synopsis: print "Valid" if $record->is_valid;
+
 =back
 
 =cut
@@ -162,6 +157,21 @@ sub is_valid {
     return $self->{_valid};
 }
 
+=head2 _is_valid
+
+Intern method to check validity.
+Difference is that this method carps an error.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: $record->_is_valid;
+
+=back
+
+=cut
+
 sub _is_valid {
 
     my ($self) = @_;
@@ -171,6 +181,20 @@ sub _is_valid {
     return $self->is_valid;
 }
 
+=head2 id
+
+Returns the api id of this record 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $id = $record->id;
+
+=back
+
+=cut
+
 sub id {
 
     my ($self) = @_;
@@ -178,12 +202,41 @@ sub id {
     return $self->{_id};
 }
 
+=head2 zone
+
+Returns the zone this record is attached to. 
+
+=over
+
+=item * Return: L<Webservice::Domain::Zone>
+
+=item * Synopsis: my $zone = $record->zone;
+
+=back
+
+=cut
+
 sub zone {
 
     my ($self) = @_;
 
     return $self->{_zone};
 }
+
+=head2 properties
+
+Returns the raw properties as a hash. 
+This is the original return value of the web-api. 
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $record->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -200,12 +253,40 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 field_type
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $field_type = $record->field_type;
+
+=back
+
+=cut
+
 sub field_type {
 
     my ($self) = @_;
 
     return $self->{_properties}->{fieldType};
 }
+
+=head2 sub_domain
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $sub_domain = $record->sub_domain;
+
+=back
+
+=cut
 
 sub sub_domain {
 
@@ -214,6 +295,20 @@ sub sub_domain {
     return $self->{_properties}->{subDomain};
 }
 
+=head2 target
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $target = $record->target;
+
+=back
+
+=cut
+
 sub target {
 
     my ($self) = @_;
@@ -221,12 +316,41 @@ sub target {
     return $self->{_properties}->{target};
 }
 
+=head2 ttl
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $ttl = $record->ttl;
+
+=back
+
+=cut
+
 sub ttl {
 
     my ($self) = @_;
 
     return $self->{_properties}->{ttl};
 }
+
+=head2 delete
+
+Deletes the record api sided and sets this object invalid.
+After deleting, the zone must be refreshed, if the refresh parameter is not set.
+
+=over
+
+=item * Parameter: $refresh 'true' 'false' undef - imidiate refreshing of the domain zone
+
+=item * Synopsis: $record->delete('true');
+
+=back
+
+=cut
 
 sub delete {
 
@@ -244,6 +368,21 @@ sub delete {
     $self->zone->refresh if $refresh eq 'true';
     $self->{_valid} = 0;
 }
+
+=head2 change
+
+Changes the record
+After changing the zone must be refreshed, if the refresh parameter is not set.
+
+=over
+
+=item * Parameter: %params - key => value sub_domain target ttl refresh
+
+=item * Synopsis: $record->change(sub_domain => 'www', refresh => 'true');
+
+=back
+
+=cut
 
 sub change {
 

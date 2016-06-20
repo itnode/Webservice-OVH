@@ -33,11 +33,6 @@ Gives access to services and zones connected to the uses account.
 
 =head1 METHODS
 
-=over
-=item * _new
-=item * domain
-=back
-
 =cut
 
 use strict;
@@ -55,9 +50,13 @@ Internal Method to create the domain object.
 This method is not ment to be called external.
 
 =over
+
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
 =item * Return: L<Webservice::OVH::Order>
+
 =item * Synopsis: Webservice::OVH::Order->_new($ovh_api_wrapper, $self);
+
 =back
 
 =cut
@@ -76,9 +75,13 @@ sub _new {
 Returns 1 if service is available for the connected account, 0 if not.
 
 =over
+
 =item * Parameter: $service_name - Domain name, $no_recheck - (optional)only for internal usage 
+
 =item * Return: L<VALUE>
+
 =item * Synopsis: print "mydomain.com exists" if $ovh->domain->service_exists("mydomain.com");
+
 =back
 
 =cut
@@ -110,9 +113,13 @@ sub service_exists {
 Returns 1 if zone is available for the connected account, 0 if not.
 
 =over
+
 =item * Parameter: $zone_name - Domain name, $no_recheck - (optional)only for internal usage 
+
 =item * Return: L<VALUE>
+
 =item * Synopsis: print "zone mydomain.com exists" if $ovh->domain->zone_exists("mydomain.com");
+
 =back
 
 =cut
@@ -144,8 +151,11 @@ sub zone_exists {
 Produces an array of all available services that are connected to the used account.
 
 =over
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $services = $ovh->order->services();
+
 =back
 
 =cut
@@ -177,8 +187,11 @@ sub services {
 Produces an array of all available zones that are connected to the used account.
 
 =over
+
 =item * Return: L<ARRAY>
+
 =item * Synopsis: my $zones = $ovh->order->zones();
+
 =back
 
 =cut
@@ -211,9 +224,13 @@ sub zones {
 Returns a single service by name
 
 =over
+
 =item * Parameter: $service_name - domain name
+
 =item * Return: L<Webservice::OVH::Domain::Service>
+
 =item * Synopsis: my $service = $ovh->domain->service("mydomain.com");
+
 =back
 
 =cut
@@ -240,9 +257,13 @@ sub service {
 Returns a single zone by name
 
 =over
+
 =item * Parameter: $zone_name - domain name
+
 =item * Return: L<Webservice::OVH::Domain::Zone>
+
 =item * Synopsis: my $zone = $ovh->domain->zone("mydomain.com");
+
 =back
 
 =cut

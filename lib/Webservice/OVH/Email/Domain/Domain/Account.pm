@@ -1,14 +1,55 @@
 package Webservice::OVH::Email::Domain::Domain::Account;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Email::Domain::Domain::Account
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $email_domain = $ovh->email->domain->domain('testdomain.de');
+
+my $account = $email_domain->new_account( account_name => 'testaccount', password => $password, description => 'a test account', size => 50000000 );
+
+=head1 DESCRIPTION
+
+Provides access to email accounts.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
+=head2 _new_existing
+
+Internal Method to create an Account object.
+This method should never be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $domain - parent domain Objekt, $account_name => unique name
+
+=item * Return: L<Webservice::OVH::Email::Domain::Domain::Account>
+
+=item * Synopsis: Webservice::OVH::Email::Domain::Domain::Account->_new_existing($ovh_api_wrapper, $domain, $account_name, $module);
+
+=back
+
+=cut
+
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $domain, $account_name ) = @_;
+    my ( $class, $api_wrapper, $domain, $account_name, $module ) = @_;
     die "Missing account_name" unless $account_name;
     $account_name = lc $account_name;
 
@@ -19,7 +60,7 @@ sub _new_existing {
     if ( !$response->error ) {
 
         my $porperties = $response->content;
-        my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $account_name, _properties => $porperties, _domain => $domain }, $class;
+        my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _name => $account_name, _properties => $porperties, _domain => $domain }, $class;
 
         return $self;
     } else {
@@ -28,9 +69,26 @@ sub _new_existing {
     }
 }
 
+=head2 _new
+
+Internal Method to create the Account object.
+This method should never be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $domain - parent domain, %params - key => value
+
+=item * Return: L<Webservice::OVH::Email::Domain::Domain::Account>
+
+=item * Synopsis: Webservice::OVH::Email::Domain::Domain::Account->_new($ovh_api_wrapper, $domain, $module, account_name => $account_name, password => $password, description => $description, size => $size  );
+
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper, $domain, %params ) = @_;
+    my ( $class, $api_wrapper, $domain, $module, %params ) = @_;
 
     my @keys_needed = qw{ account_name password };
 
@@ -52,11 +110,25 @@ sub _new {
 
     my $properties = $response->content;
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $params{account_name}, _properties => $properties, _domain => $domain }, $class;
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _name => $params{account_name}, _properties => $properties, _domain => $domain }, $class;
 
     return $self;
 
 }
+
+=head2 is_valid
+
+When this account is deleted on the api side, this method returns 0.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: print "Valid" if $account->is_valid;
+
+=back
+
+=cut
 
 sub is_valid {
 
@@ -64,6 +136,21 @@ sub is_valid {
 
     return $self->{_valid};
 }
+
+=head2 _is_valid
+
+Intern method to check validity.
+Difference is that this method carps an error.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: $account->_is_valid;
+
+=back
+
+=cut
 
 sub _is_valid {
 
@@ -74,12 +161,41 @@ sub _is_valid {
     return $self->is_valid;
 }
 
+=head2 name
+
+Unique identifier.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $name = $account->name;
+
+=back
+
+=cut
+
 sub name {
 
     my ($self) = @_;
 
     return $self->{_name};
 }
+
+=head2 properties
+
+Returns the raw properties as a hash. 
+This is the original return value of the web-api. 
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $account->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -97,6 +213,20 @@ sub properties {
 
 }
 
+=head2 is_blocked
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $is_blocked = $account->is_blocked;
+
+=back
+
+=cut
+
 sub is_blocked {
 
     my ($self) = @_;
@@ -104,6 +234,20 @@ sub is_blocked {
     return $self->{_properties}->{isBlocked} ? 1 : 0;
 
 }
+
+=head2 email
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $email = $account->email;
+
+=back
+
+=cut
 
 sub email {
 
@@ -113,12 +257,40 @@ sub email {
 
 }
 
+=head2 domain
+
+Returns the email-domain this account is attached to. 
+
+=over
+
+=item * Return: L<Webservice::Email::Domain::Domain>
+
+=item * Synopsis: my $email_domain = $account->domain;
+
+=back
+
+=cut
+
 sub domain {
 
     my ($self) = @_;
 
     return $self->{_domain};
 }
+
+=head2 description
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $description = $account->description;
+
+=back
+
+=cut
 
 sub description {
 
@@ -127,12 +299,40 @@ sub description {
     return $self->{_properties}->{description};
 }
 
+=head2 size
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $size = $account->size;
+
+=back
+
+=cut
+
 sub size {
 
     my ($self) = @_;
 
     return $self->{_properties}->{size};
 }
+
+=head2 change
+
+Changes the account
+
+=over
+
+=item * Parameter: %params - key => value description size
+
+=item * Synopsis: $account->change(description => 'authors account', size => 2000000 );
+
+=back
+
+=cut
 
 sub change {
 
@@ -151,6 +351,18 @@ sub change {
 
 }
 
+=head2 delete
+
+Deletes the account api sided and sets this object invalid.
+
+=over
+
+=item * Synopsis: $account->delete;
+
+=back
+
+=cut
+
 sub delete {
 
     my ( $self, %params ) = @_;
@@ -163,6 +375,20 @@ sub delete {
 
     $self->{_valid} = 0;
 }
+
+=head2 delete
+
+Deletes the account api sided and sets this object invalid.
+
+=over
+
+=item * Parameter: $password - new password
+
+=item * Synopsis: $account->change_password($password);
+
+=back
+
+=cut
 
 sub change_password {
 
@@ -180,6 +406,20 @@ sub change_password {
     croak $response->error if $response->error;
 
 }
+
+=head2 usage
+
+Deletes the account api sided and sets this object invalid.
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: $account->change_password($password);
+
+=back
+
+=cut
 
 sub usage {
 

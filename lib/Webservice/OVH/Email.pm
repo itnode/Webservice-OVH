@@ -28,11 +28,6 @@ For now the MX order Methods are functional.
 
 =head1 METHODS
 
-=over
-=item * _new
-=item * domain
-=back
-
 =cut
 
 use strict;
@@ -49,9 +44,13 @@ Internal Method to create the email object.
 This method is not ment to be called external.
 
 =over
+
 =item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
 =item * Return: L<Webservice::OVH::Email>
+
 =item * Synopsis: Webservice::OVH::Email->_new($ovh_api_wrapper, $self);
+
 =back
 
 =cut
@@ -72,8 +71,11 @@ sub _new {
 Gives Acces to the /email/domain/ methods of the ovh api
 
 =over
+
 =item * Return: L<Webservice::OVH::Email::Domain>
+
 =item * Synopsis: $ovh->order->email
+
 =back
 
 =cut
