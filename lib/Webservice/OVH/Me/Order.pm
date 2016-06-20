@@ -1,5 +1,29 @@
 package Webservice::OVH::Me::Order;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Me::Order
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $order = $ovh->me->order(1234);
+
+my $order->pay_with_registered_payment_mean('fiedelityAccount')
+
+=head1 DESCRIPTION
+
+Module provides possibility to access specified orders and payment options.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -8,9 +32,26 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Me::Order::Detail;
 
+=head2 _new
+
+Internal Method to create the Order object.
+This method is not ment to be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $order_id - api id
+
+=item * Return: L<Webservice::OVH::Me::Order>
+
+=item * Synopsis: Webservice::OVH::Me::Order->_new($ovh_api_wrapper, $order_id, $module);
+
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper, $order_id ) = @_;
+    my ( $class, $api_wrapper, $order_id, $module ) = @_;
 
     die "Missing order_id" unless $order_id;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/me/order/$order_id", noSignature => 0 );
@@ -18,10 +59,25 @@ sub _new {
 
     my $porperties = $response->content;
 
-    my $self = bless { _api_wrapper => $api_wrapper, _id => $order_id, _properties => $porperties, _details => {} }, $class;
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _id => $order_id, _properties => $porperties, _details => {} }, $class;
 
     return $self;
 }
+
+
+=head2 id
+
+Returns the api id.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $id = $order->id;
+
+=back
+
+=cut
 
 sub id {
 
@@ -29,6 +85,21 @@ sub id {
 
     return $self->{_id};
 }
+
+=head2 properties
+
+Retrieves properties.
+This method updates the intern property variable.
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $order->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -43,6 +114,20 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 date
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<DateTime>
+
+=item * Synopsis: my $date = $order->is_blocked;
+
+=back
+
+=cut
+
 sub date {
     
     my ($self) = @_;
@@ -51,6 +136,20 @@ sub date {
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
     return $datetime;
 }
+
+=head2 expiration_date
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<DateTime>
+
+=item * Synopsis: my $expiration_date = $order->expiration_date;
+
+=back
+
+=cut
 
 sub expiration_date {
     
@@ -61,12 +160,40 @@ sub expiration_date {
     return $datetime;
 }
 
+=head2 password
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $password = $order->password;
+
+=back
+
+=cut
+
 sub password {
     
     my ($self) = @_;
     
     return $self->{_properties}->{password};
 }
+
+=head2 pdf_url
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $pdf_url = $order->pdf_url;
+
+=back
+
+=cut
 
 sub pdf_url {
     
@@ -75,12 +202,40 @@ sub pdf_url {
     return $self->{_properties}->{pdfUrl};
 }
 
+=head2 price_without_tax
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $price_without_tax = $order->price_without_tax;
+
+=back
+
+=cut
+
 sub price_without_tax {
     
     my ($self) = @_;
     
     return $self->{_properties}->{priceWithoutTax};
 }
+
+=head2 price_with_tax
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $price_with_tax = $order->price_with_tax;
+
+=back
+
+=cut
 
 sub price_with_tax {
     
@@ -89,12 +244,40 @@ sub price_with_tax {
     return $self->{_properties}->{priceWithTax};
 }
 
+=head2 tax
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $tax = $order->tax;
+
+=back
+
+=cut
+
 sub tax {
     
     my ($self) = @_;
     
     return $self->{_properties}->{tax};
 }
+
+=head2 url
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $url = $order->url;
+
+=back
+
+=cut
 
 sub url {
     
@@ -103,6 +286,19 @@ sub url {
     return $self->{_properties}->{url};
 }
 
+=head2 associated_object
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $associated_object = $order->associated_object;
+
+=back
+
+=cut
 
 sub associated_object {
 
@@ -116,6 +312,20 @@ sub associated_object {
     return $response->content;
 }
 
+=head2 available_registered_payment_mean
+
+Returns an Array of available payment means.
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $available_registered_payment_mean = $order->available_registered_payment_mean;
+
+=back
+
+=cut
+
 sub available_registered_payment_mean {
 
     my ($self) = @_;
@@ -128,12 +338,27 @@ sub available_registered_payment_mean {
     return $response->content;
 }
 
+=head2 bill
+
+Returns associated bill.
+
+=over
+
+=item * Return: L<Webservice::Me::Bill>
+
+=item * Synopsis: my $bill = $order->bill;
+
+=back
+
+=cut
+
 sub bill {
 
-    my ($self, $module) = @_;
+    my ($self) = @_;
 
     my $api      = $self->{_api_wrapper};
     my $order_id = $self->id;
+    my $module   = $self->{_module};
     #my $response = $api->rawCall( method => 'get', path => "/me/order/$order_id/bill", noSignature => 0 );
     #croak $response->error if $response->error;
     
@@ -150,6 +375,20 @@ sub bill {
     }
 }
 
+=head2 details
+
+Returns an Array of detail Objects.
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $details = $order->details;
+
+=back
+
+=cut
+
 sub details {
 
     my ($self) = @_;
@@ -164,22 +403,50 @@ sub details {
 
     foreach my $detail_id (@$detail_ids) {
 
-        my $detail = $self->{_details}{$detail_id} = $self->{_details}{$detail_id} || Webservice::OVH::Me::Order::Detail->_new( $api, $self, $detail_id );
+        my $detail = $self->{_details}{$detail_id} = $self->{_details}{$detail_id} || Webservice::OVH::Me::Order::Detail->_new( $api, $self, $detail_id, $self->{_module} );
         push @$details, $detail;
     }
 
     return $details;
 }
 
+=head2 details
+
+Gets a specified detail Object by id.
+
+=over
+
+=item * Return: L<Webservice::Me::Order::Detail>
+
+=item * Synopsis: my $details = $order->details;
+
+=back
+
+=cut
+
 sub detail {
 
     my ( $self, $detail_id ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $detail = $self->{_details}{$detail_id} = $self->{_details}{$detail_id} || Webservice::OVH::Me::Order::Detail->_new( $api, $self, $detail_id );
+    my $detail = $self->{_details}{$detail_id} = $self->{_details}{$detail_id} || Webservice::OVH::Me::Order::Detail->_new( $api, $self, $detail_id, $self->{_module} );
 
     return $detail;
 }
+
+=head2 payment
+
+Gets details about payment.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $payment = $order->payment;
+
+=back
+
+=cut
 
 sub payment {
 
@@ -193,6 +460,20 @@ sub payment {
     return $response->content;
 }
 
+=head2 payment_means
+
+Gets details about payment_means.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $payment_means = $order->payment_means;
+
+=back
+
+=cut
+
 sub payment_means {
 
     my ($self) = @_;
@@ -205,6 +486,20 @@ sub payment_means {
     return $response->content;
 }
 
+=head2 pay_with_registered_payment_mean
+
+Pays the order.
+
+=over
+
+=item * Parameter: $payment_mean - payment mean
+
+=item * Synopsis: $order->pay_with_registered_payment_mean;
+
+=back
+
+=cut
+
 sub pay_with_registered_payment_mean {
 
     my ( $self, $payment_mean ) = @_;
@@ -214,6 +509,20 @@ sub pay_with_registered_payment_mean {
     my $response = $api->rawCall( method => 'post', path => "/me/order/$order_id/payWithRegisteredPaymentMean", body => { paymentMean => $payment_mean }, noSignature => 0 );
     croak $response->error if $response->error;
 }
+
+=head2 status
+
+Status of the order.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $status = $order->status;
+
+=back
+
+=cut
 
 sub status {
 

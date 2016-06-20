@@ -1,19 +1,74 @@
 package Webservice::OVH::Order::Hosting::Web;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Order::Hosting::Web
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $free_email_info = $ovh->order->hosting->web->free_email_info;
+
+=head1 DESCRIPTION
+
+Provides the possibility to activate the free hostig package.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
+=head2 _new
+
+Internal Method to create the Web object.
+This method is not ment to be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object
+
+=item * Return: L<Webservice::OVH::Order::Hosting::Web>
+
+=item * Synopsis: Webservice::OVH::Order::Hosting::Web->_new($ovh_api_wrapper, $module);
+
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper ) = @_;
+    my ( $class, $api_wrapper, $module ) = @_;
 
-    my $self = bless { _api_wrapper => $api_wrapper }, $class;
+    my $self = bless { _module => $module,_api_wrapper => $api_wrapper }, $class;
 
     return $self;
 }
+
+=head2 free_email_info
+
+Gets information if free webhosting is available.
+
+=over
+
+=item * Parameter: $domain - target domain for free webhosting
+
+=item * Return: L<HASH>
+
+=item * Synopsis: Webservice::OVH::Order::Hosting::Web->_new('mydomain.de');
+
+=back
+
+=cut
 
 sub free_email_info {
 
@@ -35,9 +90,27 @@ sub free_email_info {
     return $response->content;
 }
 
+=head2 activate_free_email
+
+Generates an order and pays the order for free webhosting.
+
+=over
+
+=item * Parameter: $domain - target domain for free webhosting
+
+=item * Return: L<Webservice::Me::Order>
+
+=item * Synopsis: my $order = Webservice::OVH::Order::Hosting::Web->activate_free_email('mydomain.de');
+
+=back
+
+=cut
+
 sub activate_free_email {
 
-    my ( $self, $domain, $module ) = @_;
+    my ( $self, $domain ) = @_;
+    
+    my $module = $self->{_module};
 
     croak "Missing domain" unless $domain;
     my $offer    = 'START';

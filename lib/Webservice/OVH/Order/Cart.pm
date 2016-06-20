@@ -1,5 +1,31 @@
 package Webservice::OVH::Order::Cart;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Order::Cart
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
+
+$cart->add_domain('www.domain.com');
+
+$cart->delete;
+
+=head1 DESCRIPTION
+
+Provides methods to manage shopping carts.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -8,18 +34,35 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Order::Cart::Item;
 
+=head2 _new_existing
+
+Internal Method to create the Cart object.
+This method is not ment to be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $cart_id - api id
+
+=item * Return: L<Webservice::OVH::Order::Cart>
+
+=item * Synopsis: Webservice::OVH::Order::Cart->_new($ovh_api_wrapper, $cart_id, $module);
+
+=back
+
+=cut
+
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $card_id ) = @_;
+    my ( $class, $api_wrapper, $cart_id, $module ) = @_;
 
-    die "Missing card_id" unless $card_id;
-    my $response = $api_wrapper->rawCall( method => 'get', path => "/order/cart/$card_id", noSignature => 0 );
+    die "Missing card_id" unless $cart_id;
+    my $response = $api_wrapper->rawCall( method => 'get', path => "/order/cart/$cart_id", noSignature => 0 );
     carp $response->error if $response->error;
 
     if ( !$response->error ) {
 
         my $properties = $response->content;
-        my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $card_id, _properties => $properties, _items => {} }, $class;
+        my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $cart_id, _properties => $properties, _items => {} }, $class;
 
         return $self;
 
@@ -29,9 +72,26 @@ sub _new_existing {
     }
 }
 
+=head2 _new_existing
+
+Internal Method to create the Cart object.
+This method is not ment to be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object - api id
+
+=item * Return: L<Webservice::OVH::Order::Cart>
+
+=item * Synopsis: Webservice::OVH::Order::Cart->_new($ovh_api_wrapper, $module, ovhSubsidiary => 'DE', decription => 'Shopping');
+
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper, %params ) = @_;
+    my ( $class, $api_wrapper, $module, %params ) = @_;
 
     croak "Missing ovh_subsidiary" unless exists $params{ovh_subsidiary};
     my $body = {};
@@ -47,10 +107,25 @@ sub _new {
     my $response_assign = $api_wrapper->rawCall( method => 'post', path => "/order/cart/$cart_id/assign", body => {}, noSignature => 0 );
     croak $response_assign->error if $response_assign->error;
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $cart_id, _properties => $properties, _items => {} }, $class;
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $cart_id, _properties => $properties, _items => {} }, $class;
 
     return $self;
 }
+
+=head2 properties
+
+Retrieves properties.
+This method updates the intern property variable.
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $cart->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -65,12 +140,40 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 description
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $description = $cart->description;
+
+=back
+
+=cut
+
 sub description {
 
     my ($self) = @_;
 
     return $self->{_properties}->{description};
 }
+
+=head2 expire
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $expire = $cart->expire;
+
+=back
+
+=cut
 
 sub expire {
 
@@ -79,12 +182,40 @@ sub expire {
     return $self->{_properties}->{expire};
 }
 
+=head2 read_only
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $read_only = $cart->read_only;
+
+=back
+
+=cut
+
 sub read_only {
 
     my ($self) = @_;
 
     return $self->{_properties}->{readOnly} ? 1 : 0;
 }
+
+=head2 change
+
+Exposed property value. 
+
+=over
+
+=item * Parameter: %params - key => value description expire
+
+=item * Synopsis: my $change = $cart->change(description => 'Shopping!');
+
+=back
+
+=cut
 
 sub change {
 
@@ -108,12 +239,41 @@ sub change {
     $self->properties;
 }
 
+=head2 is_valid
+
+When this cart is deleted on the api side, this method returns 0.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: print "Valid" if $cart->is_valid;
+
+=back
+
+=cut
+
 sub is_valid {
 
     my ($self) = @_;
 
     return $self->{_valid};
 }
+
+=head2 _is_valid
+
+Intern method to check validity.
+Difference is that this method carps an error.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: $cart->_is_valid;
+
+=back
+
+=cut
 
 sub _is_valid {
 
@@ -123,6 +283,18 @@ sub _is_valid {
     carp "Cart $cart_id is not valid anymore" unless $self->is_valid;
     return $self->is_valid;
 }
+
+=head2 delete
+
+Deletes the cart api sided and sets this object invalid.
+
+=over
+
+=item * Synopsis: $cart->delete;
+
+=back
+
+=cut
 
 sub delete {
 
@@ -139,12 +311,42 @@ sub delete {
     $self->{_valid} = 0;
 }
 
+=head2 id
+
+Returns the api id.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $id = $cart->id;
+
+=back
+
+=cut
+
 sub id {
 
     my ($self) = @_;
 
     return $self->{_id},;
 }
+
+=head2 offers_domain
+
+Returns an Array of hashs with offers.
+
+=over
+
+=item * Parameter: $domain - domain name
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $offers = $cart->offers_domain('mydomain.de');
+
+=back
+
+=cut
 
 sub offers_domain {
 
@@ -160,6 +362,22 @@ sub offers_domain {
 
     return $response->content;
 }
+
+=head2 offers_domain
+
+Adds a domain request to a cart.
+
+=over
+
+=item * Parameter: $domain - domain name, %params - key => value duration offer_id quantity
+
+=item * Return: L<Webservice::OVH::Order::Cart::Item>
+
+=item * Synopsis: my $item = $cart->add_domain('mydomain.de');
+
+=back
+
+=cut
 
 sub add_domain {
 
@@ -182,7 +400,7 @@ sub add_domain {
     croak $response->error if $response->error;
 
     my $item_id = $response->content->{itemId};
-    my $item = Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id );
+    my $item = Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id, $self->{_module} );
 
     my $owner = $params{owner_contact};
     my $admin = $params{admin_account};
@@ -214,6 +432,22 @@ sub add_domain {
     return $item;
 }
 
+=head2 offers_domain_transfer
+
+Returns an Array of hashes with offers.
+
+=over
+
+=item * Parameter: $domain - domain name
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $offers = $cart->offers_domain_transfer('mydomain.de');
+
+=back
+
+=cut
+
 sub offers_domain_transfer {
 
     my ( $self, $domain ) = @_;
@@ -228,6 +462,22 @@ sub offers_domain_transfer {
 
     return $response->content;
 }
+
+=head2 offers_domain
+
+Adds a domain transfer request to a cart.
+
+=over
+
+=item * Parameter: $domain - domain name, %params - key => value duration offer_id quantity
+
+=item * Return: L<Webservice::OVH::Order::Cart::Item>
+
+=item * Synopsis: my $item = $cart->add_transfer('mydomain.de');
+
+=back
+
+=cut
 
 sub add_transfer {
 
@@ -251,7 +501,7 @@ sub add_transfer {
     croak $response->error if $response->error;
 
     my $item_id = $response->content->{itemId};
-    my $item = Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id );
+    my $item = Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id, $self->{_module} );
 
     return unless $item;
 
@@ -289,6 +539,20 @@ sub add_transfer {
     return $item;
 }
 
+=head2 info_checkout
+
+Returns checkout without generating an order.
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $checkout = $cart->info_checkout;
+
+=back
+
+=cut
+
 sub info_checkout {
 
     my ($self) = @_;
@@ -304,6 +568,20 @@ sub info_checkout {
     return $response->content;
 }
 
+=head2 checkout
+
+Generates an order. Makes the cart invalid. Returns the order.
+
+=over
+
+=item * Return: L<Webservice::OVH::Me::Order>
+
+=item * Synopsis: my $order = $cart->checkout;
+
+=back
+
+=cut
+
 sub checkout {
 
     my ($self) = @_;
@@ -317,10 +595,24 @@ sub checkout {
     croak $response->error if $response->error;
 
     my $order_id = $response->content->{orderId};
-    my $order = Webservice::OVH::Me::Order->_new( $api, $order_id );
+    my $order = Webservice::OVH::Me::Order->_new( $api, $order_id, $self->{_module} );
 
     return $order;
 }
+
+=head2 items
+
+Produces an Array of Item Objects. 
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $items = $cart->items;
+
+=back
+
+=cut
 
 sub items {
 
@@ -338,12 +630,28 @@ sub items {
 
     foreach my $item_id (@$item_ids) {
 
-        my $item = $self->{_items}{$item_id} = $self->{_items}{$item_id} || Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id );
+        my $item = $self->{_items}{$item_id} = $self->{_items}{$item_id} || Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id, $self->{_module} );
         push @$items, $item;
     }
 
     return $items;
 }
+
+=head2 item
+
+Returns a single item by id
+
+=over
+
+=item * Parameter: $item_id - api id
+
+=item * Return: L<Webservice::OVH::Order::Cart::Item>
+
+=item * Synopsis: my $item = $ovh->order->cart->item(123456);
+
+=back
+
+=cut
 
 sub item {
 
@@ -352,9 +660,21 @@ sub item {
     return unless $self->_is_valid;
 
     my $api = $self->{_api_wrapper};
-    my $item = $self->{_items}{$item_id} = $self->{_items}{$item_id} || Webservice::OVH::Domain::Service->_new( $api, $self, $item_id );
+    my $item = $self->{_items}{$item_id} = $self->{_items}{$item_id} || Webservice::OVH::Domain::Service->_new( $api, $self, $item_id, $self->{_module} );
     return $item;
 }
+
+=head2 item
+
+Deletes all items from the cart.
+
+=over
+
+=item * Synopsis: $cart->clear;
+
+=back
+
+=cut
 
 sub clear {
 

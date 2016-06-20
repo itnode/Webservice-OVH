@@ -1,14 +1,55 @@
 package Webservice::OVH::Order::Cart::Item;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Order::Cart::Item
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
+
+my $items = $cart->items;
+
+=head1 DESCRIPTION
+
+Provides info for a specific cart item.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
+=head2 _new
+
+Internal Method to create the Item object.
+This method is not ment to be called directly.
+
+=over
+
+=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $item_id - api id
+
+=item * Return: L<Webservice::OVH::Order::Cart>
+
+=item * Synopsis: Webservice::OVH::Order::Cart->_new($ovh_api_wrapper, $cart_id, $module);
+
+=back
+
+=cut
+
 sub _new {
 
-    my ( $class, $api_wrapper, $cart, $item_id ) = @_;
+    my ( $class, $api_wrapper, $cart, $item_id, $module ) = @_;
 
     die "Missing item_id" unless $item_id;
     my $cart_id = $cart->id;
@@ -17,10 +58,24 @@ sub _new {
 
     my $porperties = $response->content;
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $item_id, _properties => $porperties, _cart => $cart }, $class;
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $item_id, _properties => $porperties, _cart => $cart }, $class;
 
     return $self;
 }
+
+=head2 is_valid
+
+When the item is deleted on the api side, this method returns 0.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: print "Valid" if $item->is_valid;
+
+=back
+
+=cut
 
 sub is_valid {
 
@@ -28,6 +83,21 @@ sub is_valid {
 
     return $self->{_valid};
 }
+
+=head2 _is_valid
+
+Intern method to check validity.
+Difference is that this method carps an error.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: $item->_is_valid;
+
+=back
+
+=cut
 
 sub _is_valid {
 
@@ -38,6 +108,20 @@ sub _is_valid {
     return $self->is_valid;
 }
 
+=head2 _is_valid
+
+Gets the associated cart.
+
+=over
+
+=item * Return: L<Webservice::OVH::Order::Cart>
+
+=item * Synopsis: my $cart = $item->cart;
+
+=back
+
+=cut
+
 sub cart {
 
     my ($self) = @_;
@@ -45,12 +129,41 @@ sub cart {
     return $self->{_cart};
 }
 
+=head2 id
+
+Returns the api id.
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $id = $item->id;
+
+=back
+
+=cut
+
 sub id {
 
     my ($self) = @_;
 
     return $self->{_id};
 }
+
+=head2 properties
+
+Retrieves properties.
+This method updates the intern property variable.
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $properties = $item->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -68,12 +181,40 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 configurations
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $configurations = $item->configurations;
+
+=back
+
+=cut
+
 sub configurations {
     
     my ($self) = @_;
     
     return $self->{_properties}->{configurations};
 }
+
+=head2 duration
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $duration = $item->duration;
+
+=back
+
+=cut
 
 sub duration {
     
@@ -82,12 +223,40 @@ sub duration {
     return $self->{_properties}->{duration};
 }
 
+=head2 offer_id
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $offer_id = $item->offer_id;
+
+=back
+
+=cut
+
 sub offer_id {
     
     my ($self) = @_;
     
     return $self->{_properties}->{offerId};
 }
+
+=head2 options
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $options = $item->options;
+
+=back
+
+=cut
 
 sub options {
     
@@ -96,12 +265,40 @@ sub options {
     return $self->{_properties}->{options};
 }
 
+=head2 prices
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $prices = $item->prices;
+
+=back
+
+=cut
+
 sub prices {
     
     my ($self) = @_;
     
     return $self->{_properties}->{prices};
 }
+
+=head2 product_id
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<VALUE>
+
+=item * Synopsis: my $product_id = $item->product_id;
+
+=back
+
+=cut
 
 sub product_id {
     
@@ -110,12 +307,40 @@ sub product_id {
     return $self->{_properties}->{productId};
 }
 
+=head2 settings
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<HASH>
+
+=item * Synopsis: my $settings = $item->settings;
+
+=back
+
+=cut
+
 sub settings {
     
     my ($self) = @_;
     
     return $self->{_properties}->{settings};
 }
+
+=head2 available_configuration
+
+Exposed property value. 
+
+=over
+
+=item * Return: L<ARRAY>
+
+=item * Synopsis: my $available_configuration = $item->available_configuration;
+
+=back
+
+=cut
 
 sub available_configuration {
     
@@ -132,6 +357,18 @@ sub available_configuration {
     
     return $response->content;
 }
+
+=head2 delete
+
+Deletes the item and sets the object to invalid. 
+
+=over
+
+=item * Synopsis: $item->delete;
+
+=back
+
+=cut
 
 sub delete {
 

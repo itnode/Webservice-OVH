@@ -229,7 +229,7 @@ sub name_servers {
     return $self->{_properties}->{nameServers};
 }
 
-=head2 name_servers
+=head2 records
 
 Produces an Array of record Objects. 
 Can be filtered by field_type and sub_domain.

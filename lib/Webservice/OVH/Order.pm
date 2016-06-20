@@ -94,7 +94,7 @@ sub new_cart {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $cart = Webservice::OVH::Order::Cart->_new( $api, %params );
+    my $cart = Webservice::OVH::Order::Cart->_new( $api, $self->{_module}, %params );
     return $cart;
 }
 
@@ -125,7 +125,7 @@ sub carts {
 
     foreach my $card_id (@$card_ids) {
 
-        my $card = $self->{_cards}{$card_id} = $self->{_cards}{$card_id} || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id );
+        my $card = $self->{_cards}{$card_id} = $self->{_cards}{$card_id} || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id, $self->{_module} );
         push @$cards, $card;
     }
 
@@ -154,7 +154,7 @@ sub cart {
 
     my $api             = $self->{_api_wrapper};
     my $from_array_card = $self->{_cards}{$card_id} if $self->{_cards}{$card_id} && $self->{_cards}{$card_id}->is_valid;
-    my $card            = $self->{_cards}{$card_id} = $from_array_card || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id );
+    my $card            = $self->{_cards}{$card_id} = $from_array_card || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id, $self->{_module} );
     return $card;
 }
 

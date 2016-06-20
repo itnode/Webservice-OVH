@@ -99,7 +99,7 @@ sub contacts {
 
     foreach my $contact_id (@$contact_ids) {
 
-        my $contact = $self->{_contacts}{$contact_id} = $self->{_contacts}{$contact_id} || Webservice::OVH::Me::Contact->_new_existing( $api, $contact_id );
+        my $contact = $self->{_contacts}{$contact_id} = $self->{_contacts}{$contact_id} || Webservice::OVH::Me::Contact->_new_existing( $api, $contact_id, $self->{_module} );
         push @$contacts, $contact;
     }
 
@@ -127,7 +127,7 @@ sub contact {
     my ( $self, $contact_id ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $contact = $self->{_contacts}{$contact_id} = $self->{_contacts}{$contact_id} || Webservice::OVH::Me::Contact->_new_existing( $api, $contact_id );
+    my $contact = $self->{_contacts}{$contact_id} = $self->{_contacts}{$contact_id} || Webservice::OVH::Me::Contact->_new_existing( $api, $contact_id, $self->{_module} );
 
     return $contact;
 }
@@ -159,7 +159,7 @@ sub tasks_contact_change {
 
     foreach my $task_id (@$task_ids) {
 
-        my $task = $self->{_tasks_contact_change}{$task_id} = $self->{_tasks_contact_change}{$task_id} || Webservice::OVH::Me::Task->_new( $api, "contact_change", $task_id );
+        my $task = $self->{_tasks_contact_change}{$task_id} = $self->{_tasks_contact_change}{$task_id} || Webservice::OVH::Me::Task->_new( $api, "contact_change", $task_id, $self->{_module} );
         push @$tasks, $task;
     }
 
@@ -187,7 +187,7 @@ sub task_contact_change {
     my ( $self, $task_id ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $task = $self->{_tasks_contact_change}{$task_id} = $self->{_tasks_contact_change}{$task_id} || Webservice::OVH::Me::Task->_new( $api, "contact_change", $task_id );
+    my $task = $self->{_tasks_contact_change}{$task_id} = $self->{_tasks_contact_change}{$task_id} || Webservice::OVH::Me::Task->_new( $api, "contact_change", $task_id, $self->{_module} );
 
     return $task;
 
@@ -227,7 +227,7 @@ sub orders {
 
     foreach my $order_id (@$order_ids) {
 
-        my $order = $self->{_orders}{$order_id} = $self->{_orders}{$order_id} || Webservice::OVH::Me::Order->_new( $api, $order_id );
+        my $order = $self->{_orders}{$order_id} = $self->{_orders}{$order_id} || Webservice::OVH::Me::Order->_new( $api, $order_id, $self->{_module} );
         push @$orders, $order;
     }
 
@@ -255,7 +255,7 @@ sub order {
     my ( $self, $order_id ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $order = $self->{_orders}{$order_id} = $self->{_orders}{$order_id} || Webservice::OVH::Me::Order->_new( $api, $order_id );
+    my $order = $self->{_orders}{$order_id} = $self->{_orders}{$order_id} || Webservice::OVH::Me::Order->_new( $api, $order_id, $self->{_module} );
 
     return $order;
 }
@@ -281,7 +281,7 @@ sub bill {
     my ( $self, $bill_id ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $bill = $self->{_bills}{$bill_id} = $self->{_bills}{$bill_id} || Webservice::OVH::Me::Bill->_new( $api, $bill_id );
+    my $bill = $self->{_bills}{$bill_id} = $self->{_bills}{$bill_id} || Webservice::OVH::Me::Bill->_new( $api, $bill_id, $self->{_module} );
 
     return $bill;
 }
@@ -320,7 +320,7 @@ sub bills {
 
     foreach my $bill_id (@$bill_ids) {
 
-        my $bill = $self->{_bills}{$bill_id} = $self->{_bills}{$bill_id} || Webservice::OVH::Me::Bill->_new( $api, $bill_id );
+        my $bill = $self->{_bills}{$bill_id} = $self->{_bills}{$bill_id} || Webservice::OVH::Me::Bill->_new( $api, $bill_id, $self->{_module} );
         push @$bills, $bill;
     }
 
