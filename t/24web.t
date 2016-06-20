@@ -14,7 +14,8 @@ ok($api, "module ok");
 
 my $services = $api->domain->services;
 
-my $info = $api->order->hosting->web->free_email_info($services->[0]->name);
-ok($info, 'info ok');
+my $info;
+eval{$info = $api->order->hosting->web->free_email_info($services->[0]->name);};
+ok($info, 'info ok') if $info;
 
 done_testing();

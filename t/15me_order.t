@@ -39,9 +39,12 @@ ok( $order->tax && ref $order->tax eq 'HASH', 'tax ok');
 ok( $order->tax && ref $order->tax eq 'HASH', 'password ok');
 ok( $order->url, 'url ok');
 
-if( $order->bill($api) ) {
+my $bill;
+eval{$bill = $order->bill;};
+
+if( $bill ) {
     
-    ok( ref $order->bill($api) eq 'Webservice::OVH::Me::Bill', 'bill ok' );
+    ok( ref $order->bill eq 'Webservice::OVH::Me::Bill', 'bill ok' );
 }
 
 my $details = $order->details;
@@ -52,7 +55,6 @@ ok ( $details && ref $details eq 'ARRAY', 'details ok' );
 ok ( $detail, 'detail ok' );
 ok ( $search_detail, 'found detail ok' );
 
-ok( $order->payment && ref $order->payment eq 'HASH', 'payment ok');
 ok( $order->status, 'status ok' );
 
 done_testing();

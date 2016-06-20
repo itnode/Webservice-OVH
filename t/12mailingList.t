@@ -19,7 +19,7 @@ use Webservice::OVH;
 my $api = Webservice::OVH->new_from_json("../credentials.json");
 ok( $api, "module ok" );
 
-my $email_domain = $api->email->domain->domain('buuild.space');
+my $email_domain = $api->email->domain->domain('');
 ok( $email_domain, 'email_domain ok' );
 
 my $new_mailing_list = $email_domain->new_mailing_list( language => 'de', name => 'testlist', options => { moderatorMessage => 'false', subscribeByModerator => 'false', usersPostOnly => 'false' }, owner_email => 'test@t.com' );

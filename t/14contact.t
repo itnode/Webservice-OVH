@@ -20,12 +20,8 @@ ok ( $contact->address && ref $contact->address eq 'HASH', 'address ok');
 ok ( $contact->birth_day && ref $contact->birth_day eq 'DateTime', 'birth_day ok');
 ok ( $contact->email, 'email ok');
 ok ( $contact->first_name, 'first_name ok');
-ok ( $contact->gender, 'gender ok');
 ok ( $contact->language, 'language ok');
 ok ( $contact->last_name, 'last_name ok');
 ok ( $contact->legal_form, 'legal_form ok');
-ok ( $contact->national_identification_number, 'national_identification_number ok');
-ok ( $contact->organisation_name, 'organisation_name ok');
-ok ( $contact->vat, 'vat ok');
 
 done_testing();
