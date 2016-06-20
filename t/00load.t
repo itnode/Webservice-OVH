@@ -19,9 +19,9 @@ use_ok( 'Webservice::OVH::Domain::Zone::Record' );
 use_ok( 'Webservice::OVH::Me::Contact' );
 use_ok( 'Webservice::OVH::Me::Order' );
 use_ok( 'Webservice::OVH::Me::Task' );
-use_ok( 'Webservice::OVH::Me::Order::Details' );
-use_ok( 'Webservice::OVH::Order::Card' );
-use_ok( 'Webservice::OVH::Order::Card::Item' );
+use_ok( 'Webservice::OVH::Me::Order::Detail' );
+use_ok( 'Webservice::OVH::Order::Cart' );
+use_ok( 'Webservice::OVH::Order::Cart::Item' );
 
 done_testing();
 
