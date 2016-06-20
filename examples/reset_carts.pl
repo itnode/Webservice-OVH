@@ -13,13 +13,9 @@ my $api = Webservice::OVH->new_from_json("../credentials.json");
 
 my $carts = $api->order->carts;
 
-p $carts;
-
 foreach my $cart (@$carts) {
-    
+
     $cart->delete;
 }
 
 $carts = $api->order->carts;
-
-p $carts;

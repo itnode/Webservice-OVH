@@ -13,23 +13,23 @@ my $csv_file = $ARGV[0];
 die "The script expects a filepath to a csv file as first argument" unless $csv_file;
 
 sub load_csv {
-    
-    my ($file) = @_;
-    
-    my $domain_list = {};
-    
-    open(my $fh, '<:encoding(UTF-8)', $file) or die "Could not open file '$file' $!";
 
-    while (my $row = <$fh>) {
-        
+    my ($file) = @_;
+
+    my $domain_list = {};
+
+    open( my $fh, '<:encoding(UTF-8)', $file ) or die "Could not open file '$file' $!";
+
+    while ( my $row = <$fh> ) {
+
         $row =~ s/\r\n//g;
-        my @row = split(',', $row);
+        my @row = split( ',', $row );
         my $object = { area => $row[0], domain => $row[1], status => $row[2], auth => $row[3] };
-        $domain_list->{$row[1]} = $object;
+        $domain_list->{ $row[1] } = $object;
     }
-    
+
     close $fh;
-    
+
     return $domain_list;
 }
 
@@ -42,48 +42,38 @@ my $api = Webservice::OVH->new_from_json("../credentials.json");
 
 my $zone = $api->domain->zone("nak-grossbottwar.de");
 
-#my $records = $zone->records;
-
-use DDP;
-#p $records;
-p $zone->properties;
-
-=head2
-
 my $services = $api->domain->services;
 
 my $lines = ["Domain,Fieldtype,Target,TTL,Subdomain\n"];
 
-foreach my $domain (keys %$domains) {
-    
-    if($api->domain->zone_exists($domain)) {
-        
-        my $line = "";
-        my $zone = $api->domain->zone($domain);
+foreach my $domain ( keys %$domains ) {
+
+    if ( $api->domain->zone_exists($domain) ) {
+
+        my $line       = "";
+        my $zone       = $api->domain->zone($domain);
         my $records_mx = $zone->records( field_type => 'MX' );
-        my $records_a = $zone->records( field_type => 'A' );
-        
-        foreach my $record (@$records_mx, @$records_a) {
-            
-            $line = sprintf("%s,%s,%s,%s,%s\n", $domain, $record->field_type, $record->target, $record->ttl, $record->sub_domain);
+        my $records_a  = $zone->records( field_type => 'A' );
+
+        foreach my $record ( @$records_mx, @$records_a ) {
+
+            $line = sprintf( "%s,%s,%s,%s,%s\n", $domain, $record->field_type, $record->target, $record->ttl, $record->sub_domain );
             print STDERR $line;
             push @$lines, $line;
         }
-        
-        
-        
+
     } else {
-        
-        push @$lines, $domain."\n";
-        
+
+        push @$lines, $domain . "\n";
+
         print STDERR "Zone does not exist $domain \n";
     }
 }
 
-open(my $fh, '>', $target_file) or die "Could not open file '$target_file' $!";
+open( my $fh, '>', $target_file ) or die "Could not open file '$target_file' $!";
 
 foreach my $line (@$lines) {
-    
+
     print $fh $line;
 }
 
