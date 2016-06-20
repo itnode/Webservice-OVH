@@ -8,23 +8,19 @@ Webservice::OVH  - A perl representation of the ovh-api
 
 =head1 SYNOPSIS
 
-=over 1
+    use Webservice::OVH;
 
-use Webservice::OVH;
+    my $ovh = Webservice::OVH->new("credentials.json");
 
-my $ovh = Webservice::OVH->new("credentials.json");
+    my $ovh = Webservice::OVH->new(application_key => $key, application_secret => $secret, consumer_key => $token);
 
-my $ovh = Webservice::OVH->new(application_key => $key, application_secret => $secret, consumer_key => $token);
+    my $services = $ovh->domain->services;
 
-my $services = $ovh->domain->services;
-
-foreach my $service (@$services) {
+    foreach my $service (@$services) {
     
-    my $last_update = $service->last_update;
-    print $last_update->datetime;
-}
-
-=back
+        my $last_update = $service->last_update;
+        print $last_update->datetime;
+    }
 
 =head1 DESCRIPTION
 
