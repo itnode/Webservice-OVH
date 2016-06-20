@@ -5,7 +5,7 @@ use FindBin qw/$Bin/;
 use lib "$Bin/../lib";
 use lib "$Bin/../inc";
 
-use Test::More tests => 4;
+use Test::More;
 
 use Webservice::OVH;
 
