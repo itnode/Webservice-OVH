@@ -8,6 +8,8 @@ Webservice::OVH  - A perl representation of the ovh-api
 
 =head1 SYNOPSIS
 
+=over 1
+
 use Webservice::OVH;
 
 my $ovh = Webservice::OVH->new("credentials.json");
@@ -21,6 +23,8 @@ foreach my $service (@$services) {
     my $last_update = $service->last_update;
     print $last_update->datetime;
 }
+
+=back
 
 =head1 DESCRIPTION
 
