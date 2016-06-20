@@ -4,7 +4,6 @@ Webservice::OVH  - A perl representation of the ovh-api
 
 # SYNOPSIS
 
-<pre>
 use Webservice::OVH;
 
 my $ovh = Webservice::OVH->new("credentials.json");
@@ -15,24 +14,15 @@ my $services = $ovh->domain->services;
 
 foreach my $service (@$services) {
 
-        my $last_update = $service->last_update;
-        print $last_update->datetime;
+    my $last_update = $service->last_update;
+    print $last_update->datetime;
 }
-</pre>
 
 # DESCRIPTION
 
 The base object from which every api call is done.
 The object structure represents the ovh api structure.
 This module uses the perl api module provided by ovh 
-
-# AUTHOR
-
-Patrick Jendral
-
-# COPYRIGHT AND LICENSE
-
-This library is free software; you may redistribute it and/or modify it under the same terms as Perl itself.
 
 # METHODS
 
@@ -92,3 +82,11 @@ Main access to all /email/ api methods
 
 - Return: [Webservice::OVH::Email](https://metacpan.org/pod/Webservice::OVH::Email)
 - Synopsis: $ovh->email;
+
+# AUTHOR
+
+Patrick Jendral
+
+# COPYRIGHT AND LICENSE
+
+This library is free software; you may redistribute it and/or modify it under the same terms as Perl itself.

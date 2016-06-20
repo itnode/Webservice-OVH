@@ -28,14 +28,6 @@ The base object from which every api call is done.
 The object structure represents the ovh api structure.
 This module uses the perl api module provided by ovh 
 
-=head1 AUTHOR
-
-Patrick Jendral
-
-=head1 COPYRIGHT AND LICENSE
-
-This library is free software; you may redistribute it and/or modify it under the same terms as Perl itself.
-
 =head1 METHODS
 
 =cut
@@ -276,5 +268,15 @@ sub email {
 
     return $self->{_email};
 }
+
+=head1 AUTHOR
+
+Patrick Jendral
+
+=head1 COPYRIGHT AND LICENSE
+
+This library is free software; you may redistribute it and/or modify it under the same terms as Perl itself.
+
+=cut
 
 1;
