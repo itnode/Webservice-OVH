@@ -31,7 +31,7 @@ This module uses the perl api module provided by ovh.
 
 =begin html
 
-<p><center><img src="https://plik.ovh/file/bp4AlnPIPmPIGBdA/FBAreimEJKMaFalm/API%20HowTo.png"></center></p>
+<p><center><img src="https://raw.githubusercontent.com/itnode/Webservice-OVH/master/inc/API_HowTo.png"></center></p>
 
 =end html
 
