@@ -5,11 +5,15 @@ use FindBin qw/$Bin/;
 use lib "$Bin/../lib";
 use lib "$Bin/../inc";
 
+my $json_dir = $ENV{'API_CREDENTIAL_DIR'};
+
 use Test::More;
+
+unless ($json_dir && -e $json_dir) {  plan skip_all => 'No credential file found in $ENV{"json_dir"} or path is invalid!'; }
 
 use Webservice::OVH;
 
-my $api            = Webservice::OVH->new_from_json("../credentials.json");
+my $api            = Webservice::OVH->new_from_json($json_dir);
 my $example_zone   = $api->domain->zones->[0];
 my $example_record = $example_zone->records->[0];
 

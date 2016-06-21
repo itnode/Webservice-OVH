@@ -5,16 +5,20 @@ use FindBin qw/$Bin/;
 use lib "$Bin/../lib";
 use lib "$Bin/../inc";
 
-use Test::More tests => 10;
+my $json_dir = $ENV{'API_CREDENTIAL_DIR'};
+
+use Test::More;
 
 use Webservice::OVH;
 
-my $api_examples = Webservice::OVH->new_from_json("../credentials.json");
+unless ( $json_dir && -e $json_dir ) { plan skip_all => 'No credential file found in $ENV{"json_dir"} or path is invalid!'; }
+
+my $api_examples = Webservice::OVH->new_from_json($json_dir);
 
 my $example_service = $api_examples->domain->services->[0]->name;
 my $example_zone    = $api_examples->domain->zones->[0]->name;
 
-my $api_testing = Webservice::OVH->new_from_json("../credentials.json");
+my $api_testing = Webservice::OVH->new_from_json($json_dir);
 
 # Check if examples exist and test the _exists methods
 
@@ -31,8 +35,10 @@ sub test_single_calls {
     ok( $zone,    "getting a zone" );
 
     #negative test
-    my $no_service = $api_testing->domain->service("xyz.abc");
-    my $no_zone    = $api_testing->domain->zone("xyz.abc");
+    my $no_service;
+    eval { $no_service = $api_testing->domain->service("xyz.abc"); };
+    my $no_zone;
+    eval { $no_zone = $api_testing->domain->zone("xyz.abc"); };
 
     ok( !$no_service, "getting no service" );
     ok( !$no_zone,    "getting no zone" );

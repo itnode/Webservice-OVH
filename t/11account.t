@@ -5,7 +5,11 @@ use FindBin qw/$Bin/;
 use lib "$Bin/../lib";
 use lib "$Bin/../inc";
 
+my $json_dir = $ENV{'API_CREDENTIAL_DIR'};
+
 use Test::More;
+
+unless ( $json_dir && -e $json_dir ) { plan skip_all => 'No credential file found in $ENV{"json_dir"} or path is invalid!'; }
 
 use Webservice::OVH;
 
@@ -17,37 +21,52 @@ use Webservice::OVH;
 
 =cut
 
-my $api = Webservice::OVH->new_from_json("../credentials.json");
-ok($api, "module ok");
+my $api = Webservice::OVH->new_from_json($json_dir);
+ok( $api, "module ok" );
 
-my $email_domain = $api->email->domain->domain('');
-ok ($email_domain, 'email_domain ok');
+my $email_domain = $api->email->domain->domains->[0];
 
-my $new_account = $email_domain->new_account( account_name => 'testaccount', password => '%%12345$tets$s089', description => 'Ein Account');
-ok ($new_account, 'new account ok');
+SKIP: {
 
-ok ($new_account->name, 'name ok');
-ok ($new_account->properties && ref $new_account->properties eq 'HASH', 'properties ok');
-ok ($new_account->email, 'email ok');
-ok ($new_account->domain, 'domain ok');
-ok ($new_account->description && $new_account->description eq 'Ein Account', 'description ok');
-ok ($new_account->size, 'size ok');
-ok ($new_account->usage && ref $new_account->usage eq 'HASH', 'usage ok');
+    skip "No email domain found in connected account", 1 if !$email_domain;
 
-$new_account->change(  description => 'this is an account', size => 2000000000);
+    ok( $email_domain, 'email_domain ok' );
 
-ok ($new_account->description eq 'this is an account', 'account change description ok');
-ok ($new_account->size == 2000000000, 'account change size ok');
-while( $new_account->is_valid ) {
-    
-    eval {  $new_account->delete; };
-    warn $@ if $@;
-    sleep(60);
+    my $new_account;
+    eval { $new_account = $email_domain->new_account( account_name => 'testaccount', password => '%%12345$tets$s089', description => 'Ein Account' ); };
+
+  SKIP: {
+
+        skip "Max account quota reached for connected account", 1 if !$new_account;
+
+        ok( $new_account, 'new account ok' );
+
+        ok( $new_account->name, 'name ok' );
+        ok( $new_account->properties && ref $new_account->properties eq 'HASH', 'properties ok' );
+        ok( $new_account->email,  'email ok' );
+        ok( $new_account->domain, 'domain ok' );
+        ok( $new_account->description && $new_account->description eq 'Ein Account', 'description ok' );
+        ok( $new_account->size, 'size ok' );
+        ok( $new_account->usage && ref $new_account->usage eq 'HASH', 'usage ok' );
+
+        $new_account->change( description => 'this is an account', size => 2000000000 );
+
+        ok( $new_account->description eq 'this is an account', 'account change description ok' );
+        ok( $new_account->size == 2000000000,                  'account change size ok' );
+        while ( $new_account->is_valid ) {
+
+            eval { $new_account->delete; };
+            warn $@ if $@;
+            sleep(60);
+        }
+
+        ok( !$new_account->is_valid,                'validity ok' );
+        ok( !$email_domain->account('testaccount'), 'not found ok' );
+        my @accounts = grep { $_->name eq 'testaccount' } @{ $email_domain->accounts };
+        ok( scalar @accounts == 0, 'not found in list ok' );
+
+    }
+
 }
-
-ok( !$new_account->is_valid, 'validity ok' );
-ok( !$email_domain->account('testaccount'), 'not found ok' );
-my @accounts = grep { $_->name eq 'testaccount'} @{$email_domain->accounts};
-ok( scalar @accounts == 0, 'not found in list ok' );
 
 done_testing();

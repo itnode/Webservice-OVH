@@ -89,7 +89,7 @@ This method should never be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $domain, %params ) = @_;
+    my ( $class, $api_wrapper, $domain, $module, %params ) = @_;
 
     my @keys_needed = qw{ language name options owner_email };
 
