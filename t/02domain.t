@@ -11,7 +11,7 @@ use Test::More;
 
 use Webservice::OVH;
 
-unless ( $json_dir && -e $json_dir ) { plan skip_all => 'No credential file found in $ENV{"json_dir"} or path is invalid!'; }
+unless ( $json_dir && -e $json_dir ) { plan skip_all => 'No credential file found in $ENV{"API_CREDENTIAL_DIR"} or path is invalid!'; }
 
 my $api_examples = Webservice::OVH->new_from_json($json_dir);
 
