@@ -24,9 +24,10 @@ Webservice::OVH  - A perl representation of the ovh-api
 
 =head1 DESCRIPTION
 
-The base object from which every api call is done.
-The object structure represents the ovh api structure.
-This module uses the perl api module provided by ovh 
+This module reflects the path structure of the ovh web-api.
+This is the base object from where all api calls originate.
+
+This module uses the perl api module provided by ovh.
 
 =head1 METHODS
 
