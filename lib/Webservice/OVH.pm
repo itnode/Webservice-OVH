@@ -29,6 +29,13 @@ This is the base object from where all api calls originate.
 
 This module uses the perl api module provided by ovh.
 
+=begin html
+
+<p><center><img src="https://plik.ovh/file/bp4AlnPIPmPIGBdA/FBAreimEJKMaFalm/API%20HowTo.png"></center></p>
+
+=end html
+
+
 =head1 METHODS
 
 =cut
