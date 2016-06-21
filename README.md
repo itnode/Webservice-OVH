@@ -23,11 +23,11 @@ Webservice::OVH  - A perl representation of the ovh-api
 This module reflects the path structure of the ovh web-api.
 This is the base object from where all api calls originate.
 
-<div>
-    <p><center><img src="https://plik.ovh/file/bp4AlnPIPmPIGBdA/FBAreimEJKMaFalm/API%20HowTo.png" width="640" height="480"></center></p>
-</div>
-
 This module uses the perl api module provided by ovh.
+
+<div>
+    <p><center><img src="https://plik.ovh/file/bp4AlnPIPmPIGBdA/FBAreimEJKMaFalm/API%20HowTo.png" width="640" height="500"></center></p>
+</div>
 
 # METHODS
 
