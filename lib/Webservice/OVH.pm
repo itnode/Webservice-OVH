@@ -54,6 +54,7 @@ use Webservice::OVH::Domain;
 use Webservice::OVH::Me;
 use Webservice::OVH::Order;
 use Webservice::OVH::Email;
+use Webservice::OVH::Cloud;
 
 # other requirements
 use JSON;
@@ -113,6 +114,7 @@ sub new_from_json {
     my $me = Webservice::OVH::Me->_new( $api_wrapper, $self );
     my $order = Webservice::OVH::Order->_new( $api_wrapper, $self );
     my $email = Webservice::OVH::Email->_new( $api_wrapper, $self );
+    my $cloud = Webservice::OVH::Cloud->_new( $api_wrapper, $self );
 
     # Timeout can be also set in the json file
     OvhApi->setRequestTimeout( timeout => $data->{timeout} || 120 );
@@ -123,6 +125,7 @@ sub new_from_json {
     $self->{_order}       = $order;
     $self->{_api_wrapper} = $api_wrapper;
     $self->{_email}       = $email;
+    $self->{_cloud}       = $cloud;
 
     return $self;
 }
@@ -161,6 +164,8 @@ sub new {
     my $domain = Webservice::OVH::Domain->_new( $api_wrapper, $self );
     my $me = Webservice::OVH::Me->_new( $api_wrapper, $self );
     my $order = Webservice::OVH::Order->_new( $api_wrapper, $self );
+    my $email = Webservice::OVH::Email->_new( $api_wrapper, $self );
+    my $cloud = Webservice::OVH::Cloud->_new( $api_wrapper, $self );
 
     OvhApi->setRequestTimeout( timeout => $params{timeout} || 120 );
 
@@ -168,6 +173,7 @@ sub new {
     $self->{_me}          = $me;
     $self->{_order}       = $order;
     $self->{_api_wrapper} = $api_wrapper;
+    $self->{_cloud}       = $cloud;
 
     return $self;
 }
@@ -275,6 +281,27 @@ sub email {
     my ($self) = @_;
 
     return $self->{_email};
+}
+
+=head2 cloud
+
+Main access to all /cloud/ api methods 
+
+=over
+
+=item * Return: L<Webservice::OVH::Cloud>
+
+=item * Synopsis: $ovh->cloud;
+
+=back
+
+=cut
+
+sub cloud {
+
+    my ($self) = @_;
+
+    return $self->{_cloud};
 }
 
 =head1 AUTHOR

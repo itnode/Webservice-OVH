@@ -252,7 +252,7 @@ sub service {
     }
 }
 
-=head2 service
+=head2 zone
 
 Returns a single zone by name
 
