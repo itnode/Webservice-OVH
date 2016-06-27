@@ -31,7 +31,7 @@ sub _new {
 
     croak "Missing project_id" unless $project_id;
 
-    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _properties => undef, _id => $project_id }, $class;
+    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _properties => undef, _id => $project_id, _instances => {}, _available_instances = [] }, $class;
 
     my $ip = Webservice::OVH::Cloud::Project::IP->_new($api_wrapper, $self, $module);
     $self->{ip} = $ip;
@@ -168,6 +168,118 @@ sub vrack {
     croak $response->error if $response->error;
 
     return $response->content;
+}
+
+=head2 instance_exists
+
+Returns 1 if instance is available for the connected account, 0 if not.
+
+=over
+
+=item * Parameter: $instance_id - api id, $no_recheck - (optional)only for internal usage 
+
+=item * Return: VALUE
+
+=item * Synopsis: print "instance exists" if $project->instance_exists(1234);
+
+=back
+
+=cut
+
+sub instance_exists {
+
+    my ( $self, $instance_id, $no_recheck ) = @_;
+
+    if ( !$no_recheck ) {
+
+        my $api        = $self->{_api_wrapper};
+        my $project_id = $self->project->id;
+        my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/instance", noSignature => 0 );
+        croak $response->error if $response->error;
+
+        my $list = $response->content;
+
+        return ( grep { $_ eq $instance_id } @$list ) ? 1 : 0;
+
+    } else {
+
+        my $list = $self->{_avaiable_projects};
+
+        return ( grep { $_ eq $instance_id } @$list ) ? 1 : 0;
+    }
+}
+
+=head2 instances
+
+Produces an array of all available instances that are connected to the project.
+
+=over
+
+=item * Return: ARRAY
+
+=item * Synopsis: my $instances = $project->instances;
+
+=back
+
+=cut
+
+sub instances {
+
+    my ($self, $region) = @_;
+    
+    my $filter = Webservice::OVH::Helper->construct_filter( "region" => $region );
+
+    my $api        = $self->{_api_wrapper};
+    my $project_id = $self->project->id;
+    my $response   = $api->rawCall( method => 'get', path => sprintf("/cloud/project/$project_id/instance%s", $filter), noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $instance_array = $response->content;
+    my $instances      = [];
+    $self->{_available_failovers} = $instance_array;
+
+    foreach my $instance_id (@$instance_array) {
+
+        if ( $self->instance_exists( $instance_id, 1 ) ) {
+            my $instance = $self->{_instances}{$instance_id} = $self->{_instances}{$instance_id} || Webservice::OVH::Cloud::Project::Instance->_new( $api, $self->project, $instance_id, $self->{_module} );
+            push @$instances, $instance;
+        }
+    }
+
+    return $instances;
+}
+
+=head2 instance
+
+Returns a single instance by id
+
+=over
+
+=item * Parameter: $instance_id - api id
+
+=item * Return: L<Webservice::OVH::Cloud::Project::Instance>
+
+=item * Synopsis: my $instance = $project->instance(1234);
+
+=back
+
+=cut
+
+sub instance {
+
+    my ( $self, $instance_id ) = @_;
+
+    if ( $self->instance_exists($instance_id) ) {
+
+        my $api = $self->{_api_wrapper};
+        my $instance = $self->{_instances}{$instance_id} = $self->{_instances}{$instance_id} || Webservice::OVH::Cloud::Project::Instance->_new( $api, $self->project, $instance_id, $self->{_module} );
+
+        return $instance;
+    } else {
+
+        carp "Instance $instance_id doesn't exists";
+        return undef;
+    }
 }
 
 

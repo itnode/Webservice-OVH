@@ -37,9 +37,9 @@ sub _new {
 }
 
 sub project {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_project};
 }
 
@@ -65,9 +65,9 @@ sub failover_exists {
 
     if ( !$no_recheck ) {
 
-        my $api = $self->{_api_wrapper};
+        my $api        = $self->{_api_wrapper};
         my $project_id = $self->project->id;
-        my $response = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/ip/failover", noSignature => 0 );
+        my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/ip/failover", noSignature => 0 );
         croak $response->error if $response->error;
 
         my $list = $response->content;
@@ -97,12 +97,12 @@ Produces an array of all available failovers that are connected to the project.
 =cut
 
 sub failovers {
-    
+
     my ($self) = @_;
 
-    my $api = $self->{_api_wrapper};
+    my $api        = $self->{_api_wrapper};
     my $project_id = $self->project->id;
-    my $response = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/ip/failover", noSignature => 0 );
+    my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/ip/failover", noSignature => 0 );
     croak $response->error if $response->error;
 
     my $failover_array = $response->content;
@@ -110,9 +110,9 @@ sub failovers {
     $self->{_available_failovers} = $failover_array;
 
     foreach my $failover_hash (@$failover_array) {
-        
+
         my $failover_id = $failover_hash->{id};
-        if ( $self->ip_exists( $failover_id, 1 ) ) {
+        if ( $self->failover_exists( $failover_id, 1 ) ) {
             my $failover = $self->{_failovers}{$failover_id} = $self->{_failovers}{$failover_id} || Webservice::OVH::Cloud::Project::IP::Failover->_new( $api, $self->project, $failover_id, $self->{_module} );
             push @$failovers, $failover;
         }
@@ -153,7 +153,4 @@ sub failover {
         return undef;
     }
 }
-
-
-
 1;

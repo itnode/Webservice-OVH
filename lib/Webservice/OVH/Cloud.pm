@@ -127,7 +127,7 @@ sub projects {
     $self->{_avaiable_projects} = $project_array;
 
     foreach my $project_id (@$project_array) {
-        if ( $self->projects_exists( $project_name, 1 ) ) {
+        if ( $self->projects_exists( $project_id, 1 ) ) {
             my $project = $self->{_projects}{$project_id} = $self->{_projects}{$project_id} || Webservice::OVH::Cloud::Project->_new( $api, $project_id, $self->{_module} );
             push @$projects, $project;
         }
@@ -164,7 +164,7 @@ sub project {
         return $project_id;
     } else {
 
-        carp "Service $project_name doesn't exists";
+        carp "Service $project_id doesn't exists";
         return undef;
     }
 }
