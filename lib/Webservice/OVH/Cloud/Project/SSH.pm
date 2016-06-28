@@ -1,4 +1,4 @@
-package Webservice::OVH::Cloud::Project::SSHKey;
+package Webservice::OVH::Cloud::Project::SSH;
 
 use strict;
 use warnings;
@@ -8,9 +8,18 @@ our $VERSION = 0.1;
 
 sub _new_existing {
     
-    my ( $class, $api_wrapper, $module, $project, $key_id ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing key_id" unless $key_id;
+    die "Missing id" unless $params{id};
+    die "Missing project" unless $params{project};
+    die "Missing module" unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    
+    my $api_wrapper = $params{wrapper};
+    my $module = $params{module};
+    my $project = $params{project};
+    my $key_id = $params{id};
+    
     my $project_id = $project->id;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/cloud/project/$project_id/sshkey/$key_id", noSignature => 0 );
     carp $response->error if $response->error;
@@ -29,10 +38,16 @@ sub _new_existing {
 
 sub _new {
     
-    my ( $class, $api_wrapper, $module, $project, %params ) = @_;
-
-    die "Missing project" unless $project;
+    my ( $class,  %params ) = @_;
     
+    die "Missing project" unless $params{project};
+    die "Missing module" unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    
+    my $api_wrapper = $params{wrapper};
+    my $module = $params{module};
+    my $project = $params{project};
+
     my @keys_needed = qw{ public_key region };
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
 
@@ -66,8 +81,7 @@ sub _is_valid {
 
     my ($self) = @_;
 
-    my $key_id = $self->id;
-    carp "Key $key_id is not valid anymore" unless $self->is_valid;
+    carp "Key is not valid anymore" unless $self->is_valid;
     return $self->is_valid;
 }
 

@@ -6,7 +6,7 @@ use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
 
-##############grou
+##############
 
 sub _new_empty {
     
@@ -91,10 +91,19 @@ sub create_group {
 
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $module, $project, $instance_id ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing instance_id" unless $instance_id;
+    die "Missing id" unless $params{id};
+    die "Missing module" unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing project" unless $params{project};
+    
+    my $instance_id = $params{id};
+    my $module = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $project = $params{project};
     my $project_id = $project->id;
+    
     my $response = $api_wrapper->rawCall( method => 'get', path => "/cloud/project/$project_id/instance/$instance_id", noSignature => 0 );
     carp $response->error if $response->error;
 
@@ -112,25 +121,34 @@ sub _new_existing {
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module, $project, $params, $networks ) = @_;
+    my ( $class, %params ) = @_;
+    
+    die "Missing module" unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing project" unless $params{project};
 
-    my @keys = qw{  flavor_id image_id name region };
-    if ( my @missing_parameters = grep { not $params->{$_} } @keys ) {
+    my @keys = qw{ flavor_id image_id name region };
+    if ( my @missing_parameters = grep { not $params{$_} } @keys ) {
 
         croak "Missing parameter: @missing_parameters";
     }
-
-    my $project_id = $project->id;
     
+    my $module = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $project = $params{project};
+    my $project_id = $project->id;
+
     my $body      = {};
-    $body->{flavorId} = $params->{flavor_id};
-    $body->{imageId} = $params->{image_id};
-    $body->{name} = $params->{name};
-    $body->{region} = $params->{region};
-    $body->{groupId} = $params->{group_id} if exists $params->{group_id};
-    $body->{monthlyBilling} = $params->{monthly_billing} if exists $params->{monthly_billing};
-    $body->{sshKeyId} = $params->{ssh_key_id} if exists $params->{ssh_key_id};
-    $body->{userData} = $params->{user_data} if exists $params->{user_data};
+    $body->{flavorId} = $params{flavor_id};
+    $body->{imageId} = $params{image_id};
+    $body->{name} = $params{name};
+    $body->{region} = $params{region};
+    $body->{groupId} = $params{group_id} if exists $params{group_id};
+    $body->{monthlyBilling} = $params{monthly_billing} if exists $params{monthly_billing};
+    $body->{sshKeyId} = $params{ssh_key_id} if exists $params{ssh_key_id};
+    $body->{userData} = $params{user_data} if exists $params{user_data};
+    
+    my $networks = $params{networks};
     
     foreach my $network (@$networks) {
         
@@ -170,8 +188,7 @@ sub _is_valid {
 
     my ($self) = @_;
 
-    my $instance_id = $self->id;
-    carp "Instance $instance_id is not valid anymore" unless $self->is_valid;
+    carp "Instance is not valid anymore" unless $self->is_valid;
     return $self->is_valid;
 }
 

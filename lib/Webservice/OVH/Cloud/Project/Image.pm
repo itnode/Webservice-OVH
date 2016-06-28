@@ -7,11 +7,20 @@ use Carp qw{ carp croak };
 our $VERSION = 0.1;
 
 sub _new_existing {
-    
-    my ( $class, $api_wrapper, $module, $project, $image_id ) = @_;
 
-    die "Missing image_id" unless $image_id;
-    my $project_id = $project->id;
+    my ( $class, %params ) = @_;
+
+    die "Missing id"      unless $params{id};
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing project" unless $params{project};
+
+    my $project     = $params{project};
+    my $project_id  = $project->id;
+    my $api_wrapper = $params{wrapper};
+    my $module      = $params{module};
+    my $image_id    = $params{id};
+
     my $response = $api_wrapper->rawCall( method => 'get', path => "/cloud/project/$project_id/image/$image_id", noSignature => 0 );
     carp $response->error if $response->error;
 
@@ -28,7 +37,7 @@ sub _new_existing {
 }
 
 sub id {
-    
+
     my ($self) = @_;
 
     return $self->{_id};
@@ -40,89 +49,87 @@ sub properties {
 
     return unless $self->_is_valid;
 
-    my $api       = $self->{_api_wrapper};
+    my $api        = $self->{_api_wrapper};
     my $project_id = $self->project->id;
-    my $image_id = $self->id;
-    my $response  = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/image/$image_id", noSignature => 0 );
+    my $image_id   = $self->id;
+    my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/image/$image_id", noSignature => 0 );
     croak $response->error if $response->error;
     $self->{_properties} = $response->content;
     return $self->{_properties};
 }
 
 sub visibility {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{visibility};
 }
 
 sub status {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{status};
 }
 
 sub name {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{name};
 }
 
 sub region {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{region};
 }
 
 sub min_disk {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{minDisk};
 }
 
 sub size {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{size};
 }
 
 sub creation_date {
-    
+
     my ($self) = @_;
 
     return unless $self->_is_valid;
-    
+
     my $str_datetime = $self->{_properties}->{creationDate};
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
     return $datetime;
 }
 
 sub min_ram {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{minRam};
 }
 
 sub user {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{user};
 }
 
 sub type {
-    
+
     my ($self) = @_;
 
     return $self->{_properties}->{type};
 }
-
-
 
 1;

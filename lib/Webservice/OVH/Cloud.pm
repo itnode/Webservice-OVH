@@ -57,7 +57,7 @@ sub _new {
 
     my ( $class, $api_wrapper, $module ) = @_;
 
-    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _projects => {}, _avaiable_projects => [] }, $class;
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _projects => {}, _avaiable_projects => [] }, $class;
 
     return $self;
 }
@@ -127,8 +127,8 @@ sub projects {
     $self->{_avaiable_projects} = $project_array;
 
     foreach my $project_id (@$project_array) {
-        if ( $self->projects_exists( $project_id, 1 ) ) {
-            my $project = $self->{_projects}{$project_id} = $self->{_projects}{$project_id} || Webservice::OVH::Cloud::Project->_new( $api, $project_id, $self->{_module} );
+        if ( $self->project_exists( $project_id, 1 ) ) {
+            my $project = $self->{_projects}{$project_id} = $self->{_projects}{$project_id} || Webservice::OVH::Cloud::Project->_new_existing( wrapper => $api, id => $project_id, module => $self->{_module} );
             push @$projects, $project;
         }
     }
@@ -159,9 +159,9 @@ sub project {
     if ( $self->project_exists($project_id) ) {
 
         my $api = $self->{_api_wrapper};
-        my $project = $self->{_projects}{$project_id} = $self->{_projects}{$project_id} || Webservice::OVH::Cloud::Project->_new( $api, $project_id, $self->{_module} );
+        my $project = $self->{_projects}{$project_id} = $self->{_projects}{$project_id} || Webservice::OVH::Cloud::Project->_new_existing( wrapper => $api, id => $project_id, module => $self->{_module} );
 
-        return $project_id;
+        return $project;
     } else {
 
         carp "Service $project_id doesn't exists";

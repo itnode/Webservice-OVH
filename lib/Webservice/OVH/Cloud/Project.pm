@@ -7,6 +7,10 @@ use Carp qw{ carp croak };
 our $VERSION = 0.1;
 
 use Webservice::OVH::Cloud::Project::IP;
+use Webservice::OVH::Cloud::Project::Instance;
+use Webservice::OVH::Cloud::Project::Network;
+use Webservice::OVH::Cloud::Project::Image;
+use Webservice::OVH::Cloud::Project::SSH;
 
 =head2 _new
 
@@ -25,20 +29,25 @@ This method is not ment to be called directly.
 
 =cut
 
-sub _new {
+sub _new_existing {
 
-    my ( $class, $api_wrapper, $project_id, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    croak "Missing project_id" unless $project_id;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
 
-    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _properties => undef, _id => $project_id, _instances => {}, _available_instances => [], _images => {}, _available_images => [] }, $class;
+    my $project_id  = $params{id};
+    my $api_wrapper = $params{wrapper};
+    my $module      = $params{module};
+
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _properties => undef, _id => $project_id, _instances => {}, _available_instances => [], _images => {}, _available_images => [], _ssh_keys => {}, _available_ssh_keys => [] }, $class;
     my $instance = Webservice::OVH::Cloud::Project::Instance->_new_empty( $api_wrapper, $self, $module );
-    my $network = Webservice::OVH::Cloud::Project::Instance->_new( wrapper => $api_wrapper, project => $self, module => $module );
-    $self->{_instance} = $instance;
-    $self->{_network} = $network;
-
+    my $network = Webservice::OVH::Cloud::Project::Network->_new( wrapper => $api_wrapper, project => $self, module => $module );
     my $ip = Webservice::OVH::Cloud::Project::IP->_new( $api_wrapper, $self, $module );
-    $self->{ip} = $ip;
+    $self->{_instance} = $instance;
+    $self->{_network}  = $network;
+    $self->{_ip}       = $ip;
 
     $self->properties;
 
@@ -294,10 +303,11 @@ sub instance {
 
 sub create_instance {
 
-    my ( $self, $params, $networks ) = @_;
+    my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $instance = Webservice::OVH::Cloud::Project::Instance->_new( $api, $self->{_module}, $self, $params, $networks );
+    my $instance = Webservice::OVH::Cloud::Project::Instance->_new( wrapper => $api, module => $self->{_module}, project => $self, %params, );
+    return $instance;
 }
 
 sub regions {
@@ -360,10 +370,11 @@ sub image_exists {
         my $project_id = $self->id;
         my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/image/$image_id", noSignature => 0 );
         croak $response->error if $response->error;
-
+        
         my $list = $response->content;
+        my @image_ids = grep { $_ = $_->{id} } @$list;
 
-        return ( grep { $_ eq $image_id } @$list ) ? 1 : 0;
+        return ( grep { $_ eq $image_id } @image_ids ) ? 1 : 0;
 
     } else {
 
@@ -376,8 +387,12 @@ sub image_exists {
 sub images {
 
     my ( $self, %filter ) = @_;
-
-    my $filter = Webservice::OVH::Helper->construct_filter( "flavorType" => %filter{flavor_type}, "osType" => %filter{os_type}, "region" => %filter{region} );
+    
+    my %filter_values;
+    $filter_values{flavorType} = $filter{flavor_type} unless exists $filter{flavor_type};
+    $filter_values{osType} = $filter{os_type} unless exists $filter{os_type};
+    $filter_values{region} = $filter{region} unless exists $filter{region};
+    my $filter = Webservice::OVH::Helper->construct_filter( %filter );
 
     my $api        = $self->{_api_wrapper};
     my $project_id = $self->id;
@@ -386,12 +401,14 @@ sub images {
 
     my $image_array = $response->content;
     my $images      = [];
-    $self->{_available_images} = $image_array;
+    my @image_ids = grep { $_ = $_->{id} } @$image_array;
+    $self->{_available_images} = \@image_ids;
 
-    foreach my $image_id (@$image_array) {
+    foreach my $image_id (@image_ids) {
 
-        if ( $self->instance_exists( $image_id, 1 ) ) {
-            my $image = $self->{_images}{$image_id} = $self->{_images}{$image_id} || Webservice::OVH::Cloud::Project::Image->_new_existing( $api, $self->{_module}, $self, $image_id );
+        if ( $self->image_exists( $image_id, 1 ) ) {
+
+            my $image = $self->{_images}{$image_id} = $self->{_images}{$image_id} || Webservice::OVH::Cloud::Project::Image->_new_existing( wrapper => $api, module => $self->{_module}, project => $self, id => $image_id );
             push @$images, $image;
         }
     }
@@ -406,7 +423,7 @@ sub image {
     if ( $self->image_exists($image_id) ) {
 
         my $api = $self->{_api_wrapper};
-        my $instance = $self->{_image}{$image_id} = $self->{_image}{$image_id} || Webservice::OVH::Cloud::Project::Image->_new_existing( $api, $self->{_module}, $self, $image_id );
+        my $instance = $self->{_image}{$image_id} = $self->{_image}{$image_id} || Webservice::OVH::Cloud::Project::Image->_new_existing( wrapper => $api, module => $self->{_module}, project => $self, id => $image_id );
 
         return $instance;
     } else {
@@ -416,10 +433,79 @@ sub image {
     }
 }
 
+sub ssh_key_exists {
+
+    my ( $self, $key_id, $no_recheck ) = @_;
+
+    if ( !$no_recheck ) {
+
+        my $api        = $self->{_api_wrapper};
+        my $project_id = $self->id;
+        my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/sshkey/$key_id", noSignature => 0 );
+        croak $response->error if $response->error;
+        
+        my $list = $response->content;
+        my @key_ids = grep { $_ = $_->{id} } @$list;
+
+        return ( grep { $_ eq $key_id } @key_ids ) ? 1 : 0;
+
+    } else {
+
+        my $list = $self->{_available_ssh_keys};
+
+        return ( grep { $_ eq $key_id } @$list ) ? 1 : 0;
+    }
+}
+
+sub ssh_keys {
+
+    my ( $self, $region ) = @_;
+    
+    my $filter = Webservice::OVH::Helper->construct_filter( region => $region );
+
+    my $api        = $self->{_api_wrapper};
+    my $project_id = $self->id;
+    my $response   = $api->rawCall( method => 'get', path => sprintf( "/cloud/project/$project_id/sshkey%s", $filter ), noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $key_array = $response->content;
+    my $keys      = [];
+    my @key_ids = grep { $_ = $_->{id} } @$key_array;
+    $self->{_available_ssh_keys} = \@key_ids;
+
+    foreach my $key_id (@key_ids) {
+
+        if ( $self->ssh_key_exists( $key_id, 1 ) ) {
+
+            my $ssh_key = $self->{_ssh_keys}{$key_id} = $self->{_ssh_keys}{$key_id} || Webservice::OVH::Cloud::Project::SSH->_new_existing( wrapper => $api, module => $self->{_module}, project => $self, id => $key_id );
+            push @$keys, $ssh_key;
+        }
+    }
+
+    return $keys;
+}
+
+sub ssh_key {
+
+    my ( $self, $key_id ) = @_;
+
+    if ( $self->ssh_key_exists($key_id) ) {
+
+        my $api = $self->{_api_wrapper};
+        my $instance = $self->{_ssh_keys}{$key_id} = $self->{_ssh_keys}{$key_id} || Webservice::OVH::Cloud::Project::SSH->_new_existing( wrapper => $api, module => $self->{_module}, project => $self, id => $key_id );
+
+        return $instance;
+    } else {
+
+        carp "SSH-Key $key_id doesn't exists";
+        return undef;
+    }
+}
+
 sub network {
-    
-    my ( $self ) = @_;
-    
+
+    my ($self) = @_;
+
     return $self->{_network};
 }
 

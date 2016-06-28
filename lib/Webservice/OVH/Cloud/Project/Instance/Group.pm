@@ -63,8 +63,7 @@ sub _is_valid {
 
     my ($self) = @_;
 
-    my $group_id = $self->id;
-    carp "Group $group_id is not valid anymore" unless $self->is_valid;
+    carp "Group is not valid anymore" unless $self->is_valid;
     return $self->is_valid;
 }
 
