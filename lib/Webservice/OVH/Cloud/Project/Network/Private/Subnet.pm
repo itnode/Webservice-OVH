@@ -3,6 +3,7 @@ package Webservice::OVH::Cloud::Project::Network::Private::Subnet;
 use strict;
 use warnings;
 use Carp qw{ carp croak };
+use JSON;
 
 our $VERSION = 0.1;
 
@@ -31,13 +32,21 @@ sub _new_existing {
 sub _new {
 
     my ( $class, %params ) = @_;
-
+    
+    die "Missing id" unless $params{project};
+    die "Missing project" unless $params{wrapper};
+    die "Missing wrapper" unless $params{module};
+    die "Missing module" unless $params{private};
+    
+    my $dhcp = $params{dhcp} && ($params{dhcp} eq 'true' || $params{dhcp} == 1) ? JSON::true : JSON::false;
+    my $no_gateway = $params{noGateway} && ($params{noGateway} eq 'true' || $params{noGateway} == 1) ? JSON::true : JSON::false;
+    
     my $project_id = $params{project}->id;
     my $api        = $params{wrapper};
     my $module     = $params{module};
     my $private    = $params{private};
 
-    my @keys_needed = qw{ network project wrapper module dhcp end network no_gateway region start };
+    my @keys_needed = qw{ network end region start };
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";
@@ -46,12 +55,15 @@ sub _new {
     my $network_id = $private->id;
 
     my $body = {};
-    $body->{dhcp}       = $params{dhcp};
+    $body->{dhcp}       = $dhcp;
     $body->{end}        = $params{end};
     $body->{network}    = $params{network};
-    $body->{no_gateway} = $params{no_gateway};
+    $body->{noGateway}  = $no_gateway;
     $body->{region}     = $params{region};
     $body->{start}      = $params{start};
+    
+    use DDP;
+    p $body;
 
     my $response = $api->rawCall( method => 'post', path => "/cloud/project/$project_id/network/private/$network_id/subnet", body => $body, noSignature => 0 );
     die $response->error if $response->error;
@@ -59,7 +71,7 @@ sub _new {
     my $subnet_id  = $response->content->{id};
     my $properties = $response->content;
 
-    my $self = bless { _network => $params{network}, _module => $module, _valid => 1, _api_wrapper => $api, _id => $subnet_id, _properties => $properties, _project => $params{project} }, $class;
+    my $self = bless { _network => $private, _module => $module, _valid => 1, _api_wrapper => $api, _id => $subnet_id, _properties => $properties, _project => $params{project} }, $class;
 
     return $self;
 }
