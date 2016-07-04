@@ -38,18 +38,24 @@ sub _new_existing {
 
 sub _new {
     
-    my ( $class, $api_wrapper, $module, $project, %params ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing project" unless $project;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing project"      unless $params{project};
+
+    my $api_wrapper = $params{wrapper};
+    my $module      = $params{module};
+    my $project = $params{project};
+    my $project_id = $project->id;
     
-    my @keys_needed = qw{ region };
+    my @keys_needed = qw{ region name };
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";
     }
 
-    my $project_id = $project->id;
-    my $body      = { region => $params{region} };
+    my $body      = { region => $params{region}, name => $params{name} };
     my $response = $api_wrapper->rawCall( method => 'post', path => "/cloud/project/$project_id/instance/group", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
@@ -59,6 +65,27 @@ sub _new {
     my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $group_id, _properties => $properties, _project => $project }, $class;
 
     return $self;
+}
+
+=head2 project
+
+Root Project.
+
+=over
+
+=item * Return: L<Webservice::OVH::Cloud::Project>
+
+=item * Synopsis: my $project = $group->project;
+
+=back
+
+=cut
+
+sub project {
+
+    my ($self) = @_;
+
+    return $self->{_project};
 }
 
 sub is_valid {
@@ -143,7 +170,7 @@ sub delete {
     return unless $self->_is_valid;
     
     my $api = $self->{_api_wrapper};
-    my $project_id = $self->project_id;
+    my $project_id = $self->project->id;
     my $group_id = $self->id;
     
     my $response = $api->rawCall( method => 'delete', path => "/cloud/project/$project_id/instance/group/$group_id", noSignature => 0 );

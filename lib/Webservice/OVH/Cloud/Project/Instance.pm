@@ -38,6 +38,8 @@ use JSON;
 
 our $VERSION = 0.1;
 
+use Webservice::OVH::Cloud::Project::Instance::Group;
+
 # Static Methods
 
 =head2 _new_empty
