@@ -74,7 +74,7 @@ sub _new_existing {
     my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _properties => undef, _id => $project_id, _instances => {}, _available_instances => [], _images => {}, _available_images => [], _ssh_keys => {}, _available_ssh_keys => [] }, $class;
     my $instance = Webservice::OVH::Cloud::Project::Instance->_new_empty( $api_wrapper, $self, $module );
     my $network = Webservice::OVH::Cloud::Project::Network->_new( wrapper => $api_wrapper, project => $self, module => $module );
-    my $ip = Webservice::OVH::Cloud::Project::IP->_new( $api_wrapper, $self, $module );
+    my $ip = Webservice::OVH::Cloud::Project::IP->_new( wrapper => $api_wrapper, project => $self, module => $module );
     $self->{_instance} = $instance;
     $self->{_network}  = $network;
     $self->{_ip}       = $ip;
@@ -193,10 +193,7 @@ sub order {
 
     my $order_id = $self->{_properties}->{orderId};
 
-    if ($order_id) {
-
-        return $self->{_module}->me->order($order_id);
-    }
+    return $self->{_module}->me->order($order_id) if $order_id;
 
     return undef;
 }
@@ -259,14 +256,15 @@ Changes the project.
 
 sub change {
 
-    my ( $self, %params ) = @_;
+    my ( $self, $description ) = @_;
 
-    my $api  = $self->{_api_wrapper};
-    my $id   = $self->id;
-    my $body = {};
-    $body->{description} = $params{description} if exists $params{description};
-    my $response = $api->rawCall( method => 'put', path => "/cloud/project/$id", body => $body, noSignature => 0 );
+    my $api        = $self->{_api_wrapper};
+    my $project_id = $self->id;
+
+    my $response = $api->rawCall( method => 'put', path => "/cloud/project/$project_id", body => { description => $description }, noSignature => 0 );
     croak $response->error if $response->error;
+
+    $self->properties;
 }
 
 =head2 vrack
@@ -287,10 +285,10 @@ sub vrack {
 
     my ($self) = @_;
 
-    my $api = $self->{_api_wrapper};
-    my $id  = $self->id;
+    my $api        = $self->{_api_wrapper};
+    my $project_id = $self->id;
 
-    my $response = $api->rawCall( method => 'put', path => "/cloud/project/$id/vrack", noSignature => 0 );
+    my $response = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/vrack", noSignature => 0 );
     croak $response->error if $response->error;
 
     return $response->content;
@@ -354,8 +352,7 @@ sub instances {
 
     my ( $self, $region ) = @_;
 
-    my $filter = Webservice::OVH::Helper->construct_filter( "region" => $region );
-
+    my $filter = $region ? Webservice::OVH::Helper->construct_filter( "region" => $region ) : "";
     my $api        = $self->{_api_wrapper};
     my $project_id = $self->id;
     my $response   = $api->rawCall( method => 'get', path => sprintf( "/cloud/project/$project_id/instance%s", $filter ), noSignature => 0 );
@@ -512,7 +509,6 @@ Returns a hash of all available flavors.
 
 =cut
 
-
 sub flavors {
 
     my ($self) = @_;
@@ -577,10 +573,11 @@ sub image_exists {
 
         my $api        = $self->{_api_wrapper};
         my $project_id = $self->id;
-        my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/image/$image_id", noSignature => 0 );
+        my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/image", noSignature => 0 );
         croak $response->error if $response->error;
 
         my $list = $response->content;
+        
         my @image_ids = grep { $_ = $_->{id} } @$list;
 
         return ( grep { $_ eq $image_id } @image_ids ) ? 1 : 0;
@@ -698,7 +695,7 @@ sub ssh_key_exists {
 
         my $api        = $self->{_api_wrapper};
         my $project_id = $self->id;
-        my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/sshkey/$key_id", noSignature => 0 );
+        my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/sshkey", noSignature => 0 );
         croak $response->error if $response->error;
 
         my $list = $response->content;
@@ -734,7 +731,7 @@ sub ssh_keys {
 
     my ( $self, $region ) = @_;
 
-    my $filter = Webservice::OVH::Helper->construct_filter( region => $region );
+    my $filter = $region ? Webservice::OVH::Helper->construct_filter( region => $region ) : "";
 
     my $api        = $self->{_api_wrapper};
     my $project_id = $self->id;
