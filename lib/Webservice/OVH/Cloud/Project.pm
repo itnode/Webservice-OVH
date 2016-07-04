@@ -788,6 +788,31 @@ sub ssh_key {
     }
 }
 
+=head2 create_ssh_key
+
+Creates a new ssh key. 
+
+=over
+
+=item * Parameter: %params - key => value (required) name public_key (optional) region
+
+=item * Return: <Webservice::OVH::Cloud::Project::SSH>
+
+=item * Synopsis: my $ssh_key = $project->create_ssh_key( name => 'Test key', public_key => $key );
+
+=back
+
+=cut
+
+sub create_ssh_key {
+    
+    my ( $self, %params ) = @_;
+    
+    my $api = $self->{_api_wrapper};
+    my $ssh_key = Webservice::OVH::Cloud::Project::SSH->_new( wrapper => $api, module => $self->{_module}, project => $self, %params, );
+    return $ssh_key;
+}
+
 =head2 network
 
 Access to /cloud/project/network api methods 

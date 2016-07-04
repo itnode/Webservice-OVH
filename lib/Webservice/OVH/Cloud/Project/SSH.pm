@@ -55,19 +55,19 @@ This method is not ment to be called directly.
 =cut
 
 sub _new_existing {
-    
+
     my ( $class, %params ) = @_;
 
-    die "Missing id" unless $params{id};
+    die "Missing id"      unless $params{id};
     die "Missing project" unless $params{project};
-    die "Missing module" unless $params{module};
+    die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
-    
+
     my $api_wrapper = $params{wrapper};
-    my $module = $params{module};
-    my $project = $params{project};
-    my $key_id = $params{id};
-    
+    my $module      = $params{module};
+    my $project     = $params{project};
+    my $key_id      = $params{id};
+
     my $project_id = $project->id;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/cloud/project/$project_id/sshkey/$key_id", noSignature => 0 );
     carp $response->error if $response->error;
@@ -102,32 +102,33 @@ This method is not ment to be called directly.
 =cut
 
 sub _new {
-    
-    my ( $class,  %params ) = @_;
-    
-    die "Missing project" unless $params{project};
-    die "Missing module" unless $params{module};
-    die "Missing wrapper" unless $params{wrapper};
-    
-    my $api_wrapper = $params{wrapper};
-    my $module = $params{module};
-    my $project = $params{project};
 
-    my @keys_needed = qw{ public_key region };
+    my ( $class, %params ) = @_;
+
+    die "Missing project" unless $params{project};
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+
+    my $api_wrapper = $params{wrapper};
+    my $module      = $params{module};
+    my $project     = $params{project};
+
+    my @keys_needed = qw{ public_key name };
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";
     }
 
     my $project_id = $project->id;
-    my $body      = {};
-    $body->{name} = $params{name};
+    my $body       = {};
+    $body->{name}      = $params{name};
     $body->{publicKey} = $params{public_key};
-    $body->{region} = $params{region} if exists $params{region};
-    my $response = $api_wrapper->rawCall( method => 'post', path => "/cloud/project/{serviceName}/sshkey", body => $body, noSignature => 0 );
+    $body->{region}    = $params{region} if exists $params{region};
+    my $response = $api_wrapper->rawCall( method => 'post', path => "/cloud/project/$project_id/sshkey", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $key_id  = $response->content->{properties}->{id};
+    my $key_id = $response->content->{id};
+
     my $properties = $response->content;
 
     my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $key_id, _properties => $properties, _project => $project }, $class;
@@ -150,9 +151,9 @@ Root Project.
 =cut
 
 sub project {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_project};
 }
 
@@ -215,11 +216,11 @@ Returns the api id
 =cut
 
 sub id {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_id};
 }
 
@@ -244,10 +245,10 @@ sub properties {
 
     return unless $self->_is_valid;
 
-    my $api       = $self->{_api_wrapper};
+    my $api        = $self->{_api_wrapper};
     my $project_id = $self->project->id;
-    my $key_id = $self->id;
-    my $response  = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/sshkey/$key_id", noSignature => 0 );
+    my $key_id     = $self->id;
+    my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/sshkey/$key_id", noSignature => 0 );
     croak $response->error if $response->error;
     $self->{_properties} = $response->content;
     return $self->{_properties};
@@ -268,11 +269,11 @@ Exposed property value.
 =cut
 
 sub finger_print {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_properties}->{fingerPrint};
 }
 
@@ -291,11 +292,11 @@ Exposed property value.
 =cut
 
 sub regions {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_properties}->{regions};
 }
 
@@ -314,11 +315,11 @@ Exposed property value.
 =cut
 
 sub name {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_properties}->{name};
 }
 
@@ -337,11 +338,11 @@ Exposed property value.
 =cut
 
 sub public_key {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_properties}->{publicKey};
 }
 
@@ -358,18 +359,18 @@ Deletes the object api sided and sets it invalid.
 =cut
 
 sub delete {
-    
-     my ($self) = @_;
-    
+
+    my ($self) = @_;
+
     return unless $self->_is_valid;
-    
-    my $api = $self->{_api_wrapper};
-    my $project_id = $self->project_id;
-    my $key_id = $self->id;
-    
-    my $response = $api->rawCall( method => 'delete', path => "/cloud/project/$project_id/instance/group/$key_id", noSignature => 0 );
+
+    my $api        = $self->{_api_wrapper};
+    my $project_id = $self->project->id;
+    my $key_id     = $self->id;
+
+    my $response = $api->rawCall( method => 'delete', path => "/cloud/project/$project_id/sshkey/$key_id", noSignature => 0 );
     croak $response->error if $response->error;
-    
+
     $self->{_valid} = 0;
 }
 
