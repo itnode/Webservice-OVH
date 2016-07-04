@@ -329,7 +329,7 @@ sub delete {
     return unless $self->_is_valid;
     
     my $api = $self->{_api_wrapper};
-    my $project_id = $self->project_id;
+    my $project_id = $self->project->id;
     my $instance_id = $self->id;
     
     my $response = $api->rawCall( method => 'delete', path => "/cloud/project/$project_id/instance/$instance_id", noSignature => 0 );

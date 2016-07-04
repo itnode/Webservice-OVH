@@ -210,8 +210,9 @@ sub instance_exists {
         croak $response->error if $response->error;
 
         my $list = $response->content;
+        my @instance_ids = grep { $_ = $_->{id} } @$list;
 
-        return ( grep { $_ eq $instance_id } @$list ) ? 1 : 0;
+        return ( grep { $_ eq $instance_id } @instance_ids ) ? 1 : 0;
 
     } else {
 
@@ -248,12 +249,13 @@ sub instances {
 
     my $instance_array = $response->content;
     my $instances      = [];
-    $self->{_available_instances} = $instance_array;
+    my @instance_ids   = grep { $_ = $_->{id} } @$instance_array;
+    $self->{_available_images} = \@instance_ids;
 
-    foreach my $instance_id (@$instance_array) {
+    foreach my $instance_id (@instance_ids) {
 
         if ( $self->instance_exists( $instance_id, 1 ) ) {
-            my $instance = $self->{_instances}{$instance_id} = $self->{_instances}{$instance_id} || Webservice::OVH::Cloud::Project::Instance->_new( $api, $self->project, $instance_id, $self->{_module} );
+            my $instance = $self->{_instances}{$instance_id} = $self->{_instances}{$instance_id} || Webservice::OVH::Cloud::Project::Instance->_new_existing( wrapper => $api, project => $self, id => $instance_id, module => $self->{_module} );
             push @$instances, $instance;
         }
     }
@@ -289,8 +291,11 @@ sub instance {
 
         if ( $self->instance_exists($instance_id) ) {
 
+            use DDP;
+            p $instance_id;
+
             my $api = $self->{_api_wrapper};
-            my $instance = $self->{_instances}{$instance_id} = $self->{_instances}{$instance_id} || Webservice::OVH::Cloud::Project::Instance->_new( $api, $self->project, $instance_id, $self->{_module} );
+            my $instance = $self->{_instances}{$instance_id} = $self->{_instances}{$instance_id} || Webservice::OVH::Cloud::Project::Instance->_new_existing( wrapper => $api, project => $self, id => $instance_id, module => $self->{_module} );
 
             return $instance;
         } else {
@@ -370,7 +375,7 @@ sub image_exists {
         my $project_id = $self->id;
         my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/image/$image_id", noSignature => 0 );
         croak $response->error if $response->error;
-        
+
         my $list = $response->content;
         my @image_ids = grep { $_ = $_->{id} } @$list;
 
@@ -387,12 +392,12 @@ sub image_exists {
 sub images {
 
     my ( $self, %filter ) = @_;
-    
+
     my %filter_values;
     $filter_values{flavorType} = $filter{flavor_type} unless exists $filter{flavor_type};
-    $filter_values{osType} = $filter{os_type} unless exists $filter{os_type};
-    $filter_values{region} = $filter{region} unless exists $filter{region};
-    my $filter = Webservice::OVH::Helper->construct_filter( %filter );
+    $filter_values{osType}     = $filter{os_type}     unless exists $filter{os_type};
+    $filter_values{region}     = $filter{region}      unless exists $filter{region};
+    my $filter = Webservice::OVH::Helper->construct_filter(%filter);
 
     my $api        = $self->{_api_wrapper};
     my $project_id = $self->id;
@@ -401,7 +406,7 @@ sub images {
 
     my $image_array = $response->content;
     my $images      = [];
-    my @image_ids = grep { $_ = $_->{id} } @$image_array;
+    my @image_ids   = grep { $_ = $_->{id} } @$image_array;
     $self->{_available_images} = \@image_ids;
 
     foreach my $image_id (@image_ids) {
@@ -443,7 +448,7 @@ sub ssh_key_exists {
         my $project_id = $self->id;
         my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/sshkey/$key_id", noSignature => 0 );
         croak $response->error if $response->error;
-        
+
         my $list = $response->content;
         my @key_ids = grep { $_ = $_->{id} } @$list;
 
@@ -460,7 +465,7 @@ sub ssh_key_exists {
 sub ssh_keys {
 
     my ( $self, $region ) = @_;
-    
+
     my $filter = Webservice::OVH::Helper->construct_filter( region => $region );
 
     my $api        = $self->{_api_wrapper};
@@ -470,7 +475,7 @@ sub ssh_keys {
 
     my $key_array = $response->content;
     my $keys      = [];
-    my @key_ids = grep { $_ = $_->{id} } @$key_array;
+    my @key_ids   = grep { $_ = $_->{id} } @$key_array;
     $self->{_available_ssh_keys} = \@key_ids;
 
     foreach my $key_id (@key_ids) {

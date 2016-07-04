@@ -51,7 +51,7 @@ sub _new {
     }
 
     my $body = {};
-    $body->{vlanId}  = $params{vlanId};
+    $body->{vlanId}  = $params{vlan_id};
     $body->{name}    = $params{name};
     $body->{regions} = $params{region} if exists $params{region};
     my $response = $api->rawCall( method => 'post', path => "/cloud/project/$project_id/network/private", body => $body, noSignature => 0 );
@@ -165,7 +165,7 @@ sub change {
     croak "Missing name" unless $name;
 
     my $api        = $self->{_api_wrapper};
-    my $project_id = $self->project_id;
+    my $project_id = $self->project->id;
     my $network_id = $self->id;
 
     my $response = $api->rawCall( method => 'put', path => "/cloud/project/$project_id/network/private/$network_id", body => { name => $name }, noSignature => 0 );
@@ -179,7 +179,7 @@ sub delete {
     return unless $self->_is_valid;
 
     my $api        = $self->{_api_wrapper};
-    my $project_id = $self->project_id;
+    my $project_id = $self->project->id;
     my $network_id = $self->id;
 
     my $response = $api->rawCall( method => 'delete', path => "/cloud/project/$project_id/network/private/$network_id", noSignature => 0 );
@@ -197,7 +197,7 @@ sub region {
     croak "Missing region" unless $region;
 
     my $api        = $self->{_api_wrapper};
-    my $project_id = $self->project_id;
+    my $project_id = $self->project->id;
     my $network_id = $self->id;
 
     my $response = $api->rawCall( method => 'post', path => "/cloud/project/$project_id/network/private/$network_id/region", body => { region => $region }, noSignature => 0 );
@@ -247,7 +247,9 @@ sub create_subnet {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $instance = Webservice::OVH::Cloud::Project::Instance->_new( wrapper => $api, module => $self->{_module}, network => $self, %params );
+    my $subnet = Webservice::OVH::Cloud::Project::Network::Private::Subnet->_new( project => $self->project, wrapper => $api, module => $self->{_module}, private => $self, %params );
+    
+    return $subnet;
 }
 
 1;

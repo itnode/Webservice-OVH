@@ -21,9 +21,9 @@ sub _new_existing {
     my $api        = $params{wrapper};
     my $module     = $params{module};
     my $subnet_id  = $properties->{id};
-    my $network    = $params{network};
+    my $private    = $params{private};
     # No api check possible, because single subnets can't be checked
-    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api, _id => $subnet_id, _properties => $properties, _project => $params{project}, _network => $network }, $class;
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api, _id => $subnet_id, _properties => $properties, _project => $params{project}, _network => $private }, $class;
 
     return $self;
 }
@@ -35,7 +35,7 @@ sub _new {
     my $project_id = $params{project}->id;
     my $api        = $params{wrapper};
     my $module     = $params{module};
-    my $network    = $params{network};
+    my $private    = $params{private};
 
     my @keys_needed = qw{ network project wrapper module dhcp end network no_gateway region start };
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
@@ -43,7 +43,7 @@ sub _new {
         croak "Missing parameter: @missing_parameters";
     }
 
-    my $network_id = $network->id;
+    my $network_id = $private->id;
 
     my $body = {};
     $body->{dhcp}       = $params{dhcp};
@@ -52,8 +52,9 @@ sub _new {
     $body->{no_gateway} = $params{no_gateway};
     $body->{region}     = $params{region};
     $body->{start}      = $params{start};
+
     my $response = $api->rawCall( method => 'post', path => "/cloud/project/$project_id/network/private/$network_id/subnet", body => $body, noSignature => 0 );
-    croak $response->error if $response->error;
+    die $response->error if $response->error;
 
     my $subnet_id  = $response->content->{id};
     my $properties = $response->content;
