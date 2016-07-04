@@ -390,6 +390,8 @@ sub change {
 
     my $response = $api->rawCall( method => 'put', path => "/cloud/project/$project_id/network/private/$network_id", body => { name => $name }, noSignature => 0 );
     croak $response->error if $response->error;
+    
+    $self->properties;
 }
 
 =head2 delete
