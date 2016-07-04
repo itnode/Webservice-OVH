@@ -132,9 +132,6 @@ sub _new {
     $body->{region}    = $params{region};
     $body->{start}     = $params{start};
 
-    use DDP;
-    p $body;
-
     my $response = $api->rawCall( method => 'post', path => "/cloud/project/$project_id/network/private/$network_id/subnet", body => $body, noSignature => 0 );
     die $response->error if $response->error;
 
