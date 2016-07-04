@@ -74,7 +74,7 @@ SKIP: {
     my $ssh_keys = $project->ssh_keys;
     ok( $ssh_keys && ref $ssh_keys eq 'ARRAY', 'ssh_keys ok' );
 
-  SKIP: {
+    SKIP: {
 
         skip "No ssh keys found" unless scalar @$ssh_keys;
 
