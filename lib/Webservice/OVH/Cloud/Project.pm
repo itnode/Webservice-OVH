@@ -1,5 +1,35 @@
 package Webservice::OVH::Cloud::Project;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Cloud::Project
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $projects = $ovh->cloud->projects;
+my $example_project = $projects->[0];
+
+my $images = $project->images;
+my $instances = $project->instances;
+my $regions = $project->regions;
+my $flavors = $project->flavors;
+my $ssh_keys = $project->ssh_keys;
+my $networks = $project->network->privates;
+
+=head1 DESCRIPTION
+
+Provides access to all sub objects of a specific projects.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -12,7 +42,7 @@ use Webservice::OVH::Cloud::Project::Network;
 use Webservice::OVH::Cloud::Project::Image;
 use Webservice::OVH::Cloud::Project::SSH;
 
-=head2 _new
+=head2 _new_existing
 
 Internal Method to create the project object.
 This method is not ment to be called directly.
