@@ -1,10 +1,58 @@
 package Webservice::OVH::Cloud::Project::Instance::Group;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Cloud::Project::Instance::Group
+
+=head1 SYNOPSIS
+
+    use Webservice::OVH;
+
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+
+    my $groups = $project->instance->groups;
+    
+    foreach my $group (@$groups) {
+        
+        print $group->name;
+    }
+
+=head1 DESCRIPTION
+
+Provides Instance object methods and id less methods for groups.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
+
+=head2 _new_existing
+
+Internal Method to create the Network object.
+This method is not ment to be called directly.
+This method can be reached by using the bridge object instance in project.
+
+=over
+
+=item * Parameter: %params - key => value
+
+=item * Return: L<Webservice::OVH::Cloud::Project::Instance::Group>
+
+=item * Synopsis: Webservice::OVH::Cloud::Project::Instance::Group->_new(wrapper => $ovh_api_wrapper, project => $project, module => $module, id => $id );
+
+=back
+
+=cut
 
 sub _new_existing {
     
@@ -35,6 +83,24 @@ sub _new_existing {
         return undef;
     }
 }
+
+=head2 _new
+
+Internal Method to create the Network object.
+This method is not ment to be called directly.
+This method can be reached by using the bridge object instance in project.
+
+=over
+
+=item * Parameter: %params - key => value
+
+=item * Return: L<Webservice::OVH::Cloud::Project::Instance::Group>
+
+=item * Synopsis: Webservice::OVH::Cloud::Project::Instance::Group->_new(wrapper => $ovh_api_wrapper, project => $project, module => $module );
+
+=back
+
+=cut
 
 sub _new {
     
@@ -88,12 +154,41 @@ sub project {
     return $self->{_project};
 }
 
+=head2 is_valid
+
+When this object is deleted on the api side, this method returns 0.
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: print "Valid" if $group->is_valid;
+
+=back
+
+=cut
+
 sub is_valid {
 
     my ($self) = @_;
 
     return $self->{_valid};
 }
+
+=head2 _is_valid
+
+Internal method to check validity.
+Difference is that this method carps an error.
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: $group->_is_valid;
+
+=back
+
+=cut
 
 sub _is_valid {
 
@@ -103,6 +198,20 @@ sub _is_valid {
     return $self->is_valid;
 }
 
+=head2 id
+
+Returns the api id 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $id = $group->id;
+
+=back
+
+=cut
+
 sub id {
     
     my ($self) = @_;
@@ -111,6 +220,21 @@ sub id {
     
     return $self->{_id};
 }
+
+=head2 properties
+
+Returns the raw properties as a hash. 
+This is the original return value of the web-api. 
+
+=over
+
+=item * Return: HASH
+
+=item * Synopsis: my $properties = $group->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -127,6 +251,20 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 name
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $name = $group->name;
+
+=back
+
+=cut
+
 sub name {
     
     my ($self) = @_;
@@ -135,6 +273,20 @@ sub name {
     
     return $self->{_properties}->{name};
 }
+
+=head2 region
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $region = $group->region;
+
+=back
+
+=cut
 
 sub region {
     
@@ -145,6 +297,20 @@ sub region {
     return $self->{_properties}->{region};
 }
 
+=head2 instance_ids
+
+Exposed property value. 
+
+=over
+
+=item * Return: ARRAY
+
+=item * Synopsis: my $instance_ids = $group->instance_ids;
+
+=back
+
+=cut
+
 sub instance_ids {
     
     my ($self) = @_;
@@ -154,6 +320,20 @@ sub instance_ids {
     return $self->{_properties}->{instance_ids};
 }
 
+=head2 affinity
+
+Exposed property value. 
+
+=over
+
+=item * Return: ARRAY
+
+=item * Synopsis: my $affinity = $group->affinity;
+
+=back
+
+=cut
+
 sub affinity {
     
     my ($self) = @_;
@@ -162,6 +342,18 @@ sub affinity {
     
     return $self->{_properties}->{Affinity};
 }
+
+=head2 delete
+
+Deletes the object api sided and sets it invalid.
+
+=over
+
+=item * Synopsis: $group->delete;
+
+=back
+
+=cut
 
 sub delete {
     
