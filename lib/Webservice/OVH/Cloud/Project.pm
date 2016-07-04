@@ -54,6 +54,20 @@ sub _new_existing {
     return $self;
 }
 
+=head2 id
+
+Returns the api id 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $id = $project->id;
+
+=back
+
+=cut
+
 sub id {
 
     my ($self) = @_;
@@ -87,6 +101,20 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 description
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $description = $project->description;
+
+=back
+
+=cut
+
 sub description {
 
     my ($self) = @_;
@@ -94,12 +122,40 @@ sub description {
     return $self->{_properties}->{description};
 }
 
+=head2 unleash
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $sub_domain = $project->unleash;
+
+=back
+
+=cut
+
 sub unleash {
 
     my ($self) = @_;
 
-    return $self->{_properties}->{unleash};
+    return $self->{_properties}->{unleash} eq 'true' ? 1 : 0;
 }
+
+=head2 order
+
+Exposed property value. 
+
+=over
+
+=item * Return: <Webservice::OVH::Me::Order>
+
+=item * Synopsis: my $order = $project->order;
+
+=back
+
+=cut
 
 sub order {
 
@@ -115,12 +171,40 @@ sub order {
     return undef;
 }
 
+=head2 status
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $status = $project->status;
+
+=back
+
+=cut
+
 sub status {
 
     my ($self) = @_;
 
     return $self->{_properties}->{status};
 }
+
+=head2 access
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $access = $project->access;
+
+=back
+
+=cut
 
 sub access {
 
@@ -157,7 +241,7 @@ sub change {
 
 =head2 vrack
 
-Get vrack where this project is associated.
+Get associated vrack.
 
 =over
 
@@ -306,6 +390,23 @@ sub instance {
     }
 }
 
+=head2 create_instance
+
+Creates a new instance. Flavor image and ssh key need to be fetched first.
+There is an example in examples/cloud.pl 
+
+=over
+
+=item * Parameter: %params - key => value (required) flavor_id image_id name region (optional) group_id monthly_billing ssh_key_id user_data networks
+
+=item * Return: <Webservice::OVH::Cloud::Project::Instance>
+
+=item * Synopsis: my $instance = $project->create_instance(flavor_id => $flavor->id, image_id => $image->id, name => 'test', region => 'GRA1', ssh_key => $key->id networks => [ {ip => '0.0.0.0', network_id => 1 }, {ip => '0.0.0.0', network_id => 2 } ] )
+
+=back
+
+=cut
+
 sub create_instance {
 
     my ( $self, %params ) = @_;
@@ -314,6 +415,20 @@ sub create_instance {
     my $instance = Webservice::OVH::Cloud::Project::Instance->_new( wrapper => $api, module => $self->{_module}, project => $self, %params, );
     return $instance;
 }
+
+=head2 regions
+
+Simple list of all available regions
+
+=over
+
+=item * Return: ARRAY
+
+=item * Synopsis: my $regions = $project->regions;
+
+=back
+
+=cut
 
 sub regions {
 
@@ -327,6 +442,20 @@ sub regions {
     return $response->content;
 }
 
+=head2 regions
+
+Get additional info about a specific region
+
+=over
+
+=item * Return: HASH
+
+=item * Synopsis: my $region_info = $project->region('GRA1');
+
+=back
+
+=cut
+
 sub region {
 
     my ( $self, $region_name ) = @_;
@@ -338,6 +467,21 @@ sub region {
 
     return $response->content;
 }
+
+=head2 flavors
+
+Returns a hash of all available flavors.
+
+=over
+
+=item * Return: ARRAY
+
+=item * Synopsis: my $flavors = $project->flavors;
+
+=back
+
+=cut
+
 
 sub flavors {
 
@@ -353,6 +497,20 @@ sub flavors {
     return \@flavor_ids;
 }
 
+=head2 flavor
+
+Returns info about a specific flavor by id.
+
+=over
+
+=item * Return: HASH
+
+=item * Synopsis: my $flavors = $project->flavors;
+
+=back
+
+=cut
+
 sub flavor {
 
     my ( $self, $flavor_id ) = @_;
@@ -364,6 +522,22 @@ sub flavor {
 
     return $response->content;
 }
+
+=head2 image_exists
+
+Returns 1 if image is available for the project, 0 if not.
+
+=over
+
+=item * Parameter: $image_id - api id, $no_recheck - (optional)only for internal usage 
+
+=item * Return: VALUE
+
+=item * Synopsis: print "image exists" if $project->image_exists(1234);
+
+=back
+
+=cut
 
 sub image_exists {
 
@@ -388,6 +562,22 @@ sub image_exists {
         return ( grep { $_ eq $image_id } @$list ) ? 1 : 0;
     }
 }
+
+=head2 images
+
+Produces an array of all available images that are connected to the project.
+
+=over
+
+=item * Parameter: %filter - key => value flavor_type os_type region
+
+=item * Return: ARRAY
+
+=item * Synopsis: my $images = $project->images( flavor_type => 'ovh.ssd.eg', os_type => 'linux', region => 'GRA1' );
+
+=back
+
+=cut
 
 sub images {
 
@@ -421,6 +611,22 @@ sub images {
     return $images;
 }
 
+=head2 image
+
+Returns a single image by id
+
+=over
+
+=item * Parameter: $image_id - api id
+
+=item * Return: L<Webservice::OVH::Cloud::Project::Image>
+
+=item * Synopsis: my $image = $project->image($id);
+
+=back
+
+=cut
+
 sub image {
 
     my ( $self, $image_id ) = @_;
@@ -437,6 +643,22 @@ sub image {
         return undef;
     }
 }
+
+=head2 ssh_key_exists
+
+Returns 1 if key is available for the project, 0 if not.
+
+=over
+
+=item * Parameter: $key_id - api id, $no_recheck - (optional)only for internal usage 
+
+=item * Return: VALUE
+
+=item * Synopsis: print "image exists" if $project->image_exists(1234);
+
+=back
+
+=cut
 
 sub ssh_key_exists {
 
@@ -461,6 +683,22 @@ sub ssh_key_exists {
         return ( grep { $_ eq $key_id } @$list ) ? 1 : 0;
     }
 }
+
+=head2 ssh_keys
+
+Produces an array of all available ssh_keys that are connected to the project.
+
+=over
+
+=item * Parameter: $region - filters for specific region
+
+=item * Return: ARRAY
+
+=item * Synopsis: my $keys = $project->images( region => 'GRA1' );
+
+=back
+
+=cut
 
 sub ssh_keys {
 
@@ -490,6 +728,22 @@ sub ssh_keys {
     return $keys;
 }
 
+=head2 ssh_key
+
+Returns a single ssh_key by id
+
+=over
+
+=item * Parameter: $key_id - api id
+
+=item * Return: L<Webservice::OVH::Cloud::Project::SSHKey>
+
+=item * Synopsis: my $ssh_key = $project->ssh_key($id);
+
+=back
+
+=cut
+
 sub ssh_key {
 
     my ( $self, $key_id ) = @_;
@@ -506,6 +760,20 @@ sub ssh_key {
         return undef;
     }
 }
+
+=head2 network
+
+Access to /cloud/project/network api methods 
+
+=over
+
+=item * Return: L<Webservice::OVH::Me>
+
+=item * Synopsis: $project->network;
+
+=back
+
+=cut
 
 sub network {
 
