@@ -1,5 +1,35 @@
 package Webservice::OVH::Cloud::Project::IP;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Cloud::Project::IP;
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $projects = $ovh->cloud->projects;
+my $example_project = $projects->[0];
+
+my $networks = $project->network->privates;
+
+foreach my $network (@$networks) {
+    
+    print @$networks->status;
+}
+
+=head1 DESCRIPTION
+
+Bridge Object failover ips
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
@@ -8,18 +38,18 @@ our $VERSION = 0.1;
 
 use Webservice::OVH::Cloud::Project::IP::Failover;
 
-=head2 _new
+=head2 _new_existing
 
-Internal Method to create the ip object.
+Internal Method to create the object.
 This method is not ment to be called directly.
 
 =over
 
-=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $project - root project
+=item * Parameter: %params - key => value
 
 =item * Return: L<Webservice::OVH::Cloud::Project::IP>
 
-=item * Synopsis: Webservice::OVH::Cloud::Project::IP->_new($ovh_api_wrapper, $id, $module);
+=item * Synopsis: Webservice::OVH::Cloud::Project::IP->_new( wrapper => $ovh_api_wrapper, project => $project, module => $module );
 
 =back
 
@@ -27,19 +57,35 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $project, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    croak "Missing project" unless $project;
+    die "Missing project" unless $params{project};
+    die "Missing module" unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
 
-    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _project => $project, _available_failovers => [], _failovers => {} }, $class;
+    my $self = bless { module => $params{module}, _api_wrapper => $params{wrapper}, _project => $params{project}, _available_failovers => [], _failovers => {} }, $class;
 
     return $self;
 }
 
+=head2 project
+
+Shorthand to call $self->project directly for internal usage.
+
+=over
+
+=item * Return: L<Webservice::OVH::Cloud::Project>
+
+=item * Synopsis: my $project = $project->ip->project;
+
+=back
+
+=cut
+
 sub project {
-
+    
     my ($self) = @_;
-
+    
     return $self->{_project};
 }
 
@@ -113,7 +159,7 @@ sub failovers {
 
         my $failover_id = $failover_hash->{id};
         if ( $self->failover_exists( $failover_id, 1 ) ) {
-            my $failover = $self->{_failovers}{$failover_id} = $self->{_failovers}{$failover_id} || Webservice::OVH::Cloud::Project::IP::Failover->_new( $api, $self->project, $failover_id, $self->{_module} );
+            my $failover = $self->{_failovers}{$failover_id} = $self->{_failovers}{$failover_id} || Webservice::OVH::Cloud::Project::IP::Failover->_new( wrapper => $api, project => $self->project, id => $failover_id, module => $self->{_module} );
             push @$failovers, $failover;
         }
     }
@@ -144,7 +190,7 @@ sub failover {
     if ( $self->failover_exists($failover_id) ) {
 
         my $api = $self->{_api_wrapper};
-        my $failover = $self->{_failovers}{$failover_id} = $self->{_failovers}{$failover_id} || Webservice::OVH::Cloud::Project::IP::Failover->_new( $api, $self->project, $failover_id, $self->{_module} );
+        my $failover = $self->{_failovers}{$failover_id} = $self->{_failovers}{$failover_id} || Webservice::OVH::Cloud::Project::IP::Failover->_new( wrapper => $api, project => $self->project, id => $failover_id, module => $self->{_module} );
 
         return $failover;
     } else {
@@ -153,4 +199,5 @@ sub failover {
         return undef;
     }
 }
+
 1;

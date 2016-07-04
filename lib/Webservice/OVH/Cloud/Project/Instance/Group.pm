@@ -8,10 +8,19 @@ our $VERSION = 0.1;
 
 sub _new_existing {
     
-    my ( $class, $api_wrapper, $module, $project, $group_id ) = @_;
+    my ( $class, %params ) = @_;
+    
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+    die "Missing project"      unless $params{project};
 
-    die "Missing group_id" unless $group_id;
+    my $group_id  = $params{id};
+    my $api_wrapper = $params{wrapper};
+    my $module      = $params{module};
+    my $project = $params{project};
     my $project_id = $project->id;
+
     my $response = $api_wrapper->rawCall( method => 'get', path => "/cloud/project/$project_id/instance/group/$group_id", noSignature => 0 );
     carp $response->error if $response->error;
 

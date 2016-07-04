@@ -1,10 +1,58 @@
 package Webservice::OVH::Cloud::Project::SSH;
 
+=encoding utf-8
+
+=head1 NAME
+
+Webservice::OVH::Cloud::Project::SSH
+
+=head1 SYNOPSIS
+
+use Webservice::OVH;
+
+my $ovh = Webservice::OVH->new_from_json("credentials.json");
+
+my $projects = $ovh->cloud->projects;
+my $example_project = $projects->[0];
+
+my $keys = $project->ssh_keys;
+
+foreach my $key (@$keys) {
+    
+    print $key->name;
+    $key->delete;
+}
+
+=head1 DESCRIPTION
+
+Gives access to ssh key functionalty for a specific project.
+
+=head1 METHODS
+
+=cut
+
 use strict;
 use warnings;
 use Carp qw{ carp croak };
 
 our $VERSION = 0.1;
+
+=head2 _new_existing
+
+Internal Method to create the SSH object.
+This method is not ment to be called directly.
+
+=over
+
+=item * Parameter: %params - key => value
+
+=item * Return: L<Webservice::OVH::Cloud::Project::SSH>
+
+=item * Synopsis: Webservice::OVH::Cloud::Project::SSH->_new(wrapper => $ovh_api_wrapper, project => $project, module => $module, id => $id );
+
+=back
+
+=cut
 
 sub _new_existing {
     
@@ -35,6 +83,23 @@ sub _new_existing {
         return undef;
     }
 }
+
+=head2 _new
+
+Internal Method to create the SSH object.
+This method is not ment to be called directly.
+
+=over
+
+=item * Parameter: %params - key => value
+
+=item * Return: L<Webservice::OVH::Cloud::Project::SSH>
+
+=item * Synopsis: Webservice::OVH::Cloud::Project::SSH->_new(wrapper => $ovh_api_wrapper, project => $project, module => $module );
+
+=back
+
+=cut
 
 sub _new {
     
@@ -70,12 +135,62 @@ sub _new {
     return $self;
 }
 
+=head2 project
+
+Root Project.
+
+=over
+
+=item * Return: L<Webservice::OVH::Cloud::Project>
+
+=item * Synopsis: my $project = $ssh_key->project;
+
+=back
+
+=cut
+
+sub project {
+    
+    my ($self) = @_;
+    
+    return $self->{_project};
+}
+
+=head2 is_valid
+
+When this object is deleted on the api side, this method returns 0.
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: print "Valid" if $ssh_key->is_valid;
+
+=back
+
+=cut
+
 sub is_valid {
 
     my ($self) = @_;
 
     return $self->{_valid};
 }
+
+=head2 _is_valid
+
+Intern method to check validity.
+Difference is that this method carps an error.
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: $ssh_key->_is_valid;
+
+=back
+
+=cut
 
 sub _is_valid {
 
@@ -85,6 +200,20 @@ sub _is_valid {
     return $self->is_valid;
 }
 
+=head2 id
+
+Returns the api id 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $id = $ssh_key->id;
+
+=back
+
+=cut
+
 sub id {
     
     my ($self) = @_;
@@ -93,6 +222,21 @@ sub id {
     
     return $self->{_id};
 }
+
+=head2 properties
+
+Returns the raw properties as a hash. 
+This is the original return value of the web-api. 
+
+=over
+
+=item * Return: HASH
+
+=item * Synopsis: my $properties = $ssh_key->properties;
+
+=back
+
+=cut
 
 sub properties {
 
@@ -109,6 +253,20 @@ sub properties {
     return $self->{_properties};
 }
 
+=head2 finger_print
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $finger_print = $ssh_key->finger_print;
+
+=back
+
+=cut
+
 sub finger_print {
     
     my ($self) = @_;
@@ -117,6 +275,20 @@ sub finger_print {
     
     return $self->{_properties}->{fingerPrint};
 }
+
+=head2 regions
+
+Exposed property value. 
+
+=over
+
+=item * Return: ARRAY
+
+=item * Synopsis: my $regions = $ssh_key->regions;
+
+=back
+
+=cut
 
 sub regions {
     
@@ -127,6 +299,20 @@ sub regions {
     return $self->{_properties}->{regions};
 }
 
+=head2 name
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $name = $ssh_key->name;
+
+=back
+
+=cut
+
 sub name {
     
     my ($self) = @_;
@@ -136,6 +322,20 @@ sub name {
     return $self->{_properties}->{name};
 }
 
+=head2 public_key
+
+Exposed property value. 
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $public_key = $ssh_key->public_key;
+
+=back
+
+=cut
+
 sub public_key {
     
     my ($self) = @_;
@@ -144,6 +344,18 @@ sub public_key {
     
     return $self->{_properties}->{publicKey};
 }
+
+=head2 delete
+
+Deletes the object api sided and sets it invalid.
+
+=over
+
+=item * Synopsis: $ssh_key->delete;
+
+=back
+
+=cut
 
 sub delete {
     

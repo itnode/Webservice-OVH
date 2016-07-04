@@ -43,7 +43,7 @@ This method is not ment to be called directly.
 
 =over
 
-=item * Parameter: $api_wrapper - ovh api wrapper object, $module - root object, $id - api id
+=item * Parameter: %params - key => value
 
 =item * Return: L<Webservice::OVH::Cloud::Project::Image>
 
@@ -81,6 +81,27 @@ sub _new_existing {
 
         return undef;
     }
+}
+
+=head2 project
+
+Root Project.
+
+=over
+
+=item * Return: L<Webservice::OVH::Cloud::Project>
+
+=item * Synopsis: my $project = $ssh_key->project;
+
+=back
+
+=cut
+
+sub project {
+    
+    my ($self) = @_;
+    
+    return $self->{_project};
 }
 
 =head2 id

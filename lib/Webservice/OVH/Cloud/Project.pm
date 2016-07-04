@@ -298,7 +298,7 @@ sub vrack {
 
 =head2 instance_exists
 
-Returns 1 if instance is available for the connected account, 0 if not.
+Returns 1 if object is available for the connected account, 0 if not.
 
 =over
 
@@ -306,7 +306,7 @@ Returns 1 if instance is available for the connected account, 0 if not.
 
 =item * Return: VALUE
 
-=item * Synopsis: print "instance exists" if $project->instance_exists(1234);
+=item * Synopsis: print "instance exists" if $project->instance_exists($id);
 
 =back
 
@@ -387,7 +387,7 @@ Returns a single instance by id
 
 =item * Return: L<Webservice::OVH::Cloud::Project::Instance>
 
-=item * Synopsis: my $instance = $project->instance(1234);
+=item * Synopsis: my $instance = $project->instance($id);
 
 =back
 
@@ -431,7 +431,7 @@ There is an example in examples/cloud.pl
 
 =item * Return: <Webservice::OVH::Cloud::Project::Instance>
 
-=item * Synopsis: my $instance = $project->create_instance(flavor_id => $flavor->id, image_id => $image->id, name => 'test', region => 'GRA1', ssh_key => $key->id networks => [ {ip => '0.0.0.0', network_id => 1 }, {ip => '0.0.0.0', network_id => 2 } ] )
+=item * Synopsis: my $instance = $project->create_instance(flavor_id => $flavor->id, image_id => $image->id, name => 'test', region => 'GRA1', ssh_key => $key->id networks => [ {ip => '0.0.0.0', network_id => 1 }, {ip => '0.0.0.0', network_id => 2 } ] );
 
 =back
 
@@ -766,7 +766,7 @@ Returns a single ssh_key by id
 
 =item * Parameter: $key_id - api id
 
-=item * Return: L<Webservice::OVH::Cloud::Project::SSHKey>
+=item * Return: L<Webservice::OVH::Cloud::Project::SSH>
 
 =item * Synopsis: my $ssh_key = $project->ssh_key($id);
 
@@ -797,7 +797,7 @@ Access to /cloud/project/network api methods
 
 =over
 
-=item * Return: L<Webservice::OVH::Me>
+=item * Return: L<Webservice::OVH::Cloud::Project::Network>
 
 =item * Synopsis: $project->network;
 
@@ -810,6 +810,27 @@ sub network {
     my ($self) = @_;
 
     return $self->{_network};
+}
+
+=head2 ip
+
+Access to /cloud/project/ip api methods 
+
+=over
+
+=item * Return: L<Webservice::OVH::Cloud::Project::IP>
+
+=item * Synopsis: $project->ip;
+
+=back
+
+=cut
+
+sub ip {
+
+    my ($self) = @_;
+
+    return $self->{_ip};
 }
 
 1;
