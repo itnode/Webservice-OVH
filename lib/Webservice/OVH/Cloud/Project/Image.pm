@@ -144,8 +144,6 @@ sub properties {
 
     my ($self) = @_;
 
-    return unless $self->_is_valid;
-
     my $api        = $self->{_api_wrapper};
     my $project_id = $self->project->id;
     my $image_id   = $self->id;
@@ -298,8 +296,6 @@ Exposed property value.
 sub creation_date {
 
     my ($self) = @_;
-
-    return unless $self->_is_valid;
 
     my $str_datetime = $self->{_properties}->{creationDate};
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
