@@ -27,6 +27,7 @@ Provides ability to create, delete, change and manage mailinglists.
 use strict;
 use warnings;
 use Carp qw{ carp croak };
+use JSON;
 
 our $VERSION = 0.1;
 
@@ -100,11 +101,20 @@ sub _new {
         croak "Missing parameter: @missing_parameters";
     }
 
+    my $moderator_message      = $params{options}{moderator_message}      || $params{options}{moderatorMessage};
+    my $subscribe_by_moderator = $params{options}{subscribe_by_moderator} || $params{options}{subscribeByModerator};
+    my $users_post_only        = $params{options}{users_post_only}        || $params{options}{usersPostOnly};
+
+    my $options = {};
+    $options->{moderatorMessage}     = $moderator_message eq 'true'      || $moderator_message eq 'yes'      || $moderator_message eq '1'      ? JSON::true : JSON::false;
+    $options->{subscribeByModerator} = $subscribe_by_moderator eq 'true' || $subscribe_by_moderator eq 'yes' || $subscribe_by_moderator eq '1' ? JSON::true : JSON::false;
+    $options->{usersPostOnly}        = $users_post_only eq 'true'        || $users_post_only eq 'yes'        || $users_post_only eq '1'        ? JSON::true : JSON::false;
+
     my $domain_name = $domain->name;
     my $body        = {};
     $body->{language}   = $params{language};
     $body->{name}       = $params{name};
-    $body->{options}    = $params{options};
+    $body->{options}    = $options;
     $body->{ownerEmail} = $params{owner_email};
     $body->{replyTo}    = $params{reply_to} if exists $params{reply_to};
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList", body => $body, noSignature => 0 );

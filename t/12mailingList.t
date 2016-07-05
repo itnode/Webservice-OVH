@@ -32,8 +32,7 @@ SKIP: {
     ok( $email_domain, 'email_domain ok' );
 
     my $new_mailing_list;
-    eval { $new_mailing_list = $email_domain->new_mailing_list( language => 'de', name => 'testlist', options => { moderatorMessage => 'false', subscribeByModerator => 'false', usersPostOnly => 'false' }, owner_email => 'test@t.com' ); };
-
+    eval { $new_mailing_list = $email_domain->new_mailing_list( language => 'de', name => 'testlist', options => { moderator_message => 'false', subscribe_by_moderator => 'false', users_post_only => 'false' }, owner_email => 'test@t.com' ); };
   SKIP: {
 
         skip "Maximum mailinglist quota reached for connected account", 1 if !$new_mailing_list;

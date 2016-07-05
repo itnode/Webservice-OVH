@@ -27,6 +27,7 @@ Provides the ability to create, delete and change redirections for an email-doma
 use strict;
 use warnings;
 use Carp qw{ carp croak };
+use JSON;
 
 our $VERSION = 0.1;
 
@@ -99,12 +100,14 @@ sub _new {
 
         croak "Missing parameter: @missing_parameters";
     }
+    
+    my $local_copy = $params{local_copy} eq 'true' || $params{local_copy} == 1 ? JSON::true : JSON::false;
 
     my $domain_name = $domain->name;
     my $body        = {};
     $body->{from}      = $params{from};
     $body->{to}        = $params{to};
-    $body->{localCopy} = $params{local_copy};
+    $body->{localCopy} = $local_copy;
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/redirection/", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
