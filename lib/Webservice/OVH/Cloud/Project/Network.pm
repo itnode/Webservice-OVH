@@ -8,19 +8,19 @@ Webservice::OVH::Cloud::Project::Network
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $networks = $project->network->privates;
-
-foreach my $network (@$networks) {
+    use Webservice::OVH;
     
-    print @$networks->status;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $networks = $project->network->privates;
+    
+    foreach my $network (@$networks) {
+        
+        print @$networks->status;
+    }
 
 =head1 DESCRIPTION
 
@@ -60,7 +60,7 @@ sub _new {
     my ( $class, %params ) = @_;
 
     die "Missing project" unless $params{project};
-    die "Missing module" unless $params{module};
+    die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
 
     my $self = bless { _project => $params{project}, _module => $params{module}, _api_wrapper => $params{wrapper}, _private => {}, _available_private => [] }, $class;
@@ -83,9 +83,9 @@ Shorthand to call $self->project directly for internal usage.
 =cut
 
 sub project {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_project};
 }
 
@@ -154,7 +154,7 @@ sub privates {
 
     my $private_array = $response->content;
     my $privates      = [];
-    my @net_ids = grep { $_ = $_->{id} } @$private_array;
+    my @net_ids       = grep { $_ = $_->{id} } @$private_array;
     $self->{_available_private} = \@net_ids;
 
     foreach my $network_id (@net_ids) {
@@ -218,10 +218,10 @@ Creates a new network.
 =cut
 
 sub create_private {
-    
+
     my ( $self, %params ) = @_;
-    
-    return Webservice::OVH::Cloud::Project::Network::Private->_new(module => $self->{_module}, wrapper => $self->{_api_wrapper}, project => $self->project, %params );
+
+    return Webservice::OVH::Cloud::Project::Network::Private->_new( module => $self->{_module}, wrapper => $self->{_api_wrapper}, project => $self->project, %params );
 }
 
 1;

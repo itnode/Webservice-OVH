@@ -8,17 +8,17 @@ Webservice::OVH::Domain
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-foreach my $project (@$project) {
+    use Webservice::OVH;
     
-    print $project->name;
-}
-
-print "I have a project" if $ovh->cloud->project_exists("Name");
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    foreach my $project (@$project) {
+        
+        print $project->name;
+    }
+    
+    print "I have a project" if $ovh->cloud->project_exists("Name");
 
 =head1 DESCRIPTION
 

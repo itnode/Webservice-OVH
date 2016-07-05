@@ -8,19 +8,19 @@ Webservice::OVH::Cloud::Project::Network::Private
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $networks = $example_project->network->privates;
-
-foreach my $network (@$networks) {
+    use Webservice::OVH;
     
-    print $network->name;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $networks = $example_project->network->privates;
+    
+    foreach my $network (@$networks) {
+        
+        print $network->name;
+    }
 
 =head1 DESCRIPTION
 
@@ -390,7 +390,7 @@ sub change {
 
     my $response = $api->rawCall( method => 'put', path => "/cloud/project/$project_id/network/private/$network_id", body => { name => $name }, noSignature => 0 );
     croak $response->error if $response->error;
-    
+
     $self->properties;
 }
 

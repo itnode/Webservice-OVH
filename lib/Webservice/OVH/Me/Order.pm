@@ -8,13 +8,13 @@ Webservice::OVH::Me::Order
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $order = $ovh->me->order(1234);
-
-my $order->pay_with_registered_payment_mean('fiedelityAccount')
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $order = $ovh->me->order(1234);
+    
+    my $order->pay_with_registered_payment_mean('fiedelityAccount')
 
 =head1 DESCRIPTION
 
@@ -63,7 +63,6 @@ sub _new {
 
     return $self;
 }
-
 
 =head2 id
 
@@ -129,9 +128,9 @@ Exposed property value.
 =cut
 
 sub date {
-    
+
     my ($self) = @_;
-    
+
     my $str_datetime = $self->{_properties}->{date};
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
     return $datetime;
@@ -152,9 +151,9 @@ Exposed property value.
 =cut
 
 sub expiration_date {
-    
+
     my ($self) = @_;
-    
+
     my $str_datetime = $self->{_properties}->{expirationDate};
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
     return $datetime;
@@ -175,9 +174,9 @@ Exposed property value.
 =cut
 
 sub password {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{password};
 }
 
@@ -196,9 +195,9 @@ Exposed property value.
 =cut
 
 sub pdf_url {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{pdfUrl};
 }
 
@@ -217,9 +216,9 @@ Exposed property value.
 =cut
 
 sub price_without_tax {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{priceWithoutTax};
 }
 
@@ -238,9 +237,9 @@ Exposed property value.
 =cut
 
 sub price_with_tax {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{priceWithTax};
 }
 
@@ -259,9 +258,9 @@ Exposed property value.
 =cut
 
 sub tax {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{tax};
 }
 
@@ -280,9 +279,9 @@ Exposed property value.
 =cut
 
 sub url {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{url};
 }
 
@@ -359,18 +358,19 @@ sub bill {
     my $api      = $self->{_api_wrapper};
     my $order_id = $self->id;
     my $module   = $self->{_module};
+
     #my $response = $api->rawCall( method => 'get', path => "/me/order/$order_id/bill", noSignature => 0 );
     #croak $response->error if $response->error;
-    
+
     my $object = $self->associated_object;
-    
-    if( $object->{type} eq 'Bill' ) {
-        
+
+    if ( $object->{type} eq 'Bill' ) {
+
         my $bill = $module->me->bill( $object->{id} );
-        
+
         return $bill;
     } else {
-        
+
         return undef;
     }
 }

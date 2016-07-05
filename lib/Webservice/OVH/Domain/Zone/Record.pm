@@ -8,27 +8,27 @@ Webservice::OVH::Domain::Zone::Record
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $zone = $ovh->domain->zone("myzone.de");
-
-my $a_record = $zone->new_record(field_type => 'A', target => '0.0.0.0', ttl => 1000 );
-my $mx_record = $zone->new_record(field_type => 'MX', target => '1 my.mail.server.de.');
-
-my $records = $zone->records(filed_type => 'A', sub_domain => 'www');
-
-foreach my $record (@$records) {
-
-    $record->change( target => '0.0.0.0' );
-    $record->zone->refresh;
-    $record->change( sub_domain => 'www', refresh => 'true' );
-}
-
-$record->delete('true');
-
-print "Not Valid anymore" unless $record->is_valid;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $zone = $ovh->domain->zone("myzone.de");
+    
+    my $a_record = $zone->new_record(field_type => 'A', target => '0.0.0.0', ttl => 1000 );
+    my $mx_record = $zone->new_record(field_type => 'MX', target => '1 my.mail.server.de.');
+    
+    my $records = $zone->records(filed_type => 'A', sub_domain => 'www');
+    
+    foreach my $record (@$records) {
+    
+        $record->change( target => '0.0.0.0' );
+        $record->zone->refresh;
+        $record->change( sub_domain => 'www', refresh => 'true' );
+    }
+    
+    $record->delete('true');
+    
+    print "Not Valid anymore" unless $record->is_valid;
 
 =head1 DESCRIPTION
 

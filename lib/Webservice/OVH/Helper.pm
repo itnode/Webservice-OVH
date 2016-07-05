@@ -110,9 +110,9 @@ Returns a date time string fitting ovhs requirements
 =cut
 
 sub format_datetime {
-    
+
     my ( $class, $dt ) = @_;
-    
+
     return $dt->strftime('%FT%T%z');
 }
 

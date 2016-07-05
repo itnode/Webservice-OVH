@@ -8,11 +8,11 @@ Webservice::OVH::Order::Email::Domain
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $available_services = $ovh->order->email->domain->available_services;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $available_services = $ovh->order->email->domain->available_services;
 
 =head1 DESCRIPTION
 

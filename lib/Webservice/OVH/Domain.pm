@@ -8,24 +8,24 @@ Webservice::OVH::Domain
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $services = $ovh->domain->services;
-foreach my $service (@$services) {
+    use Webservice::OVH;
     
-    print $service->name;
-}
-
-my $ = $ovh->domain->zones;
-foreach my $zone (@$zones) {
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
     
-    print $zone->name;
-}
-
-print "I have a zone" if $ovh->domain->zone_exists("myaddress.de");
-print "I have a service" if $ovh->domain->service_exists("myaddress.de");
+    my $services = $ovh->domain->services;
+    foreach my $service (@$services) {
+        
+        print $service->name;
+    }
+    
+    my $ = $ovh->domain->zones;
+    foreach my $zone (@$zones) {
+        
+        print $zone->name;
+    }
+    
+    print "I have a zone" if $ovh->domain->zone_exists("myaddress.de");
+    print "I have a service" if $ovh->domain->service_exists("myaddress.de");
 
 =head1 DESCRIPTION
 

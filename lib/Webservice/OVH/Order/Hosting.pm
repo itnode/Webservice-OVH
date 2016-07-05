@@ -8,11 +8,11 @@ Webservice::OVH::Order::Hosting
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $info = $ovh->hosting->web->free_email_info;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $info = $ovh->hosting->web->free_email_info;
 
 =head1 DESCRIPTION
 
@@ -50,8 +50,8 @@ This method is not ment to be called directly.
 sub _new {
 
     my ( $class, $api_wrapper, $module ) = @_;
-    
-    my $web = Webservice::OVH::Order::Hosting::Web->_new($api_wrapper, $module);
+
+    my $web = Webservice::OVH::Order::Hosting::Web->_new( $api_wrapper, $module );
 
     my $self = bless { _api_wrapper => $api_wrapper, _web => $web }, $class;
 
@@ -73,13 +73,10 @@ Gives acces to the /order/hosting/web methods of the ovh api
 =cut
 
 sub web {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_web};
 }
-
-
-
 
 1;

@@ -8,26 +8,26 @@ Webservice::OVH::Domain::Zone
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $zone = $ovh->domain->zone("myzone.de");
-
-my $a_record = $zone->new_record(field_type => 'A', target => '0.0.0.0', ttl => 1000 );
-my $mx_record = $zone->new_record(field_type => 'MX', target => '1 my.mail.server.de.');
-
-my $records = $zone->records(filed_type => 'A', sub_domain => 'www');
-
-foreach my $record (@$records) {
-
-    $record->change( target => '0.0.0.0' );
-}
-
-$zone->refresh;
-$zone->reset;
-
-$zone->change_contact(contact_billing => 'account-ovh', contact_tech => 'account-ovh', contact_admin => 'account-ovh');
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $zone = $ovh->domain->zone("myzone.de");
+    
+    my $a_record = $zone->new_record(field_type => 'A', target => '0.0.0.0', ttl => 1000 );
+    my $mx_record = $zone->new_record(field_type => 'MX', target => '1 my.mail.server.de.');
+    
+    my $records = $zone->records(filed_type => 'A', sub_domain => 'www');
+    
+    foreach my $record (@$records) {
+    
+        $record->change( target => '0.0.0.0' );
+    }
+    
+    $zone->refresh;
+    $zone->reset;
+    
+    $zone->change_contact(contact_billing => 'account-ovh', contact_tech => 'account-ovh', contact_admin => 'account-ovh');
 
 =head1 DESCRIPTION
 
@@ -403,7 +403,7 @@ Refreshes the domain zone and applies changes.
 
 sub refresh {
 
-    my ($self) = @_;
+    my ($self)    = @_;
     my $api       = $self->{_api_wrapper};
     my $zone_name = $self->name;
 

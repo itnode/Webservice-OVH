@@ -8,20 +8,20 @@ Webservice::OVH::Cloud::Project::Instance
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $instances = $project->instances;
-
-foreach my $instance (@$instances) {
+    use Webservice::OVH;
     
-    print @$instance->status;
-    $instance->delete;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $instances = $project->instances;
+    
+    foreach my $instance (@$instances) {
+        
+        print @$instance->status;
+        $instance->delete;
+    }
 
 =head1 DESCRIPTION
 

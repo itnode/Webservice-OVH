@@ -8,13 +8,13 @@ Webservice::OVH::Me::Task
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $task = $ovh->domain->service->change_contact(contact_billing => 'ovhaccount-ovh');
-
-$task->resend_email;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $task = $ovh->domain->service->change_contact(contact_billing => 'ovhaccount-ovh');
+    
+    $task->resend_email;
 
 =head1 DESCRIPTION
 

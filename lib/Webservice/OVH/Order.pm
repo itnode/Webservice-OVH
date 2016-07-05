@@ -8,19 +8,19 @@ Webservice::OVH::Order
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $carts = $ovh->order->carts;
-my $cart_id = $carts->[0]->id;
-my $cart = $ovh->order->cart($cart_id);
-
-my $new_cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
-
-$ovh->order->hosting->web;
-$ovh->order->email->domain;
-$ovh->order->domain->zone;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $carts = $ovh->order->carts;
+    my $cart_id = $carts->[0]->id;
+    my $cart = $ovh->order->cart($cart_id);
+    
+    my $new_cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
+    
+    $ovh->order->hosting->web;
+    $ovh->order->email->domain;
+    $ovh->order->domain->zone;
 
 =head1 DESCRIPTION
 
@@ -63,9 +63,9 @@ sub _new {
 
     my ( $class, $api_wrapper, $module ) = @_;
 
-    my $hosting = Webservice::OVH::Order::Hosting->_new($api_wrapper, $module);
-    my $email   = Webservice::OVH::Order::Email->_new($api_wrapper, $module);
-    my $domain  = Webservice::OVH::Order::Domain->_new($api_wrapper, $module);
+    my $hosting = Webservice::OVH::Order::Hosting->_new( $api_wrapper, $module );
+    my $email = Webservice::OVH::Order::Email->_new( $api_wrapper, $module );
+    my $domain = Webservice::OVH::Order::Domain->_new( $api_wrapper, $module );
 
     my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _cards => {}, _hosting => $hosting, _email => $email, _domain => $domain }, $class;
 
@@ -79,7 +79,7 @@ Items can be put into it, to create orders.
 
 =over
 
-=item * Parameter: %params - ovh_subsidiary => 'DE' (required) expire => DateTime-str (optional) description => "shopping" (optional)
+=item * Parameter: %params - key => value (required) ovh_subsidiary => 'DE' (optional) expire => DateTime-str description => "shopping" 
 
 =item * Return: L<Webservice::OVH::Order::Cart>
 
@@ -215,7 +215,7 @@ Gives Acces to the /order/domain/ methods of the ovh api
 =cut
 
 sub domain {
-    
+
     my ($self) = @_;
 
     return $self->{_domain};

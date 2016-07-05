@@ -196,9 +196,9 @@ Exposed property value.
 =cut
 
 sub configurations {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{configurations};
 }
 
@@ -217,9 +217,9 @@ Exposed property value.
 =cut
 
 sub duration {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{duration};
 }
 
@@ -238,9 +238,9 @@ Exposed property value.
 =cut
 
 sub offer_id {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{offerId};
 }
 
@@ -259,9 +259,9 @@ Exposed property value.
 =cut
 
 sub options {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{options};
 }
 
@@ -280,9 +280,9 @@ Exposed property value.
 =cut
 
 sub prices {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{prices};
 }
 
@@ -301,9 +301,9 @@ Exposed property value.
 =cut
 
 sub product_id {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{productId};
 }
 
@@ -322,9 +322,9 @@ Exposed property value.
 =cut
 
 sub settings {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{settings};
 }
 
@@ -343,18 +343,18 @@ Exposed property value.
 =cut
 
 sub available_configuration {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
-    my $api      = $self->{_api_wrapper};
-    my $cart_id  = $self->{_cart}->id;
-    my $item_id  = $self->id;
-    
+
+    my $api     = $self->{_api_wrapper};
+    my $cart_id = $self->{_cart}->id;
+    my $item_id = $self->id;
+
     my $response = $api->rawCall( method => 'get', path => "/order/cart/$cart_id/item/$item_id/configuration", noSignature => 0 );
     croak $response->error if $response->error;
-    
+
     return $response->content;
 }
 

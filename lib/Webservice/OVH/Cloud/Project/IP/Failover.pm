@@ -8,19 +8,19 @@ Webservice::OVH::Cloud::Project::IP::Failover
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $failover_ips = $project->ip->failovers;
-
-foreach my $ip (@$failover_ips) {
+    use Webservice::OVH;
     
-    print $ip->routed_to;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $failover_ips = $project->ip->failovers;
+    
+    foreach my $ip (@$failover_ips) {
+        
+        print $ip->routed_to;
+    }
 
 =head1 DESCRIPTION
 
@@ -57,14 +57,14 @@ sub _new {
 
     my ( $class, %params ) = @_;
 
-    die "Missing id" unless $params{id};
+    die "Missing id"      unless $params{id};
     die "Missing project" unless $params{project};
-    die "Missing module" unless $params{module};
+    die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
-    
+
     my $api_wrapper = $params{wrapper};
-    my $module = $params{module};
-    my $project = $params{project};
+    my $module      = $params{module};
+    my $project     = $params{project};
     my $failover_id = $params{id};
 
     my $self = bless { module => $module, _api_wrapper => $api_wrapper, _project => $project, _id => $failover_id, _properties => {} }, $class;

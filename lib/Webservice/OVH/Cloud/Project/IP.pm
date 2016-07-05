@@ -8,19 +8,19 @@ Webservice::OVH::Cloud::Project::IP;
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $networks = $project->network->privates;
-
-foreach my $network (@$networks) {
+    use Webservice::OVH;
     
-    print @$networks->status;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $networks = $project->network->privates;
+    
+    foreach my $network (@$networks) {
+        
+        print @$networks->status;
+    }
 
 =head1 DESCRIPTION
 
@@ -60,7 +60,7 @@ sub _new {
     my ( $class, %params ) = @_;
 
     die "Missing project" unless $params{project};
-    die "Missing module" unless $params{module};
+    die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
 
     my $self = bless { module => $params{module}, _api_wrapper => $params{wrapper}, _project => $params{project}, _available_failovers => [], _failovers => {} }, $class;
@@ -83,9 +83,9 @@ Shorthand to call $self->project directly for internal usage.
 =cut
 
 sub project {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_project};
 }
 

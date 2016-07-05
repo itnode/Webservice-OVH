@@ -8,13 +8,13 @@ Webservice::OVH::Email::Domain::Domain::Redirection
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $email_domain = $ovh->email->domain->domain('testdomain.de');
-
-my $redirection = $email_domain->new_redirection(from => 'test@test.de', to => 'test2@test.de', local_copy => 'false');
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $email_domain = $ovh->email->domain->domain('testdomain.de');
+    
+    my $redirection = $email_domain->new_redirection(from => 'test@test.de', to => 'test2@test.de', local_copy => 'false');
 
 =head1 DESCRIPTION
 

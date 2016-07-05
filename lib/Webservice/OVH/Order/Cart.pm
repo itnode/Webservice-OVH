@@ -8,15 +8,15 @@ Webservice::OVH::Order::Cart
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
-
-$cart->add_domain('www.domain.com');
-
-$cart->delete;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $cart = $ovh->order->new_cart(ovh_subsidiary => 'DE');
+    
+    $cart->add_domain('www.domain.com');
+    
+    $cart->delete;
 
 =head1 DESCRIPTION
 

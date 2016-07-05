@@ -8,11 +8,11 @@ Webservice::OVH::Order::Domain::Zone
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $existing_zones = $ovh->order->domain->zone->existing;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $existing_zones = $ovh->order->domain->zone->existing;
 
 =head1 DESCRIPTION
 

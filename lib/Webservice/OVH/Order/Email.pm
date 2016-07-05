@@ -8,11 +8,11 @@ Webservice::OVH::Order::Email
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $available_email_domains = $ovh->order->email->domain->available_services;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $available_email_domains = $ovh->order->email->domain->available_services;
 
 =head1 DESCRIPTION
 
@@ -48,12 +48,12 @@ This method is not ment to be called directly.
 =cut
 
 sub _new {
-    
-    my ( $class, $api_wrapper, $module ) = @_;
-    
-    my $domain = Webservice::OVH::Order::Email::Domain->_new($api_wrapper, $module);
 
-    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _domain => $domain}, $class;
+    my ( $class, $api_wrapper, $module ) = @_;
+
+    my $domain = Webservice::OVH::Order::Email::Domain->_new( $api_wrapper, $module );
+
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _domain => $domain }, $class;
 
     return $self;
 }
@@ -73,9 +73,9 @@ Gives acces to the /order/email/domain methods of the ovh api
 =cut
 
 sub domain {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_domain};
 }
 

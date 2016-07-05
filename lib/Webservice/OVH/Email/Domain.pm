@@ -8,16 +8,16 @@ Webservice::OVH::Email::Domain
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $email_domains = $ovh->email->domain->domains;
-
-foreach $email_domain (@$email_domains) {
+    use Webservice::OVH;
     
-    $email_domain->name;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $email_domains = $ovh->email->domain->domains;
+    
+    foreach $email_domain (@$email_domains) {
+        
+        $email_domain->name;
+    }
 
 =head1 DESCRIPTION
 

@@ -88,6 +88,13 @@ Main access to all /email/ api methods
 - Return: [Webservice::OVH::Email](https://metacpan.org/pod/Webservice::OVH::Email)
 - Synopsis: $ovh->email;
 
+## cloud
+
+Main access to all /cloud/ api methods 
+
+- Return: [Webservice::OVH::Cloud](https://metacpan.org/pod/Webservice::OVH::Cloud)
+- Synopsis: $ovh->cloud;
+
 # AUTHOR
 
 Patrick Jendral

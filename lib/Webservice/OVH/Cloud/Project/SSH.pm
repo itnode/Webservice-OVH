@@ -8,20 +8,20 @@ Webservice::OVH::Cloud::Project::SSH
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $keys = $project->ssh_keys;
-
-foreach my $key (@$keys) {
+    use Webservice::OVH;
     
-    print $key->name;
-    $key->delete;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $keys = $project->ssh_keys;
+    
+    foreach my $key (@$keys) {
+        
+        print $key->name;
+        $key->delete;
+    }
 
 =head1 DESCRIPTION
 

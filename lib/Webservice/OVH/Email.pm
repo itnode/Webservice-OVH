@@ -8,16 +8,16 @@ Webservice::OVH::Email
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $email_domains = $ovh->email->domains->domains;
-
-foreach my $email_domain (@$email_domains) {
+    use Webservice::OVH;
     
-    print $email_domain->name;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $email_domains = $ovh->email->domains->domains;
+    
+    foreach my $email_domain (@$email_domains) {
+        
+        print $email_domain->name;
+    }
 
 =head1 DESCRIPTION
 
@@ -61,7 +61,7 @@ sub _new {
 
     my $self = bless { module => $module, _api_wrapper => $api_wrapper }, $class;
 
-    $self->{_domain} = Webservice::OVH::Email::Domain->_new($api_wrapper, $module);
+    $self->{_domain} = Webservice::OVH::Email::Domain->_new( $api_wrapper, $module );
 
     return $self;
 }

@@ -55,19 +55,19 @@ This method can be reached by using the bridge object instance in project.
 =cut
 
 sub _new_existing {
-    
+
     my ( $class, %params ) = @_;
-    
+
     die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
     die "Missing id"      unless $params{id};
-    die "Missing project"      unless $params{project};
+    die "Missing project" unless $params{project};
 
-    my $group_id  = $params{id};
+    my $group_id    = $params{id};
     my $api_wrapper = $params{wrapper};
     my $module      = $params{module};
-    my $project = $params{project};
-    my $project_id = $project->id;
+    my $project     = $params{project};
+    my $project_id  = $project->id;
 
     my $response = $api_wrapper->rawCall( method => 'get', path => "/cloud/project/$project_id/instance/group/$group_id", noSignature => 0 );
     carp $response->error if $response->error;
@@ -103,29 +103,29 @@ This method can be reached by using the bridge object instance in project.
 =cut
 
 sub _new {
-    
+
     my ( $class, %params ) = @_;
 
     die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
-    die "Missing project"      unless $params{project};
+    die "Missing project" unless $params{project};
 
     my $api_wrapper = $params{wrapper};
     my $module      = $params{module};
-    my $project = $params{project};
-    my $project_id = $project->id;
-    
+    my $project     = $params{project};
+    my $project_id  = $project->id;
+
     my @keys_needed = qw{ region name };
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";
     }
 
-    my $body      = { region => $params{region}, name => $params{name} };
+    my $body = { region => $params{region}, name => $params{name} };
     my $response = $api_wrapper->rawCall( method => 'post', path => "/cloud/project/$project_id/instance/group", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $group_id  = $response->content->{id};
+    my $group_id   = $response->content->{id};
     my $properties = $response->content;
 
     my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $group_id, _properties => $properties, _project => $project }, $class;
@@ -213,11 +213,11 @@ Returns the api id
 =cut
 
 sub id {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_id};
 }
 
@@ -242,10 +242,10 @@ sub properties {
 
     return unless $self->_is_valid;
 
-    my $api       = $self->{_api_wrapper};
+    my $api        = $self->{_api_wrapper};
     my $project_id = $self->project->id;
-    my $group_id = $self->id;
-    my $response  = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/instance/group/$group_id", noSignature => 0 );
+    my $group_id   = $self->id;
+    my $response   = $api->rawCall( method => 'get', path => "/cloud/project/$project_id/instance/group/$group_id", noSignature => 0 );
     croak $response->error if $response->error;
     $self->{_properties} = $response->content;
     return $self->{_properties};
@@ -266,11 +266,11 @@ Exposed property value.
 =cut
 
 sub name {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_properties}->{name};
 }
 
@@ -289,11 +289,11 @@ Exposed property value.
 =cut
 
 sub region {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_properties}->{region};
 }
 
@@ -312,11 +312,11 @@ Exposed property value.
 =cut
 
 sub instance_ids {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_properties}->{instance_ids};
 }
 
@@ -335,11 +335,11 @@ Exposed property value.
 =cut
 
 sub affinity {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
+
     return $self->{_properties}->{Affinity};
 }
 
@@ -356,18 +356,18 @@ Deletes the object api sided and sets it invalid.
 =cut
 
 sub delete {
-    
+
     my ($self) = @_;
-    
+
     return unless $self->_is_valid;
-    
-    my $api = $self->{_api_wrapper};
+
+    my $api        = $self->{_api_wrapper};
     my $project_id = $self->project->id;
-    my $group_id = $self->id;
-    
+    my $group_id   = $self->id;
+
     my $response = $api->rawCall( method => 'delete', path => "/cloud/project/$project_id/instance/group/$group_id", noSignature => 0 );
     croak $response->error if $response->error;
-    
+
     $self->{_valid} = 0;
 }
 

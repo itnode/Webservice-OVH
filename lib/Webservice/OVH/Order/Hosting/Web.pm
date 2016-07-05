@@ -8,11 +8,11 @@ Webservice::OVH::Order::Hosting::Web
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $free_email_info = $ovh->order->hosting->web->free_email_info;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $free_email_info = $ovh->order->hosting->web->free_email_info;
 
 =head1 DESCRIPTION
 

@@ -8,11 +8,11 @@ Webservice::OVH::Email::Domain::Domain
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $email_domain = $ovh->email->domain->domain('testdomain.de');
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $email_domain = $ovh->email->domain->domain('testdomain.de');
 
 =head1 DESCRIPTION
 
@@ -288,9 +288,9 @@ sub redirection {
 
     croak "Missing redirection_id" unless $redirection_id;
 
-    my $api = $self->{_api_wrapper};
+    my $api                    = $self->{_api_wrapper};
     my $from_array_redirection = $self->{_redirections}{$redirection_id} if $self->{_redirections}{$redirection_id} && $self->{_redirections}{$redirection_id}->is_valid;
-    my $redirection = $self->{_redirections}{$redirection_id} = $from_array_redirection || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id, $self->{_module} );
+    my $redirection            = $self->{_redirections}{$redirection_id} = $from_array_redirection || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id, $self->{_module} );
 
     return $redirection;
 }
@@ -377,9 +377,9 @@ sub account {
     croak "Missing account_name" unless $account_name;
     $account_name = lc $account_name;
 
-    my $api = $self->{_api_wrapper};
-    my $from_array_account =  $self->{_accounts}{$account_name} if $self->{_accounts}{$account_name} && $self->{_accounts}{$account_name}->is_valid;
-    my $account = $self->{_accounts}{$account_name} = $from_array_account || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name, $self->{_module} );
+    my $api                = $self->{_api_wrapper};
+    my $from_array_account = $self->{_accounts}{$account_name} if $self->{_accounts}{$account_name} && $self->{_accounts}{$account_name}->is_valid;
+    my $account            = $self->{_accounts}{$account_name} = $from_array_account || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name, $self->{_module} );
 
     return $account;
 }
@@ -426,10 +426,10 @@ Produces an array of all available mailing_lists that are connected to the email
 
 sub mailing_lists {
 
-    my ($self) = @_;
+    my ($self)      = @_;
     my $api         = $self->{_api_wrapper};
     my $domain_name = $self->name;
-    my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList", noSignature => 0 );
+    my $response = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList", noSignature => 0 );
     croak $response->error if $response->error;
 
     my $mailing_list_names = $response->content;
@@ -466,9 +466,9 @@ sub mailing_list {
 
     croak "Missing mailing_list_name" unless $mailing_list_name;
 
-    my $api = $self->{_api_wrapper};
-    my $from_array_mailing_list =  $self->{_mailing_lists}{$mailing_list_name} if $self->{_mailing_lists}{$mailing_list_name} && $self->{_mailing_lists}{$mailing_list_name}->is_valid;
-    my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $from_array_mailing_list || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name, $self->{_module} );
+    my $api                     = $self->{_api_wrapper};
+    my $from_array_mailing_list = $self->{_mailing_lists}{$mailing_list_name} if $self->{_mailing_lists}{$mailing_list_name} && $self->{_mailing_lists}{$mailing_list_name}->is_valid;
+    my $mailing_list            = $self->{_mailing_lists}{$mailing_list_name} = $from_array_mailing_list || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name, $self->{_module} );
 
     return $mailing_list;
 }

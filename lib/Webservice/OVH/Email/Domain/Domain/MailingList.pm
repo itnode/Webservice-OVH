@@ -8,13 +8,13 @@ Webservice::OVH::Email::Domain::Domain::MailingList
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $email_domain = $ovh->email->domain->domain('testdomain.de');
-
-my $mailing_list = $email_domain->new_redirection(language 'de', name => 'infos', options => {moderatorMessage => 'true', subscribeByModerator => 'true', usersPostOnly => 'false'}, owner_email => 'owner@test.de' );
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $email_domain = $ovh->email->domain->domain('testdomain.de');
+    
+    my $mailing_list = $email_domain->new_redirection(language 'de', name => 'infos', options => {moderatorMessage => 'true', subscribeByModerator => 'true', usersPostOnly => 'false'}, owner_email => 'owner@test.de' );
 
 =head1 DESCRIPTION
 

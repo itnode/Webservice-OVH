@@ -8,14 +8,14 @@ Webservice::OVH::Domain::Service
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $service = $ovh->domain->service("mydomain.org");
-
-my $info = $service->service_info;
-my $last_update = $service->last_update;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $service = $ovh->domain->service("mydomain.org");
+    
+    my $info = $service->service_info;
+    my $last_update = $service->last_update;
 
 =head1 DESCRIPTION
 
@@ -59,7 +59,7 @@ sub _new {
 
     croak "Missing service_name" unless $service_name;
 
-    my $self = bless { module => $module,_api_wrapper => $api_wrapper, _name => $service_name, _owner => undef, _service_info => undef, _properties => undef }, $class;
+    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _name => $service_name, _owner => undef, _service_info => undef, _properties => undef }, $class;
 
     return $self;
 }

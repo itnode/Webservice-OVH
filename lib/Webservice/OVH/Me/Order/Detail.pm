@@ -8,18 +8,18 @@ Webservice::OVH::Me::Order::Details
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $order = $ovh->me->orders->[0];
-
-my $details = $order->details;
-
-foreach my $detail (@$details) {
+    use Webservice::OVH;
     
-    print $detail->unit_price;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $order = $ovh->me->orders->[0];
+    
+    my $details = $order->details;
+    
+    foreach my $detail (@$details) {
+        
+        print $detail->unit_price;
+    }
 
 =head1 DESCRIPTION
 
@@ -55,12 +55,12 @@ This method is not ment to be called directly.
 sub _new {
 
     my ( $class, $api_wrapper, $order, $detail_id, $module ) = @_;
-    
+
     die "Missing detail_id" unless $detail_id;
     my $order_id = $order->id;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/me/order/$order_id/details/$detail_id", noSignature => 0 );
     croak $response->error if $response->error;
-    
+
     my $porperties = $response->content;
 
     my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _id => $detail_id, _properties => $porperties, _order => $order }, $class;
@@ -83,9 +83,9 @@ Returns root Order object.
 =cut
 
 sub order {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_order};
 }
 
@@ -104,9 +104,9 @@ Returns the api id.
 =cut
 
 sub id {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_id};
 }
 
@@ -126,15 +126,15 @@ This method updates the intern property variable.
 =cut
 
 sub properties {
-    
+
     my ($self) = @_;
-    
-    my $api = $self->{_api_wrapper};
-    my $order_id = $self->{_order}->id;
+
+    my $api       = $self->{_api_wrapper};
+    my $order_id  = $self->{_order}->id;
     my $detail_id = $self->id;
-    my $response = $api->rawCall( method => 'get', path => "/me/order/$order_id/details/$detail_id", noSignature => 0 );
+    my $response  = $api->rawCall( method => 'get', path => "/me/order/$order_id/details/$detail_id", noSignature => 0 );
     croak $response->error if $response->error;
-    
+
     $self->{_properties} = $response->content;
     return $self->{_properties};
 }
@@ -154,9 +154,9 @@ Exposed property value.
 =cut
 
 sub description {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{description};
 }
 
@@ -175,9 +175,9 @@ Exposed property value.
 =cut
 
 sub domain {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{domain};
 }
 
@@ -196,9 +196,9 @@ Exposed property value.
 =cut
 
 sub quantity {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{quantity};
 }
 
@@ -217,9 +217,9 @@ Exposed property value.
 =cut
 
 sub total_price {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{totalPrice};
 }
 
@@ -238,9 +238,9 @@ Exposed property value.
 =cut
 
 sub unit_price {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{unitPrice};
 }
 

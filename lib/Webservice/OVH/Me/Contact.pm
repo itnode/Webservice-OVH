@@ -8,16 +8,16 @@ Webservice::OVH::Me::Contact
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $contacts = $ovh->me->contacts;
-
-foreach my $contact (@$contact) {
+    use Webservice::OVH;
     
-    print $contact->birth_city;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $contacts = $ovh->me->contacts;
+    
+    foreach my $contact (@$contact) {
+        
+        print $contact->birth_city;
+    }
 
 =head1 DESCRIPTION
 
@@ -198,7 +198,7 @@ sub birth_day {
 
     my ($self) = @_;
 
-    my $str_datetime = $self->{_properties}->{birthDay}."T00:00:00+0000";
+    my $str_datetime = $self->{_properties}->{birthDay} . "T00:00:00+0000";
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
     return $datetime;
 }

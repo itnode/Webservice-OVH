@@ -8,13 +8,13 @@ Webservice::OVH::Email::Domain::Domain::Account
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $email_domain = $ovh->email->domain->domain('testdomain.de');
-
-my $account = $email_domain->new_account( account_name => 'testaccount', password => $password, description => 'a test account', size => 50000000 );
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $email_domain = $ovh->email->domain->domain('testdomain.de');
+    
+    my $account = $email_domain->new_account( account_name => 'testaccount', password => $password, description => 'a test account', size => 50000000 );
 
 =head1 DESCRIPTION
 

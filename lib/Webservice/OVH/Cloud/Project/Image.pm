@@ -8,19 +8,19 @@ Webservice::OVH::Cloud::Project::Image
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $images = $project->images;
-
-foreach my $image (@$images) {
+    use Webservice::OVH;
     
-    print $image->type;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $images = $project->images;
+    
+    foreach my $image (@$images) {
+        
+        print $image->type;
+    }
 
 =head1 DESCRIPTION
 
@@ -98,9 +98,9 @@ Root Project.
 =cut
 
 sub project {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_project};
 }
 

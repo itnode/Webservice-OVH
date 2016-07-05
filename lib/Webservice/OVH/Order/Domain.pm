@@ -8,11 +8,11 @@ Webservice::OVH::Order::Domain
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $available_domains = $ovh->order->domain->zone->existing;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $available_domains = $ovh->order->domain->zone->existing;
 
 =head1 DESCRIPTION
 
@@ -51,7 +51,7 @@ sub _new {
 
     my ( $class, $api_wrapper, $module ) = @_;
 
-    my $zone  = Webservice::OVH::Order::Domain::Zone->_new($api_wrapper, $module);
+    my $zone = Webservice::OVH::Order::Domain::Zone->_new( $api_wrapper, $module );
 
     my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _zone => $zone }, $class;
 
@@ -73,7 +73,7 @@ Gives acces to the /order/domain/zone methods of the ovh api
 =cut
 
 sub zone {
-    
+
     my ($self) = @_;
 
     return $self->{_zone};

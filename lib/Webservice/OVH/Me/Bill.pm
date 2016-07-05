@@ -8,16 +8,16 @@ Webservice::OVH::Me::Bill
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $bills = $ovh->me->bills;
-
-foreach my $bill (@$bills) {
+    use Webservice::OVH;
     
-    print $contact->url;
-}
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $bills = $ovh->me->bills;
+    
+    foreach my $bill (@$bills) {
+        
+        print $contact->url;
+    }
 
 =head1 DESCRIPTION
 
@@ -159,9 +159,9 @@ Exposed property value.
 =cut
 
 sub date {
-    
+
     my ($self) = @_;
-    
+
     my $str_datetime = $self->{_properties}->{date};
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
     return $datetime;
@@ -182,9 +182,9 @@ Exposed property value.
 =cut
 
 sub password {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{password};
 }
 
@@ -203,9 +203,9 @@ Exposed property value.
 =cut
 
 sub pdf_url {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{pdfUrl};
 }
 
@@ -224,9 +224,9 @@ Exposed property value.
 =cut
 
 sub price_without_tax {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{priceWithoutTax};
 }
 
@@ -245,9 +245,9 @@ Exposed property value.
 =cut
 
 sub price_with_tax {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{priceWithTax};
 }
 
@@ -266,9 +266,9 @@ Exposed property value.
 =cut
 
 sub tax {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{tax};
 }
 
@@ -287,9 +287,9 @@ Exposed property value.
 =cut
 
 sub url {
-    
+
     my ($self) = @_;
-    
+
     return $self->{_properties}->{url};
 }
 

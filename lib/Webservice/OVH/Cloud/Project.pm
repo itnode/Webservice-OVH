@@ -8,19 +8,19 @@ Webservice::OVH::Cloud::Project
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $images = $project->images;
-my $instances = $project->instances;
-my $regions = $project->regions;
-my $flavors = $project->flavors;
-my $ssh_keys = $project->ssh_keys;
-my $networks = $project->network->privates;
+    use Webservice::OVH;
+    
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
+    
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $images = $project->images;
+    my $instances = $project->instances;
+    my $regions = $project->regions;
+    my $flavors = $project->flavors;
+    my $ssh_keys = $project->ssh_keys;
+    my $networks = $project->network->privates;
 
 =head1 DESCRIPTION
 
@@ -352,7 +352,7 @@ sub instances {
 
     my ( $self, $region ) = @_;
 
-    my $filter = $region ? Webservice::OVH::Helper->construct_filter( "region" => $region ) : "";
+    my $filter     = $region ? Webservice::OVH::Helper->construct_filter( "region" => $region ) : "";
     my $api        = $self->{_api_wrapper};
     my $project_id = $self->id;
     my $response   = $api->rawCall( method => 'get', path => sprintf( "/cloud/project/$project_id/instance%s", $filter ), noSignature => 0 );
@@ -577,7 +577,7 @@ sub image_exists {
         croak $response->error if $response->error;
 
         my $list = $response->content;
-        
+
         my @image_ids = grep { $_ = $_->{id} } @$list;
 
         return ( grep { $_ eq $image_id } @image_ids ) ? 1 : 0;
@@ -805,9 +805,9 @@ Creates a new ssh key.
 =cut
 
 sub create_ssh_key {
-    
+
     my ( $self, %params ) = @_;
-    
+
     my $api = $self->{_api_wrapper};
     my $ssh_key = Webservice::OVH::Cloud::Project::SSH->_new( wrapper => $api, module => $self->{_module}, project => $self, %params, );
     return $ssh_key;

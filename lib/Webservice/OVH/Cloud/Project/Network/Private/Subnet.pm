@@ -8,24 +8,24 @@ Webservice::OVH::Cloud::Project::Network::Private::Subnet
 
 =head1 SYNOPSIS
 
-use Webservice::OVH;
-
-my $ovh = Webservice::OVH->new_from_json("credentials.json");
-
-my $projects = $ovh->cloud->projects;
-my $example_project = $projects->[0];
-
-my $networks = $example_project->network->privates;
-
-foreach my $network (@$networks) {
+    use Webservice::OVH;
     
-    my $subnets = $network->subnets;
+    my $ovh = Webservice::OVH->new_from_json("credentials.json");
     
-    foreach my $subnet (@$subnets) {
+    my $projects = $ovh->cloud->projects;
+    my $example_project = $projects->[0];
+    
+    my $networks = $example_project->network->privates;
+    
+    foreach my $network (@$networks) {
         
-        print $subnet->name;
+        my $subnets = $network->subnets;
+        
+        foreach my $subnet (@$subnets) {
+            
+            print $subnet->name;
+        }
     }
-}
 
 =head1 DESCRIPTION
 
@@ -343,7 +343,7 @@ sub delete {
     my $project_id = $self->project->id;
     my $network_id = $self->network->id;
     my $subnet_id  = $self->id;
-    my $response = $api->rawCall( method => 'delete', path => "/cloud/project/$project_id/network/private/$network_id/subnet/$subnet_id", noSignature => 0 );
+    my $response   = $api->rawCall( method => 'delete', path => "/cloud/project/$project_id/network/private/$network_id/subnet/$subnet_id", noSignature => 0 );
     croak $response->error if $response->error;
 
     $self->{_valid} = 0;
