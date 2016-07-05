@@ -283,13 +283,15 @@ sub _new {
     my $project     = $params{project};
     my $project_id  = $project->id;
 
+    my $monthly_billing = $params{monthly_billing} && ( $params{monthly_billing} eq 'true' || $params{monthly_billing} eq 'yes' || $params{monthly_billing} eq '1' ) ? JSON::true : JSON::false;
+
     my $body = {};
     $body->{flavorId}       = $params{flavor_id};
     $body->{imageId}        = $params{image_id};
     $body->{name}           = $params{name};
     $body->{region}         = $params{region};
     $body->{groupId}        = $params{group_id} if exists $params{group_id};
-    $body->{monthlyBilling} = $params{monthly_billing} if exists $params{monthly_billing};
+    $body->{monthlyBilling} = $monthly_billing;
     $body->{sshKeyId}       = $params{ssh_key_id} if exists $params{ssh_key_id};
     $body->{userData}       = $params{user_data} if exists $params{user_data};
 
@@ -867,7 +869,7 @@ sub rescue_mode {
 
     croak "Missing image" unless $rescue;
 
-    my $rescue_mode = $rescue && ( $rescue eq 'true' || $rescue == 1 ) ? JSON::true : JSON::false;
+    my $rescue_mode = $rescue && ( $rescue eq 'true' || $rescue eq '1' || $rescue eq 'yes' ) ? JSON::true : JSON::false;
 
     my $api         = $self->{_api_wrapper};
     my $project_id  = $self->project_id;

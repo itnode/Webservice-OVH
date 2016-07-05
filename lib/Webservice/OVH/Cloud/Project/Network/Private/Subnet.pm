@@ -108,8 +108,8 @@ sub _new {
     die "Missing wrapper" unless $params{module};
     die "Missing module"  unless $params{private};
 
-    my $dhcp       = $params{dhcp}      && ( $params{dhcp} eq 'true'       || $params{dhcp} == 1 )       ? JSON::true : JSON::false;
-    my $no_gateway = $params{noGateway} && ( $params{no_gateway} eq 'true' || $params{no_gateway} == 1 ) ? JSON::true : JSON::false;
+    my $dhcp       = $params{dhcp}      && ( $params{dhcp} eq 'true'       || $params{dhcp} eq '1'       || $params{dhcp} eq 'yes' )       ? JSON::true : JSON::false;
+    my $no_gateway = $params{noGateway} && ( $params{no_gateway} eq 'true' || $params{no_gateway} eq '1' || $params{no_gateway} eq 'yes' ) ? JSON::true : JSON::false;
 
     my $project_id = $params{project}->id;
     my $api        = $params{wrapper};
