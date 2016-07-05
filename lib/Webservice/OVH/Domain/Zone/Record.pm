@@ -67,9 +67,18 @@ This method should never be called directly.
 
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $module, $zone, $record_id ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing record_id" unless $record_id;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+    die "Missing zone"    unless $params{zone};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $record_id   = $params{id};
+    my $zone        = $params{zone};
+
     my $zone_name = $zone->name;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/domain/zone/$zone_name/record/$record_id", noSignature => 0 );
     carp $response->error if $response->error;
@@ -105,12 +114,17 @@ This method should never be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module, $zone, %params ) = @_;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing zone"    unless $params{zone};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $zone        = $params{zone};
 
     my @keys_needed = qw{ field_type target };
-
-    die "Missing zone" unless $zone;
-
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";

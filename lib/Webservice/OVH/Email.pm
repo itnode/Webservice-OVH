@@ -57,11 +57,16 @@ This method is not ment to be called external.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module ) = @_;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
 
     my $self = bless { module => $module, _api_wrapper => $api_wrapper }, $class;
 
-    $self->{_domain} = Webservice::OVH::Email::Domain->_new( $api_wrapper, $module );
+    $self->{_domain} = Webservice::OVH::Email::Domain->_new( wrapper => $api_wrapper, module => $module );
 
     return $self;
 }

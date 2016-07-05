@@ -61,11 +61,17 @@ This method is not ment to be called external.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    my $hosting = Webservice::OVH::Order::Hosting->_new( $api_wrapper, $module );
-    my $email = Webservice::OVH::Order::Email->_new( $api_wrapper, $module );
-    my $domain = Webservice::OVH::Order::Domain->_new( $api_wrapper, $module );
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+
+    my $hosting = Webservice::OVH::Order::Hosting->_new( wrapper => $api_wrapper, module => $module );
+    my $email = Webservice::OVH::Order::Email->_new( wrapper => $api_wrapper, module => $module );
+    my $domain = Webservice::OVH::Order::Domain->_new( wrapper => $api_wrapper, module => $module );
 
     my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _cards => {}, _hosting => $hosting, _email => $email, _domain => $domain }, $class;
 
@@ -94,7 +100,7 @@ sub new_cart {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $cart = Webservice::OVH::Order::Cart->_new( $api, $self->{_module}, %params );
+    my $cart = Webservice::OVH::Order::Cart->_new( wrapper => $api, module => $self->{_module}, %params );
     return $cart;
 }
 
@@ -125,7 +131,7 @@ sub carts {
 
     foreach my $card_id (@$card_ids) {
 
-        my $card = $self->{_cards}{$card_id} = $self->{_cards}{$card_id} || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id, $self->{_module} );
+        my $card = $self->{_cards}{$card_id} = $self->{_cards}{$card_id} || Webservice::OVH::Order::Cart->_new_existing( wrapper => $api, id => $card_id, module => $self->{_module} );
         push @$cards, $card;
     }
 
@@ -154,7 +160,7 @@ sub cart {
 
     my $api             = $self->{_api_wrapper};
     my $from_array_card = $self->{_cards}{$card_id} if $self->{_cards}{$card_id} && $self->{_cards}{$card_id}->is_valid;
-    my $card            = $self->{_cards}{$card_id} = $from_array_card || Webservice::OVH::Order::Cart->_new_existing( $api, $card_id, $self->{_module} );
+    my $card            = $self->{_cards}{$card_id} = $from_array_card || Webservice::OVH::Order::Cart->_new_existing( wrapper => $api, id => $card_id, module => $self->{_module} );
     return $card;
 }
 

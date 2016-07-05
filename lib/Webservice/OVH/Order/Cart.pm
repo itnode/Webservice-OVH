@@ -53,9 +53,16 @@ This method is not ment to be called directly.
 
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $cart_id, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing card_id" unless $cart_id;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $cart_id     = $params{id};
+
     my $response = $api_wrapper->rawCall( method => 'get', path => "/order/cart/$cart_id", noSignature => 0 );
     carp $response->error if $response->error;
 
@@ -91,7 +98,13 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module, %params ) = @_;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
 
     croak "Missing ovh_subsidiary" unless exists $params{ovh_subsidiary};
     my $body = {};
@@ -400,7 +413,7 @@ sub add_domain {
     croak $response->error if $response->error;
 
     my $item_id = $response->content->{itemId};
-    my $item = Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id, $self->{_module} );
+    my $item = Webservice::OVH::Order::Cart::Item->_new( wrapper => $api, cart => $self, id => $item_id, module => $self->{_module} );
 
     my $owner = $params{owner_contact};
     my $admin = $params{admin_account};
@@ -501,7 +514,7 @@ sub add_transfer {
     croak $response->error if $response->error;
 
     my $item_id = $response->content->{itemId};
-    my $item = Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id, $self->{_module} );
+    my $item = Webservice::OVH::Order::Cart::Item->_new( wrapper => $api, cart => $self, id => $item_id, module => $self->{_module} );
 
     return unless $item;
 
@@ -595,7 +608,7 @@ sub checkout {
     croak $response->error if $response->error;
 
     my $order_id = $response->content->{orderId};
-    my $order = Webservice::OVH::Me::Order->_new( $api, $order_id, $self->{_module} );
+    my $order = Webservice::OVH::Me::Order->_new( wrapper => $api, id => $order_id, module => $self->{_module} );
 
     return $order;
 }
@@ -630,7 +643,7 @@ sub items {
 
     foreach my $item_id (@$item_ids) {
 
-        my $item = $self->{_items}{$item_id} = $self->{_items}{$item_id} || Webservice::OVH::Order::Cart::Item->_new( $api, $self, $item_id, $self->{_module} );
+        my $item = $self->{_items}{$item_id} = $self->{_items}{$item_id} || Webservice::OVH::Order::Cart::Item->_new( wrapper => $api, cart => $self, id => $item_id, module => $self->{_module} );
         push @$items, $item;
     }
 
@@ -660,7 +673,7 @@ sub item {
     return unless $self->_is_valid;
 
     my $api = $self->{_api_wrapper};
-    my $item = $self->{_items}{$item_id} = $self->{_items}{$item_id} || Webservice::OVH::Domain::Service->_new( $api, $self, $item_id, $self->{_module} );
+    my $item = $self->{_items}{$item_id} = $self->{_items}{$item_id} || Webservice::OVH::Order::Cart::Item->_new( wrapper => $api, cart => $self, id => $item_id, module => $self->{_module} );
     return $item;
 }
 

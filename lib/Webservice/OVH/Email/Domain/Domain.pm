@@ -52,7 +52,15 @@ This method is not ment to be called external.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $domain, $module ) = @_;
+    my ( $class, %params ) = @_;
+    
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $domain      = $params{id};
 
     croak "Missing domain name" unless $domain;
 
@@ -259,7 +267,7 @@ sub redirections {
 
     foreach my $redirection_id (@$redirection_ids) {
 
-        my $redirection = $self->{_redirections}{$redirection_id} = $self->{_redirections}{$redirection_id} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id, $self->{_module} );
+        my $redirection = $self->{_redirections}{$redirection_id} = $self->{_redirections}{$redirection_id} || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( wrapper => $api, domain => $self, id => $redirection_id, module => $self->{_module} );
         push @$redirections, $redirection;
     }
 
@@ -290,7 +298,7 @@ sub redirection {
 
     my $api                    = $self->{_api_wrapper};
     my $from_array_redirection = $self->{_redirections}{$redirection_id} if $self->{_redirections}{$redirection_id} && $self->{_redirections}{$redirection_id}->is_valid;
-    my $redirection            = $self->{_redirections}{$redirection_id} = $from_array_redirection || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( $api, $self, $redirection_id, $self->{_module} );
+    my $redirection            = $self->{_redirections}{$redirection_id} = $from_array_redirection || Webservice::OVH::Email::Domain::Domain::Redirection->_new_existing( wrapper => $api, domain => $self, id => $redirection_id, module => $self->{_module} );
 
     return $redirection;
 }
@@ -316,7 +324,7 @@ sub new_redirection {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $redirection = Webservice::OVH::Email::Domain::Domain::Redirection->_new( $api, $self, $self->{_module}, %params );
+    my $redirection = Webservice::OVH::Email::Domain::Domain::Redirection->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
 
     return $redirection;
 }
@@ -348,7 +356,7 @@ sub accounts {
     my $accounts      = [];
 
     foreach my $account_name (@$account_names) {
-        my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name, $self->{_module} );
+        my $account = $self->{_accounts}{$account_name} = $self->{_accounts}{$account_name} || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( wrapper => $api, domain => $self, id => $account_name, module => $self->{_module} );
         push @$accounts, $account;
     }
 
@@ -379,7 +387,7 @@ sub account {
 
     my $api                = $self->{_api_wrapper};
     my $from_array_account = $self->{_accounts}{$account_name} if $self->{_accounts}{$account_name} && $self->{_accounts}{$account_name}->is_valid;
-    my $account            = $self->{_accounts}{$account_name} = $from_array_account || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( $api, $self, $account_name, $self->{_module} );
+    my $account            = $self->{_accounts}{$account_name} = $from_array_account || Webservice::OVH::Email::Domain::Domain::Account->_new_existing( wrapper => $api, domain => $self, id => $account_name, module => $self->{_module} );
 
     return $account;
 }
@@ -405,7 +413,7 @@ sub new_account {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $account = Webservice::OVH::Email::Domain::Domain::Account->_new( $api, $self, $self->{_module}, %params );
+    my $account = Webservice::OVH::Email::Domain::Domain::Account->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
 
     return $account;
 }
@@ -437,7 +445,7 @@ sub mailing_lists {
 
     foreach my $mailing_list_name (@$mailing_list_names) {
 
-        my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name, $self->{_module} );
+        my $mailing_list = $self->{_mailing_lists}{$mailing_list_name} = $self->{_mailing_lists}{$mailing_list_name} || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( wrapper => $api, domain => $self, id => $mailing_list_name, module => $self->{_module} );
         push @$mailing_lists, $mailing_list;
     }
 
@@ -468,7 +476,7 @@ sub mailing_list {
 
     my $api                     = $self->{_api_wrapper};
     my $from_array_mailing_list = $self->{_mailing_lists}{$mailing_list_name} if $self->{_mailing_lists}{$mailing_list_name} && $self->{_mailing_lists}{$mailing_list_name}->is_valid;
-    my $mailing_list            = $self->{_mailing_lists}{$mailing_list_name} = $from_array_mailing_list || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( $api, $self, $mailing_list_name, $self->{_module} );
+    my $mailing_list            = $self->{_mailing_lists}{$mailing_list_name} = $from_array_mailing_list || Webservice::OVH::Email::Domain::Domain::MailingList->_new_existing( wrapper => $api, domain => $self, id => $mailing_list_name, module => $self->{_module} );
 
     return $mailing_list;
 }
@@ -494,7 +502,7 @@ sub new_mailing_list {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $mailing_list = Webservice::OVH::Email::Domain::Domain::MailingList->_new( $api, $self, $self->{_module}, %params );
+    my $mailing_list = Webservice::OVH::Email::Domain::Domain::MailingList->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
 
     return $mailing_list;
 }

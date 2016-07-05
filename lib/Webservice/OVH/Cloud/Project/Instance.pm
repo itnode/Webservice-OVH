@@ -62,7 +62,15 @@ This method is used when instance is initialised as a bridge object for static u
 
 sub _new_empty {
 
-    my ( $class, $api_wrapper, $project, $module ) = @_;
+    my ( $class, %params ) = @_;
+    
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing project"      unless $params{project};
+
+    my $module       = $params{module};
+    my $api_wrapper  = $params{wrapper};
+    my $project      = $params{project};
 
     my $self = bless { _module => $module, _valid => 0, _api_wrapper => $api_wrapper, _project => $project, _available_groups => [], _groups => {} }, $class;
 }
@@ -135,7 +143,7 @@ sub groups {
 
     foreach my $group_id (@$group_array) {
         if ( $self->group_exists( $group_id, 1 ) ) {
-            my $group = $self->{_groups}{$group_id} = $self->{_groups}{$group_id} || Webservice::OVH::Cloud::Project::Instance::Group->_new_existing( $api, $self->{_module}, $self->project, $group_id );
+            my $group = $self->{_groups}{$group_id} = $self->{_groups}{$group_id} || Webservice::OVH::Cloud::Project::Instance::Group->_new_existing( wrapper => $api, module => $self->{_module}, project => $self->project, id => $group_id );
             push @$groups, $group;
         }
     }
@@ -166,7 +174,7 @@ sub group {
     if ( $self->group_exists($group_id) ) {
 
         my $api = $self->{_api_wrapper};
-        my $instance = $self->{_group}{$group_id} = $self->{_group}{$group_id} || Webservice::OVH::Cloud::Project::Instance->_new_existing( $api, $self->{_module}, $self->project, $group_id );
+        my $instance = $self->{_group}{$group_id} = $self->{_group}{$group_id} || Webservice::OVH::Cloud::Project::Instance->_new_existing( wrapper => $api, module => $self->{_module}, project => $self->project, id => $group_id );
 
         return $instance;
     } else {

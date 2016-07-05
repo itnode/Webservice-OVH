@@ -52,7 +52,17 @@ This method should never be called directly.
 
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $domain, $mailing_list_name ) = @_;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+    die "Missing domain"  unless $params{domain};
+
+    my $module            = $params{module};
+    my $api_wrapper       = $params{wrapper};
+    my $mailing_list_name = $params{id};
+    my $domain            = $params{domain};
 
     die "Missing mailing_list_name" unless $mailing_list_name;
     my $domain_name = $domain->name;
@@ -90,7 +100,15 @@ This method should never be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $domain, $module, %params ) = @_;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing domain"  unless $params{domain};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $domain      = $params{domain};
 
     my @keys_needed = qw{ language name options owner_email };
 

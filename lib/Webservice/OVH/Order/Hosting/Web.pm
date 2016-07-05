@@ -47,9 +47,15 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    my $self = bless { _module => $module,_api_wrapper => $api_wrapper }, $class;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper }, $class;
 
     return $self;
 }
@@ -109,7 +115,7 @@ Generates an order and pays the order for free webhosting.
 sub activate_free_email {
 
     my ( $self, $domain ) = @_;
-    
+
     my $module = $self->{_module};
 
     croak "Missing domain" unless $domain;
@@ -125,9 +131,9 @@ sub activate_free_email {
     my $body = { domain => $domain, offer => 'START', dnsZone => $dns_zone };
     my $response = $api->rawCall( method => 'post', path => "/order/hosting/web/new/$duration", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
-    
-    my $order = $module->me->order($response->content->{orderId});
-    
+
+    my $order = $module->me->order( $response->content->{orderId} );
+
     $order->pay_with_registered_payment_mean('fidelityAccount');
 
     return $order;

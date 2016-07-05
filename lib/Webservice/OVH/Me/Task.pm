@@ -49,10 +49,20 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $type, $task_id, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing contact_id" unless $task_id;
-    die "Missing type"       unless $type;
+    die "Missing module"    unless $params{module};
+    die "Missing wrapper"   unless $params{wrapper};
+    die "Missing id"        unless $params{id};
+    die "Missing task type" unless $params{type};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $task_id     = $params{id};
+    my $type        = $params{type};
+
+      die "Missing contact_id" unless $task_id;
+    die "Missing type" unless $type;
 
     my $response = $api_wrapper->rawCall( method => 'get', path => "/me/task/contactChange/$task_id", noSignature => 0 );
     croak $response->error if $response->error;

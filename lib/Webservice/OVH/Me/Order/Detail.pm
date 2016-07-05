@@ -54,10 +54,19 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $order, $detail_id, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing detail_id" unless $detail_id;
+    die "Missing module"    unless $params{module};
+    die "Missing wrapper"   unless $params{wrapper};
+    die "Missing id"        unless $params{id};
+    die "Missing order"     unless $params{order};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $detail_id     = $params{id};
+    my $order       = $params{order};
     my $order_id = $order->id;
+
     my $response = $api_wrapper->rawCall( method => 'get', path => "/me/order/$order_id/details/$detail_id", noSignature => 0 );
     croak $response->error if $response->error;
 

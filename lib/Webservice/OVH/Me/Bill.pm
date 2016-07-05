@@ -55,9 +55,16 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $bill_id, $module ) = @_;
+    my ( $class, %params ) = @_;
+    
+    die "Missing module"    unless $params{module};
+    die "Missing wrapper"   unless $params{wrapper};
+    die "Missing id"        unless $params{id};
 
-    die "Missing bill_id" unless $bill_id;
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $bill_id     = $params{id};
+
     my $response = $api_wrapper->rawCall( method => 'get', path => "/me/bill/$bill_id", noSignature => 0 );
     croak $response->error if $response->error;
 

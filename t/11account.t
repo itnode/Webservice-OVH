@@ -38,7 +38,8 @@ SKIP: {
   SKIP: {
 
         skip "Max account quota reached for connected account", 1 if !$new_account;
-
+#TODO
+=head2 This test take way too long. Creating and deleting an account could take up to 15 Minutes
         ok( $new_account, 'new account ok' );
 
         ok( $new_account->name, 'name ok' );
@@ -64,7 +65,7 @@ SKIP: {
         ok( !$email_domain->account('testaccount'), 'not found ok' );
         my @accounts = grep { $_->name eq 'testaccount' } @{ $email_domain->accounts };
         ok( scalar @accounts == 0, 'not found in list ok' );
-
+=cut
     }
 
 }

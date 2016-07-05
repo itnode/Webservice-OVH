@@ -50,7 +50,17 @@ This method should never be called directly.
 
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $domain, $redirection_id, $module ) = @_;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+    die "Missing domain"  unless $params{domain};
+
+    my $module         = $params{module};
+    my $api_wrapper    = $params{wrapper};
+    my $redirection_id = $params{id};
+    my $domain         = $params{domain};
 
     die "Missing redirection_id" unless $redirection_id;
     my $domain_name = $domain->name;
@@ -90,18 +100,24 @@ This method should never be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $domain, $module, %params ) = @_;
+    my ( $class, %params ) = @_;
+    
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing domain"  unless $params{domain};
+
+    my $module         = $params{module};
+    my $api_wrapper    = $params{wrapper};
+    my $domain         = $params{domain};
 
     my @keys_needed = qw{ from local_copy to };
-
-    die "Missing domain" unless $domain;
 
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";
     }
-    
-    my $local_copy = $params{local_copy} eq 'true' || $params{local_copy} == 1 ? JSON::true : JSON::false;
+
+    my $local_copy = $params{local_copy} eq 'true' || $params{local_copy} eq '1' || $params{local_copy} eq 'yes' ? JSON::true : JSON::false;
 
     my $domain_name = $domain->name;
     my $body        = {};

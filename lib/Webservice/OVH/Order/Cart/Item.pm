@@ -49,9 +49,18 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $cart, $item_id, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing item_id" unless $item_id;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+    die "Missing cart"    unless $params{cart};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $item_id     = $params{id};
+    my $cart        = $params{cart};
+
     my $cart_id = $cart->id;
     my $response = $api_wrapper->rawCall( method => 'get', path => "/order/cart/$cart_id/item/$item_id", noSignature => 0 );
     croak $response->error if $response->error;

@@ -49,9 +49,15 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    my $domain = Webservice::OVH::Order::Email::Domain->_new( $api_wrapper, $module );
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+
+    my $domain = Webservice::OVH::Order::Email::Domain->_new( wrapper => $api_wrapper, module => $module );
 
     my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _domain => $domain }, $class;
 

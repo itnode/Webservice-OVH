@@ -53,9 +53,15 @@ This method is not ment to be called directly.
 
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $contact_id, $module ) = @_;
+    my ( $class, %params ) = @_;
+    
+    die "Missing module"    unless $params{module};
+    die "Missing wrapper"   unless $params{wrapper};
+    die "Missing id"        unless $params{id};
 
-    die "Missing contact_id" unless $contact_id;
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $contact_id     = $params{id};
 
     my $response = $api_wrapper->rawCall( method => 'get', path => "/me/contact/$contact_id", noSignature => 0 );
     croak $response->error if $response->error;

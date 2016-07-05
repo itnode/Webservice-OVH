@@ -55,11 +55,17 @@ This method is not ment to be called external.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $service_name, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    croak "Missing service_name" unless $service_name;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
 
-    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _name => $service_name, _owner => undef, _service_info => undef, _properties => undef }, $class;
+    my $module       = $params{module};
+    my $api_wrapper  = $params{wrapper};
+    my $service_name = $params{id};
+
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _name => $service_name, _owner => undef, _service_info => undef, _properties => undef }, $class;
 
     return $self;
 }
@@ -398,7 +404,7 @@ sub whois_owner {
     my $api        = $self->{_api_wrapper};
     my $properties = $self->{_properties} || $self->properties;
     my $owner_id   = $properties->{whoisOwner};
-    my $owner      = $self->{_owner} = $self->{_owner} || Webservice::OVH::Me::Contact->_new_existing( $api, $owner_id );
+    my $owner      = $self->{_owner} = $self->{_owner} || Webservice::OVH::Me::Contact->_new_existing( wrapper => $api, id => $owner_id, module => $self->{_module});
 
     return $self->{_owner};
 }

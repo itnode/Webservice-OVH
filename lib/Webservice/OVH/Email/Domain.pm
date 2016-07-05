@@ -54,9 +54,15 @@ This method is not ment to be called external.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _domains => {}, _aviable_domains => [] }, $class;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _domains => {}, _aviable_domains => [] }, $class;
 
     my $api = $self->{_api_wrapper};
     my $response = $api->rawCall( method => 'get', path => "/email/domain/", noSignature => 0 );
@@ -135,7 +141,7 @@ sub domains {
 
     foreach my $domain (@$domain_array) {
         if ( $self->domain_exists( $domain, 1 ) ) {
-            my $domain = $self->{_domains}{$domain} = $self->{_domains}{$domain} || Webservice::OVH::Email::Domain::Domain->_new( $api, $domain, $self->{_module} );
+            my $domain = $self->{_domains}{$domain} = $self->{_domains}{$domain} || Webservice::OVH::Email::Domain::Domain->_new( wrapper => $api, id => $domain, module => $self->{_module} );
             push @$domains, $domain;
         }
     }
@@ -167,7 +173,7 @@ sub domain {
     if ( $self->domain_exists($domain) ) {
 
         my $api = $self->{_api_wrapper};
-        my $domain = $self->{_domains}{$domain} = $self->{_domains}{$domain} || Webservice::OVH::Email::Domain::Domain->_new( $api, $domain, $self->{_module} );
+        my $domain = $self->{_domains}{$domain} = $self->{_domains}{$domain} || Webservice::OVH::Email::Domain::Domain->_new( wrapper => $api, id => $domain, module => $self->{_module} );
 
         return $domain;
     } else {

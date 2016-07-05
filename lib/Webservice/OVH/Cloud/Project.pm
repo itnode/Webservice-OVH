@@ -72,9 +72,11 @@ sub _new_existing {
     my $module      = $params{module};
 
     my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _properties => undef, _id => $project_id, _instances => {}, _available_instances => [], _images => {}, _available_images => [], _ssh_keys => {}, _available_ssh_keys => [] }, $class;
-    my $instance = Webservice::OVH::Cloud::Project::Instance->_new_empty( $api_wrapper, $self, $module );
+
+    my $instance = Webservice::OVH::Cloud::Project::Instance->_new_empty( wrapper => $api_wrapper, project => $self, module => $module );
     my $network = Webservice::OVH::Cloud::Project::Network->_new( wrapper => $api_wrapper, project => $self, module => $module );
     my $ip = Webservice::OVH::Cloud::Project::IP->_new( wrapper => $api_wrapper, project => $self, module => $module );
+
     $self->{_instance} = $instance;
     $self->{_network}  = $network;
     $self->{_ip}       = $ip;

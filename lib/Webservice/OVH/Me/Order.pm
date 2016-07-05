@@ -51,9 +51,16 @@ This method is not ment to be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $order_id, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    die "Missing order_id" unless $order_id;
+    die "Missing module"    unless $params{module};
+    die "Missing wrapper"   unless $params{wrapper};
+    die "Missing id"        unless $params{id};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $order_id     = $params{id};
+
     my $response = $api_wrapper->rawCall( method => 'get', path => "/me/order/$order_id", noSignature => 0 );
     croak $response->error if $response->error;
 
@@ -403,7 +410,7 @@ sub details {
 
     foreach my $detail_id (@$detail_ids) {
 
-        my $detail = $self->{_details}{$detail_id} = $self->{_details}{$detail_id} || Webservice::OVH::Me::Order::Detail->_new( $api, $self, $detail_id, $self->{_module} );
+        my $detail = $self->{_details}{$detail_id} = $self->{_details}{$detail_id} || Webservice::OVH::Me::Order::Detail->_new( wrapper => $api, order => $self, id => $detail_id, module => $self->{_module} );
         push @$details, $detail;
     }
 
@@ -429,7 +436,7 @@ sub detail {
     my ( $self, $detail_id ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $detail = $self->{_details}{$detail_id} = $self->{_details}{$detail_id} || Webservice::OVH::Me::Order::Detail->_new( $api, $self, $detail_id, $self->{_module} );
+    my $detail = $self->{_details}{$detail_id} = $self->{_details}{$detail_id} || Webservice::OVH::Me::Order::Detail->_new( wrapper => $api, order => $self, id => $detail_id, module => $self->{_module} );
 
     return $detail;
 }

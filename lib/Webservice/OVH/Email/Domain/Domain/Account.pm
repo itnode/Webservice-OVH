@@ -49,8 +49,18 @@ This method should never be called directly.
 
 sub _new_existing {
 
-    my ( $class, $api_wrapper, $domain, $account_name, $module ) = @_;
-    die "Missing account_name" unless $account_name;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+    die "Missing domain"  unless $params{domain};
+
+    my $module       = $params{module};
+    my $api_wrapper  = $params{wrapper};
+    my $account_name = $params{id};
+    my $domain       = $params{domain};
+
     $account_name = lc $account_name;
 
     my $domain_name = $domain->name;
@@ -88,12 +98,17 @@ This method should never be called directly.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $domain, $module, %params ) = @_;
+    my ( $class, %params ) = @_;
+    
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing domain"  unless $params{domain};
+
+    my $module       = $params{module};
+    my $api_wrapper  = $params{wrapper};
+    my $domain       = $params{domain};
 
     my @keys_needed = qw{ account_name password };
-
-    die "Missing domain" unless $domain;
-
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";

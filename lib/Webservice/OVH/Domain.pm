@@ -63,9 +63,15 @@ This method is not ment to be called external.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $module ) = @_;
+    my ( $class, %params ) = @_;
 
-    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _services => {}, _zones => {}, _aviable_services => [], _aviable_zones => [] }, $class;
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _services => {}, _zones => {}, _aviable_services => [], _aviable_zones => [] }, $class;
 
     return $self;
 }
@@ -174,7 +180,7 @@ sub services {
 
     foreach my $service_name (@$service_array) {
         if ( $self->service_exists( $service_name, 1 ) ) {
-            my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name, $self->{_module} );
+            my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( wrapper => $api, id => $service_name, module => $self->{_module} );
             push @$services, $service;
         }
     }
@@ -211,7 +217,7 @@ sub zones {
     foreach my $zone_name (@$zone_names) {
 
         if ( $self->zone_exists( $zone_name, 1 ) ) {
-            my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name, $self->{_module} );
+            my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( wrapper => $api, id => $zone_name, module => $self->{_module} );
             push @$zones, $zone;
         }
     }
@@ -242,7 +248,7 @@ sub service {
     if ( $self->service_exists($service_name) ) {
 
         my $api = $self->{_api_wrapper};
-        my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( $api, $service_name, $self->{_module} );
+        my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Domain::Service->_new( wrapper => $api, id => $service_name, module => $self->{_module} );
 
         return $service;
     } else {
@@ -274,7 +280,7 @@ sub zone {
 
     if ( $self->zone_exists($zone_name) ) {
         my $api = $self->{_api_wrapper};
-        my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( $api, $zone_name, $self->{_module} );
+        my $zone = $self->{_zones}{$zone_name} = $self->{_zones}{$zone_name} || Webservice::OVH::Domain::Zone->_new( wrapper => $api, id => $zone_name, module => $self->{_module} );
 
         return $zone;
 

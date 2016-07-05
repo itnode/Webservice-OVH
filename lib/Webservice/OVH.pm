@@ -110,11 +110,11 @@ sub new_from_json {
 
     # Create internal objects to mirror the web api of ovh
     my $api_wrapper = OvhApi->new( 'type' => "https://eu.api.ovh.com/1.0", applicationKey => $data->{application_key}, applicationSecret => $data->{application_secret}, consumerKey => $data->{consumer_key} );
-    my $domain = Webservice::OVH::Domain->_new( $api_wrapper, $self );
-    my $me = Webservice::OVH::Me->_new( $api_wrapper, $self );
-    my $order = Webservice::OVH::Order->_new( $api_wrapper, $self );
-    my $email = Webservice::OVH::Email->_new( $api_wrapper, $self );
-    my $cloud = Webservice::OVH::Cloud->_new( $api_wrapper, $self );
+    my $domain = Webservice::OVH::Domain->_new( wrapper => $api_wrapper, module => $self );
+    my $me = Webservice::OVH::Me->_new( wrapper => $api_wrapper, module => $self );
+    my $order = Webservice::OVH::Order->_new( wrapper => $api_wrapper, module => $self );
+    my $email = Webservice::OVH::Email->_new( wrapper => $api_wrapper, module => $self );
+    my $cloud = Webservice::OVH::Cloud->_new( wrapper => $api_wrapper, module => $self );
 
     # Timeout can be also set in the json file
     OvhApi->setRequestTimeout( timeout => $data->{timeout} || 120 );
@@ -161,11 +161,11 @@ sub new {
     my $self = bless {}, $class;
 
     my $api_wrapper = OvhApi->new( 'type' => "https://eu.api.ovh.com/1.0", applicationKey => $params{application_key}, applicationSecret => $params{application_secret}, consumerKey => $params{consumer_key} );
-    my $domain = Webservice::OVH::Domain->_new( $api_wrapper, $self );
-    my $me = Webservice::OVH::Me->_new( $api_wrapper, $self );
-    my $order = Webservice::OVH::Order->_new( $api_wrapper, $self );
-    my $email = Webservice::OVH::Email->_new( $api_wrapper, $self );
-    my $cloud = Webservice::OVH::Cloud->_new( $api_wrapper, $self );
+    my $domain = Webservice::OVH::Domain->_new( wrapper => $api_wrapper, module => $self );
+    my $me = Webservice::OVH::Me->_new( wrapper => $api_wrapper, module => $self );
+    my $order = Webservice::OVH::Order->_new( wrapper => $api_wrapper, module => $self );
+    my $email = Webservice::OVH::Email->_new( wrapper => $api_wrapper, module => $self );
+    my $cloud = Webservice::OVH::Cloud->_new( wrapper => $api_wrapper, module => $self );
 
     OvhApi->setRequestTimeout( timeout => $params{timeout} || 120 );
 

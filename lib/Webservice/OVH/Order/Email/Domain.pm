@@ -47,7 +47,13 @@ This method is not ment to be called directly.
 
 sub _new {
     
-    my ( $class, $api_wrapper, $module ) = @_;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
     
     my $self = bless { _module => $module, _api_wrapper => $api_wrapper}, $class;
 

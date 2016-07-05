@@ -67,11 +67,19 @@ This method is not ment to be called external.
 
 sub _new {
 
-    my ( $class, $api_wrapper, $zone_name, $module ) = @_;
+    my ( $class, %params ) = @_;
+
+    die "Missing module"  unless $params{module};
+    die "Missing wrapper" unless $params{wrapper};
+    die "Missing id"      unless $params{id};
+
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $zone_name   = $params{id};
 
     croak "Missing zone_name" unless $zone_name;
 
-    my $self = bless { module => $module, _api_wrapper => $api_wrapper, _name => $zone_name, _service_info => undef, _properties => undef, _records => {} }, $class;
+    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _name => $zone_name, _service_info => undef, _properties => undef, _records => {} }, $class;
 
     return $self;
 }
@@ -264,7 +272,7 @@ sub records {
 
     foreach my $record_id (@$record_ids) {
 
-        my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self->{_module}, $self, $record_id );
+        my $record = $self->{_records}{$record_id} = $self->{_records}{$record_id} || Webservice::OVH::Domain::Zone::Record->_new_existing( wrapper => $api, module => $self->{_module}, zone => $self, id => $record_id );
         push @$records, $record;
     }
 
@@ -295,7 +303,7 @@ sub record {
 
     my $api               = $self->{_api_wrapper};
     my $from_array_record = $self->{_records}{$record_id} if $self->{_records}{$record_id} && $self->{_records}{$record_id}->is_valid;
-    my $record            = $self->{_records}{$record_id} = $from_array_record || Webservice::OVH::Domain::Zone::Record->_new_existing( $api, $self->{_module}, $self, $record_id );
+    my $record            = $self->{_records}{$record_id} = $from_array_record || Webservice::OVH::Domain::Zone::Record->_new_existing( wrapper => $api, module => $self->{_module}, zone => $self, id => $record_id );
 
     return $record;
 }
@@ -321,7 +329,7 @@ sub new_record {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $record = Webservice::OVH::Domain::Zone::Record->_new( $api, $self->{_module}, $self, %params );
+    my $record = Webservice::OVH::Domain::Zone::Record->_new( wrapper => $api, module => $self->{_module}, zone => $self, %params );
 
     return $record;
 }
