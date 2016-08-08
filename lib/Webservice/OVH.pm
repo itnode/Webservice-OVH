@@ -47,7 +47,7 @@ use Carp qw{ carp croak };
 our $VERSION = 0.1;
 
 # api module provided by ovh
-use OvhApi;
+use OVH::OvhApi;
 
 # sub-modules
 use Webservice::OVH::Domain;
