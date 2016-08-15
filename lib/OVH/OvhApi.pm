@@ -1,4 +1,4 @@
-package OvhApi;
+package OVH::OvhApi;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use warnings;
 our $VERSION = 1.0;
 
 
-use OvhApi::Answer;
+use OVH::OvhApi::Answer;
 
 use Carp            qw{ carp croak };
 use List::Util      'first';
@@ -136,7 +136,7 @@ sub rawCall
 
     $httpHeaders{'X-Ovh-Application'}   = $self->{'applicationKey'},
 
-    return OvhApi::Answer->new(response => $UserAgent->$method($url, %httpHeaders, %content));
+    return OVH::OvhApi::Answer->new(response => $UserAgent->$method($url, %httpHeaders, %content));
 }
 
 sub requestCredentials
@@ -217,9 +217,9 @@ OvhApi - Official OVH Perl wrapper upon the OVH RESTful API.
 
 =head1 SYNOPSIS
 
-  use OvhApi;
+  use OVH::OvhApi;
 
-  my $Api    = OvhApi->new(type => OvhApi::OVH_API_EU, applicationKey => $AK, applicationSecret => $AS, consumerKey => $CK);
+  my $Api    = OVH::OvhApi->new(type => OVH::OvhApi::OVH_API_EU, applicationKey => $AK, applicationSecret => $AS, consumerKey => $CK);
   my $Answer = $Api->get(path => '/me');
 
 =head1 DESCRIPTION
@@ -332,7 +332,7 @@ The C<accessRules> parameter is an ARRAY of HASHes. Each hash contains these key
 
 =head3 Example
 
-    my $Api = OvhApi->new(type => OvhApi::OVH_API_EU, applicationKey => $AK, applicationSecret => $AS, consumerKey => $CK);
+    my $Api = OVH::OvhApi->new(type => OvhApi::OVH_API_EU, applicationKey => $AK, applicationSecret => $AS, consumerKey => $CK);
     my $Answer = $Api->requestCredentials(accessRules => [ { method => 'ALL', path => '/*' }]);
 
     if ($Answer)

@@ -53,7 +53,7 @@ This method is not ment to be called external.
 sub _new {
 
     my ( $class, %params ) = @_;
-    
+
     die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
     die "Missing id"      unless $params{id};
@@ -97,6 +97,33 @@ sub service_infos {
     $self->{_service_infos} = $response_service_info->content;
 
     return $self->{_service_infos};
+}
+
+=head2 quota
+
+Retrieves info about quotas. 
+Not part of the properties
+
+=over
+
+=item * Return: HASH
+
+=item * Synopsis: my $info = $email_domain->quota;
+
+=back
+
+=cut
+
+sub quota {
+
+    my ($self) = @_;
+
+    my $api      = $self->{_api_wrapper};
+    my $domain   = $self->name;
+    my $response = $api->rawCall( method => 'get', path => "/email/domain/$domain/quota", noSignature => 0 );
+
+    croak $response->error if $response->error;
+    return $response->content;
 }
 
 =head2 name
@@ -235,6 +262,18 @@ sub status {
     return $self->{_properties}->{status};
 }
 
+sub redirections_count {
+    
+    my ( $self ) = @_;
+    
+    my $api         = $self->{_api_wrapper};
+    my $domain_name = $self->name;
+    my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/redirection", noSignature => 0 );
+    croak $response->error if $response->error;
+    
+    return scalar @{$response->content};
+}
+
 =head2 redirections
 
 Produces an array of all available redirections that are connected to the email-domain.
@@ -329,6 +368,18 @@ sub new_redirection {
     return $redirection;
 }
 
+sub accounts_count {
+    
+    my ( $self ) = @_;
+    
+    my $api         = $self->{_api_wrapper};
+    my $domain_name = $self->name;
+    my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/account", noSignature => 0 );
+    croak $response->error if $response->error;
+    
+    return scalar @{$response->content};
+}
+
 =head2 accounts
 
 Produces an array of all available accounts that are connected to the email-domain.
@@ -416,6 +467,18 @@ sub new_account {
     my $account = Webservice::OVH::Email::Domain::Domain::Account->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
 
     return $account;
+}
+
+sub mailing_lists_count {
+    
+    my ( $self ) = @_;
+    
+    my $api         = $self->{_api_wrapper};
+    my $domain_name = $self->name;
+    my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList", noSignature => 0 );
+    croak $response->error if $response->error;
+    
+    return scalar @{$response->content};
 }
 
 =head2 mailing_lists

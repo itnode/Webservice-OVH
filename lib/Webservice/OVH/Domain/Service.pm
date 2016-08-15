@@ -268,6 +268,31 @@ sub last_update {
     return $datetime;
 }
 
+=head2 last_update
+
+Exposed Property Value. Readonly.
+
+=over
+
+=item * Return: DateTime
+
+=item * Synopsis: my $last_update = $service->last_update;
+
+=back
+
+=cut
+
+sub expiration {
+
+    my ($self) = @_;
+
+    $self->service_infos unless $self->{_service_info};
+
+    my $str_datetime = $self->{_service_info}->{expiration};
+    my $datetime     = Webservice::OVH::Helper->parse_date($str_datetime);
+    return $datetime;
+}
+
 =head2 name_server_type
 
 Exposed Property Value. Readonly.

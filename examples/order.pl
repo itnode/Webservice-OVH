@@ -40,6 +40,7 @@ sub add_item_with_retry {
     eval { $cart->add_domain( $domain, offer_id => $offer_id ); };
     if ($@) {
         print STDERR "retry\n";
+        sleep(10);
         add_item_with_retry( $cart, $domain, $offer_id );
     }
 

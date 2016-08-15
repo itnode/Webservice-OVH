@@ -1,4 +1,4 @@
-package OvhApi::Answer;
+package OVH::OvhApi::Answer;
 
 use strict;
 use warnings;

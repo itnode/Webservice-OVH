@@ -93,6 +93,20 @@ sub parse_datetime {
     return $strp->parse_datetime($str_datetime);
 }
 
+sub parse_date {
+
+    my ( $class, $str_datetime, $locale, $timezone ) = @_;
+
+    my $strp = DateTime::Format::Strptime->new(
+        pattern   => '%F',
+        locale    => ( $locale || 'de_DE' ),
+        time_zone => ( $timezone || 'Europe/Berlin' ),
+        on_error  => 'croak',
+    );
+
+    return $strp->parse_datetime($str_datetime);
+}
+
 =head2 format_datetime
 
 Returns a date time string fitting ovhs requirements

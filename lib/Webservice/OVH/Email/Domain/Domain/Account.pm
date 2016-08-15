@@ -409,10 +409,6 @@ sub change_password {
 
     my ( $self, $password ) = @_;
 
-    return "Password too long"  if length $password > 30;
-    return "Password too short" if length $password < 9;
-    return "No '´' allowed"    if index( $password, '´' );
-
     my $api          = $self->{_api_wrapper};
     my $domain_name  = $self->domain->name;
     my $account_name = $self->name;
