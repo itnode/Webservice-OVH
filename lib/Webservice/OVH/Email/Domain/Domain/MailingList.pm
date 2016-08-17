@@ -32,6 +32,7 @@ use JSON;
 our $VERSION = 0.1;
 
 use Webservice::OVH::Helper;
+use Webservice::OVH::Email::Domain::Domain::Task;
 
 =head2 _new_existing
 
@@ -65,20 +66,10 @@ sub _new_existing {
     my $domain            = $params{domain};
 
     die "Missing mailing_list_name" unless $mailing_list_name;
-    my $domain_name = $domain->name;
-    my $response = $api_wrapper->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList/$mailing_list_name", noSignature => 0 );
-    carp $response->error if $response->error;
 
-    if ( !$response->error ) {
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $mailing_list_name, _properties => undef, _domain => $domain }, $class;
 
-        my $porperties = $response->content;
-        my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $porperties->{id}, _name => $mailing_list_name, _properties => $porperties, _domain => $domain }, $class;
-
-        return $self;
-    } else {
-
-        return undef;
-    }
+    return $self;
 }
 
 =head2 _new
@@ -139,7 +130,7 @@ sub _new {
     croak $response->error if $response->error;
 
     my $mailing_list = $domain->mailing_list( $params{name} );
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _id => $mailing_list->id, _porperties => $mailing_list->properties, _name => $params{name}, _domain => $domain }, $class;
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _properties => undef, _name => $params{name}, _domain => $domain }, $class;
 
     return $self;
 }
@@ -228,7 +219,9 @@ sub id {
 
     my ($self) = @_;
 
-    return $self->{_id};
+    $self->properties unless $self->{_properties};
+
+    return $self->{properties}{id};
 }
 
 =head2 domain
@@ -277,9 +270,18 @@ sub properties {
     my $domain_name       = $self->domain->name;
     my $mailing_list_name = $self->name;
     my $response          = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList/$mailing_list_name", noSignature => 0 );
-    croak $response->error if $response->error;
-    $self->{_properties} = $response->content;
-    return $self->{_properties};
+    carp $response->error if $response->error;
+
+    if ( $response->error ) {
+
+        $self->{_valid} = 0;
+        return undef;
+
+    } else {
+
+        $self->{_properties} = $response->content;
+        return $self->{_properties};
+    }
 }
 
 =head2 language
@@ -299,6 +301,8 @@ Exposed property value.
 sub language {
 
     my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
 
     return $self->{_properties}->{language};
 }
@@ -321,6 +325,8 @@ sub options {
 
     my ($self) = @_;
 
+    $self->properties unless $self->{_properties};
+
     return $self->{_properties}->{options};
 }
 
@@ -341,6 +347,8 @@ Exposed property value.
 sub owner_email {
 
     my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
 
     return $self->{_properties}->{ownerEmail};
 }
@@ -363,6 +371,8 @@ sub reply_to {
 
     my ($self) = @_;
 
+    $self->properties unless $self->{_properties};
+
     return $self->{_properties}->{replyTo};
 }
 
@@ -383,6 +393,8 @@ Exposed property value.
 sub nb_subscribers_update_date {
 
     my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
 
     my $str_datetime = $self->{_properties}->{nbSubscribersUpdateDate};
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
@@ -407,6 +419,8 @@ Exposed property value.
 sub nb_subscribers {
 
     my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
 
     return $self->{_properties}->{nbSubscribers};
 }
@@ -589,6 +603,7 @@ sub add_moderator {
     my $body              = { email => $email };
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/moderator", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+
 }
 
 =head2 delete_moderator
@@ -616,6 +631,7 @@ sub delete_moderator {
     my $mailing_list_name = $self->name;
     my $response          = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/moderator/$email", noSignature => 0 );
     croak $response->error if $response->error;
+
 }
 
 =head2 delete_moderator
@@ -737,6 +753,7 @@ sub add_subscriber {
     my $body              = { email => $email };
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/subscriber", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+
 }
 
 =head2 delete_subscriber
@@ -764,6 +781,26 @@ sub delete_subscriber {
     my $mailing_list_name = $self->name;
     my $response          = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/subscriber/$email", noSignature => 0 );
     croak $response->error if $response->error;
+
+}
+
+sub tasks {
+
+    my ($self) = @_;
+
+    my $domain_name = $self->domain->name;
+    my $api         = $self->{_api_wrapper};
+    my $name        = $self->name;
+
+    my $response = $api->rawCall( method => 'get', path => sprintf( "/email/domain/$domain_name/task/mailinglist?account=%s", $name ), noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $taks = $response->content || [];
+
+    return unless scalar @$taks;
+
+    return $taks;
+
 }
 
 1;

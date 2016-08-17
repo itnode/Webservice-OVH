@@ -101,14 +101,14 @@ This method should never be called directly.
 sub _new {
 
     my ( $class, %params ) = @_;
-    
+
     die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
     die "Missing domain"  unless $params{domain};
 
-    my $module         = $params{module};
-    my $api_wrapper    = $params{wrapper};
-    my $domain         = $params{domain};
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $domain      = $params{domain};
 
     my @keys_needed = qw{ from local_copy to };
 
@@ -353,6 +353,25 @@ sub change {
     my $redirection = $self->domain->redirections( from => $self->from, to => $to )->[0];
     $self->{_properties} = $redirection->properties;
     $self->{_id}         = $redirection->id;
+}
+
+sub tasks {
+
+    my ($self) = @_;
+
+    my $domain_name = $self->domain->name;
+    my $api         = $self->{_api_wrapper};
+    my $id          = $self->id;
+
+    my $response = $api->rawCall( method => 'get', path => sprintf( "/email/domain/$domain_name/task/redirection?account=%s", $id ), noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $taks = $response->content || [];
+
+    return unless scalar @$taks;
+
+    return $taks;
+
 }
 
 1;

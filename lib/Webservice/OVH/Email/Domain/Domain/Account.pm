@@ -99,14 +99,14 @@ This method should never be called directly.
 sub _new {
 
     my ( $class, %params ) = @_;
-    
+
     die "Missing module"  unless $params{module};
     die "Missing wrapper" unless $params{wrapper};
     die "Missing domain"  unless $params{domain};
 
-    my $module       = $params{module};
-    my $api_wrapper  = $params{wrapper};
-    my $domain       = $params{domain};
+    my $module      = $params{module};
+    my $api_wrapper = $params{wrapper};
+    my $domain      = $params{domain};
 
     my @keys_needed = qw{ account_name password };
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
@@ -443,6 +443,25 @@ sub usage {
     croak $response->error if $response->error;
 
     return $response->content;
+
+}
+
+sub tasks {
+
+    my ($self) = @_;
+
+    my $domain_name = $self->domain->name;
+    my $api         = $self->{_api_wrapper};
+    my $name        = $self->name;
+
+    my $response = $api->rawCall( method => 'get', path => sprintf( "/email/domain/$domain_name/task/account?name=%s", $name ), noSignature => 0 );
+    croak $response->error if $response->error;
+
+    my $taks = $response->content || [];
+
+    return unless scalar @$taks;
+
+    return $taks;
 
 }
 

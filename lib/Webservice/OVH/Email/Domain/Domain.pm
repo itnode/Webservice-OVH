@@ -31,6 +31,7 @@ our $VERSION = 0.1;
 use Webservice::OVH::Email::Domain::Domain::Redirection;
 use Webservice::OVH::Email::Domain::Domain::Account;
 use Webservice::OVH::Email::Domain::Domain::MailingList;
+use Webservice::OVH::Email::Domain::Domain::Task;
 use Webservice::OVH::Helper;
 
 =head2 _new
@@ -64,7 +65,19 @@ sub _new {
 
     croak "Missing domain name" unless $domain;
 
-    my $self = bless { _module => $module, _api_wrapper => $api_wrapper, _name => $domain, _service_infos => undef, _properties => undef, _redirections => {}, _accounts => {}, _mailing_lists => {} }, $class;
+    my $self = bless {
+        _module        => $module,
+        _api_wrapper   => $api_wrapper,
+        _name          => $domain,
+        _service_infos => undef,
+        _properties    => undef,
+        _redirections  => {},
+        _accounts      => {},
+        _mailing_lists => {},
+    }, $class;
+
+    my $task = Webservice::OVH::Email::Domain::Domain::Task->_new( module => $module, wrapper => $api_wrapper, domain => $self );
+    $self->{_task} = $task;
 
     return $self;
 }
@@ -263,15 +276,15 @@ sub status {
 }
 
 sub redirections_count {
-    
-    my ( $self ) = @_;
-    
+
+    my ($self) = @_;
+
     my $api         = $self->{_api_wrapper};
     my $domain_name = $self->name;
     my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/redirection", noSignature => 0 );
     croak $response->error if $response->error;
-    
-    return scalar @{$response->content};
+
+    return scalar @{ $response->content };
 }
 
 =head2 redirections
@@ -369,15 +382,15 @@ sub new_redirection {
 }
 
 sub accounts_count {
-    
-    my ( $self ) = @_;
-    
+
+    my ($self) = @_;
+
     my $api         = $self->{_api_wrapper};
     my $domain_name = $self->name;
     my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/account", noSignature => 0 );
     croak $response->error if $response->error;
-    
-    return scalar @{$response->content};
+
+    return scalar @{ $response->content };
 }
 
 =head2 accounts
@@ -470,15 +483,27 @@ sub new_account {
 }
 
 sub mailing_lists_count {
-    
-    my ( $self ) = @_;
-    
+
+    my ($self) = @_;
+
     my $api         = $self->{_api_wrapper};
     my $domain_name = $self->name;
     my $response    = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList", noSignature => 0 );
     croak $response->error if $response->error;
+
+    return scalar @{ $response->content };
+}
+
+sub mailing_lists_names {
     
-    return scalar @{$response->content};
+    my ($self) = @_;
+    
+    my $api         = $self->{_api_wrapper};
+    my $domain_name = $self->name;
+    my $response = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList", noSignature => 0 );
+    croak $response->error if $response->error;
+    
+    return $response->content;
 }
 
 =head2 mailing_lists
@@ -498,6 +523,7 @@ Produces an array of all available mailing_lists that are connected to the email
 sub mailing_lists {
 
     my ($self)      = @_;
+
     my $api         = $self->{_api_wrapper};
     my $domain_name = $self->name;
     my $response = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/mailingList", noSignature => 0 );
@@ -568,6 +594,13 @@ sub new_mailing_list {
     my $mailing_list = Webservice::OVH::Email::Domain::Domain::MailingList->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
 
     return $mailing_list;
+}
+
+sub task {
+
+    my ($self) = @_;
+
+    return $self->{_task};
 }
 
 1;
