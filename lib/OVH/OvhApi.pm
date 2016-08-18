@@ -3,7 +3,7 @@ package OVH::OvhApi;
 use strict;
 use warnings;
 
-our $VERSION = 1.0;
+our $VERSION = 0.1;
 
 
 use OVH::OvhApi::Answer;
