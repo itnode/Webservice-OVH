@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use DDP;
 use List::Util qw(first);
 use DateTime;
 
@@ -72,6 +71,6 @@ print STDERR sprintf( "%s,%s,%s,%s,%s,%s\n", "", "", "", $checkout->{prices}{wit
 my $order = $cart->checkout;
 
 my $means = $order->available_registered_payment_mean;
-p $means;
+
 $order->pay_with_registered_payment_mean('fidelityAccount');
 

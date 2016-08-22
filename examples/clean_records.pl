@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use DDP;
 use List::Util qw(first);
 use DateTime;
 
@@ -45,8 +44,6 @@ foreach my $domain_str ( keys %$domains ) {
 
     my $records = $zone->records;
     my $exclude = $zone->records( field_type => 'NS' );
-
-    p $records;
 
     foreach my $record (@$records) {
 

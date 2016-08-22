@@ -34,7 +34,7 @@ use strict;
 use warnings;
 use Carp qw{ carp croak };
 
-our $VERSION = 0.1;
+our $VERSION = 0.2;
 
 use Webservice::OVH::Cloud::Project::IP;
 use Webservice::OVH::Cloud::Project::Instance;
@@ -403,9 +403,6 @@ sub instance {
     } else {
 
         if ( $self->instance_exists($instance_id) ) {
-
-            use DDP;
-            p $instance_id;
 
             my $api = $self->{_api_wrapper};
             my $instance = $self->{_instances}{$instance_id} = $self->{_instances}{$instance_id} || Webservice::OVH::Cloud::Project::Instance->_new_existing( wrapper => $api, project => $self, id => $instance_id, module => $self->{_module} );
