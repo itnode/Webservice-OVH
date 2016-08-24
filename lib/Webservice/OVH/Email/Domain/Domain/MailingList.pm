@@ -29,7 +29,7 @@ use warnings;
 use Carp qw{ carp croak };
 use JSON;
 
-our $VERSION = 0.2;
+our $VERSION = 0.21;
 
 use Webservice::OVH::Helper;
 use Webservice::OVH::Email::Domain::Domain::Task;

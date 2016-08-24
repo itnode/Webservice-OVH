@@ -2,6 +2,11 @@ Revision history for Perl extension Webservice-OVH
 
 {{$NEXT}}
 
+0.21 2016-08-24T11:44:39Z
+
+    - All Objects call properties on demand not during creation, due to speed issues
+    - Task System for email/domain/{domain}/.../tasks redone
+
 0.2 2016-08-22T10:26:11Z
 
     - Deleted DDP dependency
