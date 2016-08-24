@@ -129,10 +129,12 @@ sub _new {
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $mailing_list = $domain->mailing_list( $params{name} );
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api_wrapper, domain => $domain, id => $task_id, module => $module );
+
     my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _properties => undef, _name => $params{name}, _domain => $domain }, $class;
 
-    return $self;
+    return ( $self, $task );
 }
 
 =head2 is_valid
@@ -153,31 +155,9 @@ sub is_valid {
 
     my ($self) = @_;
 
+    $self->properties;
+
     return $self->{_valid};
-}
-
-=head2 _is_valid
-
-Intern method to check validity.
-Difference is that this method carps an error.
-
-=over
-
-=item * Return: VALUE
-
-=item * Synopsis: $mailing_list->_is_valid;
-
-=back
-
-=cut
-
-sub _is_valid {
-
-    my ($self) = @_;
-
-    my $mailing_list_name = $self->name;
-    carp "Mailinglist $mailing_list_name is not valid anymore" unless $self->is_valid;
-    return $self->is_valid;
 }
 
 =head2 name
@@ -220,6 +200,7 @@ sub id {
     my ($self) = @_;
 
     $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{properties}{id};
 }
@@ -264,7 +245,7 @@ sub properties {
 
     my ($self) = @_;
 
-    return unless $self->_is_valid;
+    return unless $self->{_valid};
 
     my $api               = $self->{_api_wrapper};
     my $domain_name       = $self->domain->name;
@@ -274,7 +255,8 @@ sub properties {
 
     if ( $response->error ) {
 
-        $self->{_valid} = 0;
+        $self->{_valid}      = 0;
+        $self->{_properties} = undef;
         return undef;
 
     } else {
@@ -303,6 +285,7 @@ sub language {
     my ($self) = @_;
 
     $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}->{language};
 }
@@ -326,6 +309,7 @@ sub options {
     my ($self) = @_;
 
     $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}->{options};
 }
@@ -349,6 +333,7 @@ sub owner_email {
     my ($self) = @_;
 
     $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}->{ownerEmail};
 }
@@ -372,6 +357,7 @@ sub reply_to {
     my ($self) = @_;
 
     $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}->{replyTo};
 }
@@ -395,6 +381,7 @@ sub nb_subscribers_update_date {
     my ($self) = @_;
 
     $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     my $str_datetime = $self->{_properties}->{nbSubscribersUpdateDate};
     my $datetime     = Webservice::OVH::Helper->parse_datetime($str_datetime);
@@ -421,6 +408,7 @@ sub nb_subscribers {
     my ($self) = @_;
 
     $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}->{nbSubscribers};
 }
@@ -442,6 +430,8 @@ Changes the objcet.
 sub change {
 
     my ( $self, %params ) = @_;
+
+    return unless $self->{_valid};
 
     my $api               = $self->{_api_wrapper};
     my $domain_name       = $self->domain->name;
@@ -472,13 +462,20 @@ sub delete {
 
     my ($self) = @_;
 
+    return unless $self->{_valid};
+
     my $api               = $self->{_api_wrapper};
     my $domain_name       = $self->domain->name;
     my $mailing_list_name = $self->name;
     my $response          = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/mailingList/$mailing_list_name", noSignature => 0 );
     croak $response->error if $response->error;
 
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
     $self->{_valid} = 0;
+
+    return $task;
 }
 
 =head2 change_options
@@ -499,6 +496,8 @@ sub change_options {
 
     my ( $self, %params ) = @_;
 
+    return unless $self->{_valid};
+
     my @keys_needed = qw{ moderator_message subscribe_by_moderator users_post_only };
 
     if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
@@ -516,7 +515,12 @@ sub change_options {
     my $response = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/changeOptions", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
     $self->properties;
+
+    return $task;
 }
 
 =head2 moderators
@@ -536,6 +540,8 @@ Returns an array of all moderators of this mailinglist.
 sub moderators {
 
     my ($self) = @_;
+
+    return unless $self->{_valid};
 
     my $api               = $self->{_api_wrapper};
     my $domain_name       = $self->domain->name;
@@ -566,6 +572,8 @@ sub moderator {
 
     my ( $self, $email ) = @_;
 
+    return unless $self->{_valid};
+
     croak "Missing email" unless $email;
 
     my $api               = $self->{_api_wrapper};
@@ -595,6 +603,8 @@ sub add_moderator {
 
     my ( $self, $email ) = @_;
 
+    return unless $self->{_valid};
+
     croak "Missing email" unless $email;
 
     my $api               = $self->{_api_wrapper};
@@ -603,6 +613,11 @@ sub add_moderator {
     my $body              = { email => $email };
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/moderator", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
+    return $task;
 
 }
 
@@ -624,6 +639,8 @@ sub delete_moderator {
 
     my ( $self, $email ) = @_;
 
+    return unless $self->{_valid};
+
     croak "Missing email" unless $email;
 
     my $api               = $self->{_api_wrapper};
@@ -631,6 +648,11 @@ sub delete_moderator {
     my $mailing_list_name = $self->name;
     my $response          = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/moderator/$email", noSignature => 0 );
     croak $response->error if $response->error;
+
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
+    return $task;
 
 }
 
@@ -652,6 +674,8 @@ sub send_list_by_email {
 
     my ( $self, $email ) = @_;
 
+    return unless $self->{_valid};
+
     croak "Missing email" unless $email;
 
     my $api               = $self->{_api_wrapper};
@@ -660,6 +684,11 @@ sub send_list_by_email {
     my $body              = { email => $email };
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/sendListByEmail", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
+    return $task;
 }
 
 =head2 subscribers
@@ -681,6 +710,8 @@ Returns an array of all subscribers or a filtered list.
 sub subscribers {
 
     my ( $self, $email ) = @_;
+
+    return unless $self->{_valid};
 
     my $filter_email = $email ? $email : "";
     my $filter = Webservice::OVH::Helper->construct_filter( "email" => $filter_email );
@@ -715,6 +746,8 @@ sub subscriber {
 
     my ( $self, $email ) = @_;
 
+    return unless $self->{_valid};
+
     croak "Missing email" unless $email;
 
     my $api               = $self->{_api_wrapper};
@@ -745,6 +778,8 @@ sub add_subscriber {
 
     my ( $self, $email ) = @_;
 
+    return unless $self->{_valid};
+
     croak "Missing email" unless $email;
 
     my $api               = $self->{_api_wrapper};
@@ -753,6 +788,11 @@ sub add_subscriber {
     my $body              = { email => $email };
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/subscriber", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
+    return $task;
 
 }
 
@@ -774,6 +814,8 @@ sub delete_subscriber {
 
     my ( $self, $email ) = @_;
 
+    return unless $self->{_valid};
+
     croak "Missing email" unless $email;
 
     my $api               = $self->{_api_wrapper};
@@ -782,11 +824,31 @@ sub delete_subscriber {
     my $response          = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/subscriber/$email", noSignature => 0 );
     croak $response->error if $response->error;
 
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
+    return $task;
 }
+
+=head2 tasks
+
+Get all associated tasks
+
+=over
+
+=item * Return: HASH
+
+=item * Synopsis: $mailinglist->tasks;
+
+=back
+
+=cut
 
 sub tasks {
 
     my ($self) = @_;
+
+    return unless $self->{_valid};
 
     my $domain_name = $self->domain->name;
     my $api         = $self->{_api_wrapper};

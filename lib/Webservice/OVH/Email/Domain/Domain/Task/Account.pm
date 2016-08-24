@@ -21,19 +21,9 @@ sub _new_existing {
     my $domain      = $params{domain};
     my $domain_name = $domain->name;
 
-    my $response = $api_wrapper->rawCall( method => 'get', path => "/email/domain/$domain_name/task/account/$id", noSignature => 0 );
-    carp $response->error if $response->error;
+    my $self = bless { _module => $module, _valid => 1, _wrapper => $api_wrapper, _id => $id, _properties => undef, _domain => $domain }, $class;
 
-    if ( !$response->error ) {
-
-        my $porperties = $response->content;
-        my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $id, _properties => $porperties, _domain => $domain }, $class;
-
-        return $self;
-    } else {
-
-        return undef;
-    }
+    return $self;
 }
 
 sub is_valid {
@@ -61,9 +51,11 @@ sub properties {
     if ( !$response->error ) {
 
         my $porperties = $response->content;
+        $self->{_properties} = $porperties;
 
     } else {
-
+        
+        $self->{_properties} = undef;
         $self->{_valid} = 0;
     }
 
@@ -73,7 +65,8 @@ sub name {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}{name};
 }
@@ -82,16 +75,12 @@ sub id {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
-
     return $self->{_id};
 }
 
 sub domain {
 
     my ($self) = @_;
-
-    croak "Invalid" unless $self->is_valid;
 
     return $self->{_domain};
 }
@@ -100,7 +89,8 @@ sub date {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}{date};
 }
@@ -109,7 +99,8 @@ sub action {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}{action};
 }

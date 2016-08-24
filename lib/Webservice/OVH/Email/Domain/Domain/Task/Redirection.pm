@@ -27,7 +27,7 @@ sub _new_existing {
     if ( !$response->error ) {
 
         my $porperties = $response->content;
-        my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $id, _properties => $porperties, _domain => $domain }, $class;
+        my $self = bless { _module => $module, _valid => 1, _wrapper => $api_wrapper, _id => $id, _properties => $porperties, _domain => $domain }, $class;
 
         return $self;
     } else {
@@ -73,7 +73,8 @@ sub account {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}{account};
 }
@@ -82,7 +83,8 @@ sub type {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}{type};
 }
@@ -91,16 +93,12 @@ sub id {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
-
     return $self->{_id};
 }
 
 sub domain {
 
     my ($self) = @_;
-
-    croak "Invalid" unless $self->is_valid;
 
     return $self->{_domain};
 }
@@ -109,7 +107,8 @@ sub date {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}{date};
 }
@@ -118,7 +117,8 @@ sub action {
 
     my ($self) = @_;
 
-    croak "Invalid" unless $self->is_valid;
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}{action};
 }

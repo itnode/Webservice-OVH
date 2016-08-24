@@ -477,9 +477,9 @@ sub new_account {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $account = Webservice::OVH::Email::Domain::Domain::Account->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
+    my ($account, $task) = Webservice::OVH::Email::Domain::Domain::Account->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
 
-    return $account;
+    return ($account, $task);
 }
 
 sub mailing_lists_count {
@@ -591,9 +591,9 @@ sub new_mailing_list {
     my ( $self, %params ) = @_;
 
     my $api = $self->{_api_wrapper};
-    my $mailing_list = Webservice::OVH::Email::Domain::Domain::MailingList->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
+    my ($mailing_list, $task) = Webservice::OVH::Email::Domain::Domain::MailingList->_new( wrapper => $api, domain => $self, module => $self->{_module}, %params );
 
-    return $mailing_list;
+    return ($mailing_list, $task);
 }
 
 sub task {

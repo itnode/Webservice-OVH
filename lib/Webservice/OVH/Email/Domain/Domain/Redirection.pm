@@ -64,21 +64,9 @@ sub _new_existing {
 
     die "Missing redirection_id" unless $redirection_id;
     my $domain_name = $domain->name;
-    my $response = $api_wrapper->rawCall( module => $module, method => 'get', path => "/email/domain/$domain_name/redirection/$redirection_id", noSignature => 0 );
-    carp $response->error if $response->error;
 
-    if ( !$response->error ) {
-
-        my $porperties = $response->content;
-
-        my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $redirection_id, _properties => $porperties, _domain => $domain }, $class;
-
-        return $self;
-
-    } else {
-
-        return undef;
-    }
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $redirection_id, _properties => undef, _domain => $domain }, $class;
+    return $self;
 }
 
 =head2 _new
@@ -127,10 +115,9 @@ sub _new {
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/redirection/", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $redirection = $domain->redirections( from => $params{from}, to => $params{to} )->[0];
-    my $properties = $redirection->properties;
+    my $redirection_id = $response->{id};
 
-    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $redirection->id, _properties => $properties, _domain => $domain }, $class;
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _id => $redirection_id, _properties => undef, _domain => $domain }, $class;
 
     return $self;
 }
@@ -153,31 +140,9 @@ sub is_valid {
 
     my ($self) = @_;
 
+    $self->properties;
+
     return $self->{_valid};
-}
-
-=head2 _is_valid
-
-Intern method to check validity.
-Difference is that this method carps an error.
-
-=over
-
-=item * Return: VALUE
-
-=item * Synopsis: $redirection->_is_valid;
-
-=back
-
-=cut
-
-sub _is_valid {
-
-    my ($self) = @_;
-
-    my $redirection_id = $self->id;
-    carp "Redirection $redirection_id is not valid anymore" unless $self->is_valid;
-    return $self->is_valid;
 }
 
 =head2 id
@@ -241,15 +206,25 @@ sub properties {
 
     my ($self) = @_;
 
-    return unless $self->_is_valid;
+    return unless $self->{_valid};
 
     my $api            = $self->{_api_wrapper};
     my $domain_name    = $self->domain->name;
     my $redirection_id = $self->id;
     my $response       = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/redirection/$redirection_id", noSignature => 0 );
-    croak $response->error if $response->error;
-    $self->{_properties} = $response->content;
-    return $self->{_properties};
+    carp $response->error if $response->error;
+
+    if ( $response->error ) {
+
+        $self->{_valid}      = 0;
+        $self->{_properties} = undef;
+        return;
+
+    } else {
+
+        $self->{_properties} = $response->content;
+        return $self->{_properties};
+    }
 }
 
 =head2 field_type
@@ -269,6 +244,9 @@ Exposed property value.
 sub from {
 
     my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}->{from};
 }
@@ -291,6 +269,9 @@ sub to {
 
     my ($self) = @_;
 
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
+
     return $self->{_properties}->{to};
 }
 
@@ -310,7 +291,7 @@ sub delete {
 
     my ($self) = @_;
 
-    return unless $self->_is_valid;
+    return unless $self->{_valid};
 
     my $api            = $self->{_api_wrapper};
     my $domain_name    = $self->domain->name;
@@ -318,7 +299,12 @@ sub delete {
     my $response       = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/redirection/$redirection_id", noSignature => 0 );
     croak $response->error if $response->error;
 
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Redirection->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
     $self->{_valid} = 0;
+
+    return $task;
 }
 
 =head2 change
@@ -338,7 +324,8 @@ Changes the redirection
 sub change {
 
     my ( $self, $to ) = @_;
-    return unless $self->_is_valid;
+
+    return unless $self->{_valid};
 
     croak "Missing to as parameter" unless $to;
 
@@ -353,11 +340,32 @@ sub change {
     my $redirection = $self->domain->redirections( from => $self->from, to => $to )->[0];
     $self->{_properties} = $redirection->properties;
     $self->{_id}         = $redirection->id;
+
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Redirection->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
+    return $task;
 }
+
+=head2 tasks
+
+Get all associated tasks
+
+=over
+
+=item * Return: HASH
+
+=item * Synopsis: $mailinglist->tasks;
+
+=back
+
+=cut
 
 sub tasks {
 
     my ($self) = @_;
+
+    return unless $self->{_valid};
 
     my $domain_name = $self->domain->name;
     my $api         = $self->{_api_wrapper};

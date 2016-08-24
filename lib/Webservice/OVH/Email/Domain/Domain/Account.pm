@@ -63,20 +63,10 @@ sub _new_existing {
 
     $account_name = lc $account_name;
 
-    my $domain_name = $domain->name;
-    my $response = $api_wrapper->rawCall( method => 'get', path => "/email/domain/$domain_name/account/$account_name", noSignature => 0 );
-    carp $response->error if $response->error;
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _name => $account_name, _properties => undef, _domain => $domain }, $class;
 
-    if ( !$response->error ) {
+    return $self;
 
-        my $porperties = $response->content;
-        my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _name => $account_name, _properties => $porperties, _domain => $domain }, $class;
-
-        return $self;
-    } else {
-
-        return undef;
-    }
 }
 
 =head2 _new
@@ -123,11 +113,12 @@ sub _new {
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/account", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $properties = $response->content;
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Account->_new_existing( wrapper => $api_wrapper, domain => $domain, id => $task_id, module => $module );
 
-    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _name => $params{account_name}, _properties => $properties, _domain => $domain }, $class;
+    my $self = bless { _module => $module, _valid => 1, _api_wrapper => $api_wrapper, _name => $params{account_name}, _properties => undef, _domain => $domain }, $class;
 
-    return $self;
+    return ( $self, $task );
 
 }
 
@@ -149,31 +140,9 @@ sub is_valid {
 
     my ($self) = @_;
 
+    $self->properties;
+
     return $self->{_valid};
-}
-
-=head2 _is_valid
-
-Intern method to check validity.
-Difference is that this method carps an error.
-
-=over
-
-=item * Return: VALUE
-
-=item * Synopsis: $account->_is_valid;
-
-=back
-
-=cut
-
-sub _is_valid {
-
-    my ($self) = @_;
-
-    my $account_name = $self->name;
-    carp "Account $account_name is not valid anymore" unless $self->is_valid;
-    return $self->is_valid;
 }
 
 =head2 name
@@ -216,15 +185,25 @@ sub properties {
 
     my ($self) = @_;
 
-    return unless $self->_is_valid;
+    return unless $self->{_valid};
 
     my $api          = $self->{_api_wrapper};
     my $domain_name  = $self->domain->name;
     my $account_name = $self->name;
     my $response     = $api->rawCall( method => 'get', path => "/email/domain/$domain_name/account/$account_name", noSignature => 0 );
-    croak $response->error if $response->error;
-    $self->{_properties} = $response->content;
-    return $self->{_properties};
+    carp $response->error if $response->error;
+
+    if ( $response->error ) {
+
+        $self->{_valid}      = 0;
+        $self->{_properties} = undef;
+        return;
+
+    } else {
+
+        $self->{_properties} = $response->content;
+        return $self->{_properties};
+    }
 
 }
 
@@ -245,6 +224,9 @@ Exposed property value.
 sub is_blocked {
 
     my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}->{isBlocked} ? 1 : 0;
 
@@ -267,6 +249,9 @@ Exposed property value.
 sub email {
 
     my ($self) = @_;
+
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
 
     return $self->{_properties}->{email};
 
@@ -311,6 +296,9 @@ sub description {
 
     my ($self) = @_;
 
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
+
     return $self->{_properties}->{description};
 }
 
@@ -332,6 +320,9 @@ sub size {
 
     my ($self) = @_;
 
+    $self->properties unless $self->{_properties};
+    return unless $self->{_valid};
+
     return $self->{_properties}->{size};
 }
 
@@ -352,6 +343,8 @@ Changes the account
 sub change {
 
     my ( $self, %params ) = @_;
+
+    croak "Objet is invalid" unless $self->{_valid};
 
     my $api          = $self->{_api_wrapper};
     my $domain_name  = $self->domain->name;
@@ -382,13 +375,20 @@ sub delete {
 
     my ( $self, %params ) = @_;
 
+    croak "Objet is invalid" unless $self->{_valid};
+
     my $api          = $self->{_api_wrapper};
     my $domain_name  = $self->domain->name;
     my $account_name = $self->name;
     my $response     = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/account/$account_name", noSignature => 0 );
     croak $response->error if $response->error;
 
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Account->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
     $self->{_valid} = 0;
+
+    return $task;
 }
 
 =head2 delete
@@ -409,12 +409,19 @@ sub change_password {
 
     my ( $self, $password ) = @_;
 
+    croak "Objet is invalid" unless $self->{_valid};
+
     my $api          = $self->{_api_wrapper};
     my $domain_name  = $self->domain->name;
     my $account_name = $self->name;
     my $body         = { password => $password };
     my $response     = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/account/$account_name/changePassword", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
+
+    my $task_id = $response->content->{id};
+    my $task = Webservice::OVH::Email::Domain::Domain::Task::Account->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
+
+    return $task;
 
 }
 
@@ -426,7 +433,7 @@ Deletes the account api sided and sets this object invalid.
 
 =item * Return: HASH
 
-=item * Synopsis: $account->change_password($password);
+=item * Synopsis: $account->usage;
 
 =back
 
@@ -435,6 +442,8 @@ Deletes the account api sided and sets this object invalid.
 sub usage {
 
     my ($self) = @_;
+
+    croak "Objet is invalid" unless $self->{_valid};
 
     my $api          = $self->{_api_wrapper};
     my $domain_name  = $self->domain->name;
@@ -446,9 +455,25 @@ sub usage {
 
 }
 
+=head2 tasks
+
+Get all associated tasks
+
+=over
+
+=item * Return: HASH
+
+=item * Synopsis: $account->tasks;
+
+=back
+
+=cut
+
 sub tasks {
 
     my ($self) = @_;
+
+    croak "Objet is invalid" unless $self->{_valid};
 
     my $domain_name = $self->domain->name;
     my $api         = $self->{_api_wrapper};
