@@ -2,6 +2,10 @@ Revision history for Perl extension Webservice-OVH
 
 {{$NEXT}}
 
+0.22 2016-08-29T09:18:44Z
+
+    - put JSON in requirements
+
 0.21 2016-08-24T11:44:39Z
 
     - All Objects call properties on demand not during creation, due to speed issues

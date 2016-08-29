@@ -39,7 +39,7 @@ use strict;
 use warnings;
 use Carp qw{ carp croak };
 
-our $VERSION = 0.21;
+our $VERSION = 0.22;
 
 use Webservice::OVH::Domain::Service;
 use Webservice::OVH::Domain::Zone;
