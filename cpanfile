@@ -4,3 +4,4 @@ requires 'LWP::Protocol::https';
 requires 'File::Slurp';
 requires 'DateTime';
 requires 'DateTime::Format::Strptime';
+requires 'JSON';
