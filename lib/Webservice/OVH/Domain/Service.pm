@@ -31,7 +31,7 @@ use warnings;
 use Carp qw{ carp croak };
 use DateTime;
 
-our $VERSION = 0.22;
+our $VERSION = 0.23;
 
 use Webservice::OVH::Helper;
 use Webservice::OVH::Me::Contact;

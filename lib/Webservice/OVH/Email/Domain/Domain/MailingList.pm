@@ -29,7 +29,7 @@ use warnings;
 use Carp qw{ carp croak };
 use JSON;
 
-our $VERSION = 0.22;
+our $VERSION = 0.23;
 
 use Webservice::OVH::Helper;
 use Webservice::OVH::Email::Domain::Domain::Task;
@@ -67,7 +67,7 @@ sub _new_existing {
 
     die "Missing mailing_list_name" unless $mailing_list_name;
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $mailing_list_name, _properties => undef, _domain => $domain }, $class;
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _name => $mailing_list_name, _properties => undef, _domain => $domain, _module => $module }, $class;
 
     return $self;
 }
@@ -132,7 +132,7 @@ sub _new {
     my $task_id = $response->content->{id};
     my $task = Webservice::OVH::Email::Domain::Domain::Task::Mailinglist->_new_existing( wrapper => $api_wrapper, domain => $domain, id => $task_id, module => $module );
 
-    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _properties => undef, _name => $params{name}, _domain => $domain }, $class;
+    my $self = bless { _valid => 1, _api_wrapper => $api_wrapper, _properties => undef, _name => $params{name}, _domain => $domain, _module => $module }, $class;
 
     return ( $self, $task );
 }

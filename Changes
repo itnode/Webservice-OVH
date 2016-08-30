@@ -2,6 +2,10 @@ Revision history for Perl extension Webservice-OVH
 
 {{$NEXT}}
 
+0.23 2016-08-30T09:13:30Z
+
+    - missing module for mailinglists fixed
+
 0.22 2016-08-29T09:18:44Z
 
     - put JSON in requirements
