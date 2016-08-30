@@ -2,6 +2,10 @@ Revision history for Perl extension Webservice-OVH
 
 {{$NEXT}}
 
+0.24 2016-08-30T14:50:22Z
+
+    - id change ob object not needed. changed
+
 0.23 2016-08-30T09:13:30Z
 
     - missing module for mailinglists fixed

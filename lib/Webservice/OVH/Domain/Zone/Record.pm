@@ -44,7 +44,7 @@ use strict;
 use warnings;
 use Carp qw{ carp croak };
 
-our $VERSION = 0.23;
+our $VERSION = 0.24;
 
 use Webservice::OVH::Me::Contact;
 

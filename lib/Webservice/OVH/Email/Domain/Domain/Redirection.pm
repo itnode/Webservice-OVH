@@ -29,7 +29,7 @@ use warnings;
 use Carp qw{ carp croak };
 use JSON;
 
-our $VERSION = 0.23;
+our $VERSION = 0.24;
 
 =head2 _new_existing
 
@@ -299,12 +299,7 @@ sub delete {
     my $response       = $api->rawCall( method => 'delete', path => "/email/domain/$domain_name/redirection/$redirection_id", noSignature => 0 );
     croak $response->error if $response->error;
 
-    my $task_id = $response->content->{id};
-    my $task = Webservice::OVH::Email::Domain::Domain::Task::Redirection->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
-
     $self->{_valid} = 0;
-
-    return $task;
 }
 
 =head2 change
@@ -336,10 +331,6 @@ sub change {
     $body->{to} = $to;
     my $response = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/redirection/$redirection_id/changeRedirection", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
-
-    my $redirection = $self->domain->redirections( from => $self->from, to => $to )->[0];
-    $self->{_properties} = $redirection->properties;
-    $self->{_id}         = $redirection->id;
 
     my $task_id = $response->content->{id};
     my $task = Webservice::OVH::Email::Domain::Domain::Task::Redirection->_new_existing( wrapper => $api, domain => $self->domain, id => $task_id, module => $self->{_module} );
