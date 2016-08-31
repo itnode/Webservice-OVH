@@ -130,4 +130,31 @@ sub format_datetime {
     return $dt->strftime('%FT%T%z');
 }
 
+sub trim {
+
+    my ( $class, $string ) = @_;
+
+    $string =~ s/^\s+|\s+$//g;
+
+    return $string;
+}
+
+sub rtrim {
+
+    my ( $class, $string ) = @_;
+
+    $string =~ s/\s+$//;
+
+    return $string;
+}
+
+sub ltrim {
+
+    my ( $class, $string ) = @_;
+
+    $string =~ s/^\s+//;
+
+    return $string;
+}
+
 1;

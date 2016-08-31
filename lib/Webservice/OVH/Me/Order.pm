@@ -28,7 +28,7 @@ use strict;
 use warnings;
 use Carp qw{ carp croak };
 
-our $VERSION = 0.24;
+our $VERSION = 0.25;
 
 use Webservice::OVH::Me::Order::Detail;
 

@@ -29,7 +29,7 @@ use warnings;
 use Carp qw{ carp croak };
 use JSON;
 
-our $VERSION = 0.24;
+our $VERSION = 0.25;
 
 use Webservice::OVH::Helper;
 use Webservice::OVH::Email::Domain::Domain::Task;
@@ -122,10 +122,10 @@ sub _new {
     my $domain_name = $domain->name;
     my $body        = {};
     $body->{language}   = $params{language};
-    $body->{name}       = $params{name};
+    $body->{name}       = Webservice::OVH::Helper->trim($params{name});
     $body->{options}    = $options;
-    $body->{ownerEmail} = $params{owner_email};
-    $body->{replyTo}    = $params{reply_to} if exists $params{reply_to};
+    $body->{ownerEmail} = Webservice::OVH::Helper->trim($params{owner_email});
+    $body->{replyTo}    = Webservice::OVH::Helper->trim($params{reply_to}) if exists $params{reply_to};
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
@@ -438,8 +438,8 @@ sub change {
     my $mailing_list_name = $self->name;
     my $body              = {};
     $body->{language}   = $params{language}    if exists $params{language};
-    $body->{ownerEmail} = $params{owner_email} if exists $params{owner_email};
-    $body->{replyTo}    = $params{reply_to}    if exists $params{reply_to};
+    $body->{ownerEmail} = Webservice::OVH::Helper->trim($params{owner_email}) if exists $params{owner_email};
+    $body->{replyTo}    = Webservice::OVH::Helper->trim($params{reply_to})    if exists $params{reply_to};
     my $response = $api->rawCall( method => 'put', path => "/email/domain/$domain_name/mailingList/$mailing_list_name", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
@@ -610,7 +610,7 @@ sub add_moderator {
     my $api               = $self->{_api_wrapper};
     my $domain_name       = $self->domain->name;
     my $mailing_list_name = $self->name;
-    my $body              = { email => $email };
+    my $body              = { email => Webservice::OVH::Helper->trim($email) };
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/moderator", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
@@ -681,7 +681,7 @@ sub send_list_by_email {
     my $api               = $self->{_api_wrapper};
     my $domain_name       = $self->domain->name;
     my $mailing_list_name = $self->name;
-    my $body              = { email => $email };
+    my $body              = { email => Webservice::OVH::Helper->trim($email) };
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/sendListByEmail", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
@@ -785,7 +785,7 @@ sub add_subscriber {
     my $api               = $self->{_api_wrapper};
     my $domain_name       = $self->domain->name;
     my $mailing_list_name = $self->name;
-    my $body              = { email => $email };
+    my $body              = { email => Webservice::OVH::Helper->trim($email) };
     my $response          = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/mailingList/$mailing_list_name/subscriber", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 

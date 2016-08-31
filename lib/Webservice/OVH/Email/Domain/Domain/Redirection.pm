@@ -29,7 +29,9 @@ use warnings;
 use Carp qw{ carp croak };
 use JSON;
 
-our $VERSION = 0.24;
+our $VERSION = 0.25;
+
+use Webservice::OVH::Helper;
 
 =head2 _new_existing
 
@@ -109,8 +111,8 @@ sub _new {
 
     my $domain_name = $domain->name;
     my $body        = {};
-    $body->{from}      = $params{from};
-    $body->{to}        = $params{to};
+    $body->{from}      = Webservice::OVH::Helper->trim($params{from});
+    $body->{to}        = Webservice::OVH::Helper->trim($params{to});
     $body->{localCopy} = $local_copy;
     my $response = $api_wrapper->rawCall( method => 'post', path => "/email/domain/$domain_name/redirection/", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
@@ -328,7 +330,7 @@ sub change {
     my $domain_name    = $self->domain->name;
     my $redirection_id = $self->id;
     my $body           = {};
-    $body->{to} = $to;
+    $body->{to} = Webservice::OVH::Helper->trim($to);
     my $response = $api->rawCall( method => 'post', path => "/email/domain/$domain_name/redirection/$redirection_id/changeRedirection", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 

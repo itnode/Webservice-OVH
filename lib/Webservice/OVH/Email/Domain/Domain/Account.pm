@@ -28,7 +28,9 @@ use strict;
 use warnings;
 use Carp qw{ carp croak };
 
-our $VERSION = 0.24;
+our $VERSION = 0.25;
+
+use Webservice::OVH::Helper;
 
 =head2 _new_existing
 
@@ -106,7 +108,7 @@ sub _new {
 
     my $domain_name = $domain->name;
     my $body        = {};
-    $body->{accountName} = $params{account_name};
+    $body->{accountName} = Webservice::OVH::Helper->trim($params{account_name});
     $body->{password}    = $params{password};
     $body->{description} = $params{description} if exists $params{description};
     $body->{size}        = $params{size} if exists $params{size};
