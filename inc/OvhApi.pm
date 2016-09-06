@@ -3,7 +3,7 @@ package OvhApi;
 use strict;
 use warnings;
 
-our $VERSION = 0.25;
+our $VERSION = 0.3;
 
 
 use OvhApi::Answer;

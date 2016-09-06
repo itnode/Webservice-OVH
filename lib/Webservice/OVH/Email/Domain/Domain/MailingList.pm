@@ -29,7 +29,7 @@ use warnings;
 use Carp qw{ carp croak };
 use JSON;
 
-our $VERSION = 0.25;
+our $VERSION = 0.3;
 
 use Webservice::OVH::Helper;
 use Webservice::OVH::Email::Domain::Domain::Task;
@@ -105,7 +105,7 @@ sub _new {
 
     die "Missing domain" unless $domain;
 
-    if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
+    if ( my @missing_parameters = grep { not exists $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";
     }
@@ -500,7 +500,7 @@ sub change_options {
 
     my @keys_needed = qw{ moderator_message subscribe_by_moderator users_post_only };
 
-    if ( my @missing_parameters = grep { not $params{$_} } @keys_needed ) {
+    if ( my @missing_parameters = grep { not exists $params{$_} } @keys_needed ) {
 
         croak "Missing parameter: @missing_parameters";
     }

@@ -34,7 +34,7 @@ use strict;
 use warnings;
 use Carp qw{ carp croak };
 
-our $VERSION = 0.25;
+our $VERSION = 0.3;
 
 # sub modules
 use Webservice::OVH::Order::Cart;

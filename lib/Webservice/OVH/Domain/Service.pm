@@ -30,8 +30,9 @@ use strict;
 use warnings;
 use Carp qw{ carp croak };
 use DateTime;
+use JSON;
 
-our $VERSION = 0.25;
+our $VERSION = 0.3;
 
 use Webservice::OVH::Helper;
 use Webservice::OVH::Me::Contact;
@@ -429,7 +430,7 @@ sub whois_owner {
     my $api        = $self->{_api_wrapper};
     my $properties = $self->{_properties} || $self->properties;
     my $owner_id   = $properties->{whoisOwner};
-    my $owner      = $self->{_owner} = $self->{_owner} || Webservice::OVH::Me::Contact->_new_existing( wrapper => $api, id => $owner_id, module => $self->{_module});
+    my $owner      = $self->{_owner} = $self->{_owner} || Webservice::OVH::Me::Contact->_new_existing( wrapper => $api, id => $owner_id, module => $self->{_module} );
 
     return $self->{_owner};
 }
@@ -476,6 +477,50 @@ sub change_contact {
     }
 
     return $tasks;
+}
+
+=head2 change_service_infos
+
+Change service_infos let you change the autorenewal method for this service
+
+=over
+
+=item * Parameter: %params - key => value renew(required) => { automatic(required), delete_at_expiration(required), forced(required), period(required) }
+
+=item * Synopsis: $service->change_service_infos(renew => {  automatic => 'yes', delete_at_expiration => 'yes', forced => 'yes', period => 12 });
+
+=back
+
+=cut
+
+sub change_service_infos {
+
+    my ( $self, %params ) = @_;
+
+    croak "Missing parameter: renew" unless $params{renew};
+
+    my @keys = qw{ automatic delete_at_expiration forced period };
+    if ( my @missing_parameters = grep { not exists $params{renew}{$_} } @keys ) {
+
+        croak "Missing parameter: @missing_parameters";
+    }
+
+    my $options = {};
+    $options->{automatic}          = $params{renew}{automatic} eq 'true'            || $params{renew}{automatic} eq 'yes'            || $params{renew}{automatic} eq '1'            ? JSON::true : JSON::false;
+    $options->{deleteAtExpiration} = $params{renew}{delete_at_expiration} eq 'true' || $params{renew}{delete_at_expiration} eq 'yes' || $params{renew}{delete_at_expiration} eq '1' ? JSON::true : JSON::false;
+    $options->{forced}             = $params{renew}{forced} eq 'true'               || $params{renew}{forced} eq 'yes'               || $params{renew}{forced} eq '1'               ? JSON::true : JSON::false;
+
+    my $api          = $self->{_api_wrapper};
+    my $service_name = $self->name;
+    my $body         = {};
+    $body->{renew}{period}             = $params{renew}{period};
+    $body->{renew}{automatic}          = $options->{automatic};
+    $body->{renew}{deleteAtExpiration} = $options->{deleteAtExpiration};
+    $body->{renew}{forced}             = $options->{forced};
+
+    my $response = $api->rawCall( method => 'put', body => $body, path => "/domain/$service_name/serviceInfos", noSignature => 0 );
+    croak $response->error if $response->error;
+
 }
 
 1;

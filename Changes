@@ -2,6 +2,11 @@ Revision history for Perl extension Webservice-OVH
 
 {{$NEXT}}
 
+0.3 2016-09-06T06:02:12Z
+
+    - New Method for changing service_infos: change_service_infos (domain renewal)
+    - Fixes for Parameter check in Mailinglist options, checks no with exists
+
 0.25 2016-08-31T09:08:36Z
 
     - All relevant input parameter are cleaned from trailing and leading whitespaces
