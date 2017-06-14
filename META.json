@@ -4,7 +4,7 @@
       "Patrick Jendral"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.0.2, CPAN::Meta::Converter version 2.150001",
+   "generated_by" : "Minilla/v3.0.12, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
@@ -42,13 +42,15 @@
       },
       "runtime" : {
          "requires" : {
+            "DDP" : "0",
             "DateTime" : "0",
             "DateTime::Format::Strptime" : "0",
             "Digest::SHA1" : "0",
             "File::Slurp" : "0",
             "JSON" : "0",
             "LWP::Protocol::https" : "0",
-            "LWP::UserAgent" : "0"
+            "LWP::UserAgent" : "0",
+            "Params::Util" : "0"
          }
       }
    },
@@ -64,8 +66,10 @@
          "web" : "https://github.com/itnode/Webservice-OVH"
       }
    },
-   "version" : "0.3",
+   "version" : "0.4",
    "x_contributors" : [
+      "Patrick Jendral <pj@gassmann.it>",
       "Patrick Jendral <pj@itnode.de>"
-   ]
+   ],
+   "x_serialization_backend" : "JSON::PP version 2.27300"
 }

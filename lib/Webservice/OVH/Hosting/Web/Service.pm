@@ -22,7 +22,7 @@ use Carp qw{ carp croak };
 use DateTime;
 use JSON;
 
-our $VERSION = 0.3;
+our $VERSION = 0.4;
 
 =head2 _new
 
