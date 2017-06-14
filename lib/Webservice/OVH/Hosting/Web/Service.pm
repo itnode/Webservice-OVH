@@ -58,6 +58,27 @@ sub _new {
     return $self;
 }
 
+=head2 name
+
+Name is the unique identifier.
+
+=over
+
+=item * Return: VALUE
+
+=item * Synopsis: my $name = $service->name;
+
+=back
+
+=cut
+
+sub name {
+
+    my ($self) = @_;
+
+    return $self->{_name};
+}
+
 =head2 service_infos
 
 Retrieves additional infos about the service. 

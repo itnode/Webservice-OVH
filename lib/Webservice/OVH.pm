@@ -116,6 +116,7 @@ sub new_from_json {
     my $order = Webservice::OVH::Order->_new( wrapper => $api_wrapper, module => $self );
     my $email = Webservice::OVH::Email->_new( wrapper => $api_wrapper, module => $self );
     my $cloud = Webservice::OVH::Cloud->_new( wrapper => $api_wrapper, module => $self );
+    my $hosting = Webservice::OVH::Hosting->_new( wrapper => $api_wrapper, module => $self );
 
     # Timeout can be also set in the json file
     OVH::OvhApi->setRequestTimeout( timeout => $data->{timeout} || 120 );
@@ -127,6 +128,7 @@ sub new_from_json {
     $self->{_api_wrapper} = $api_wrapper;
     $self->{_email}       = $email;
     $self->{_cloud}       = $cloud;
+    $self->{_hosting}     = $hosting;
 
     return $self;
 }

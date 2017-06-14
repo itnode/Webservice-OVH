@@ -153,7 +153,7 @@ sub service {
     if ( $self->service_exists($service_name) ) {
 
         my $api = $self->{_api_wrapper};
-        my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Hosting::web::Service->_new( wrapper => $api, id => $service_name, module => $self->{_module} );
+        my $service = $self->{_services}{$service_name} = $self->{_services}{$service_name} || Webservice::OVH::Hosting::Web::Service->_new( wrapper => $api, id => $service_name, module => $self->{_module} );
 
         return $service;
     } else {
