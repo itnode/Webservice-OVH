@@ -227,7 +227,7 @@ OvhApi - Official OVH Perl wrapper upon the OVH RESTful API.
 This module is an official Perl wrapper that OVH provides in order to offer a simple way to use its RESTful API.
 C<OvhApi> handles the authentication layer, and uses C<LWP::UserAgent> in order to run requests.
 
-Answer are retured as instances of L<OvhApi::Answer|OvhApi::Answer>.
+Answer are returned as instances of L<OvhApi::Answer|OvhApi::Answer>.
 
 =head1 CLASS METHODS
 
