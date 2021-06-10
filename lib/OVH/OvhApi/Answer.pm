@@ -3,7 +3,7 @@ package OVH::OvhApi::Answer;
 use strict;
 use warnings;
 
-our $VERSION = 0.44;
+our $VERSION = 0.45;
 
 
 use overload (

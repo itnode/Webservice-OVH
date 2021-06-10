@@ -36,7 +36,7 @@ use warnings;
 use Carp qw{ carp croak };
 use JSON;
 
-our $VERSION = 0.44;
+our $VERSION = 0.45;
 
 use Webservice::OVH::Cloud::Project::Instance::Group;
 
