@@ -34,6 +34,7 @@ if ( scalar @$redirections ) {
     ok( ref $redirection eq 'Webservice::OVH::Email::Domain::Domain::Redirection', "Type ok" );
 }
 
+=head2 keine email Tests mehr, da keine accounts vorhanden
 my $accounts        = $example_email_domain->accounts;
 my $example_account = $accounts->[0];
 my $search_account  = $example_email_domain->account( $example_account->name );
@@ -57,5 +58,5 @@ if ($example_mailing_list) {
 ok ( scalar keys %{$example_email_domain->{_redirections}} == scalar @$redirections, 'intern redirections ok' );
 ok ( scalar keys %{$example_email_domain->{_accounts}} == scalar @$accounts, 'intern accounts ok' );
 ok ( scalar keys %{$example_email_domain->{_mailing_lists}} == scalar @$mailing_lists, 'intern mailing_lists ok' );
-
+=cut
 done_testing();
