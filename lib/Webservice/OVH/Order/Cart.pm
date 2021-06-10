@@ -464,14 +464,14 @@ A Domain must be added before requestion info
 
 sub offer_dns {
 
-    my ( $self ) = @_;
+    my ( $self, $domain ) = @_;
 
     return unless $self->_is_valid;
 
     my $api     = $self->{_api_wrapper};
     my $cart_id = $self->id;
 
-    my $response = $api->rawCall( method => 'get', path => sprintf( "/order/cart/%s/dns", $cart_id ), noSignature => 0 );
+    my $response = $api->rawCall( method => 'get', path => sprintf( "/order/cart/%s/dns?domain=%s", $cart_id, $domain ), noSignature => 0 );
     croak $response->error if $response->error;
 
     return $response->content;
@@ -493,7 +493,7 @@ Adds a dns Zone to a cart.
 
 sub add_dns {
 
-    my ( $self, %params ) = @_;
+    my ( $self, $domain, %params ) = @_;
 
     return unless $self->_is_valid;
 
@@ -505,8 +505,9 @@ sub add_dns {
     $body->{planCode} = $params{plan_code} if exists $params{plan_code};
     $body->{pricingMode} = $params{pricing_mode} if exists $params{pricing_mode};
     $body->{quantity} = $params{quantity} if exists $params{quantity};
+    $body->{domain}   = $domain;
 
-    my $response = $api->rawCall( method => 'post', path => "/order/cart/$cart_id/domain", body => $body, noSignature => 0 );
+    my $response = $api->rawCall( method => 'post', path => "/order/cart/$cart_id/dns", body => $body, noSignature => 0 );
     croak $response->error if $response->error;
 
     my $item_id = $response->content->{itemId};
