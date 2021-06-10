@@ -66,9 +66,10 @@
          "web" : "https://github.com/itnode/Webservice-OVH"
       }
    },
-   "version" : "0.43",
+   "version" : "0.44",
    "x_contributors" : [
       "Jens Gassmann <jens.gassmann@atomix.de>",
+      "Jens Gassmann <jg@gassmann.it>",
       "Mohammad S Anwar <mohammad.anwar@yahoo.com>",
       "Patrick Jendral <pj@gassmann.it>",
       "Patrick Jendral <pj@itnode.de>"
