@@ -14,10 +14,11 @@ unless ($json_dir && -e $json_dir) {  plan skip_all => 'No credential file found
 use Webservice::OVH;
 
 my $api = Webservice::OVH->new_from_json($json_dir);
+ok($api, "module ok");
 
 my $example_email_domains = $api->email->domain->domains;
 my $example_email_domain  = $example_email_domains->[0];
-
+=head2 keine email Tests mehr, da keine accounts vorhanden
 ok( $example_email_domain, "example domain ok" );
 ok( $example_email_domain->service_infos && ref $example_email_domain->service_infos eq 'HASH', "service_info ok" );
 ok( $example_email_domain->properties    && ref $example_email_domain->properties eq 'HASH',    "properties ok" );
@@ -34,7 +35,7 @@ if ( scalar @$redirections ) {
     ok( ref $redirection eq 'Webservice::OVH::Email::Domain::Domain::Redirection', "Type ok" );
 }
 
-=head2 keine email Tests mehr, da keine accounts vorhanden
+
 my $accounts        = $example_email_domain->accounts;
 my $example_account = $accounts->[0];
 my $search_account  = $example_email_domain->account( $example_account->name );

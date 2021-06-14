@@ -36,7 +36,7 @@ This module uses the perl api module provided by ovh.
 Creates an api Object based on credentials in a json File
 
 - Parameter: $file\_json - dir to json file
-- Return: [Webservice::OVH](https://metacpan.org/pod/Webservice%3A%3AOVH)
+- Return: [Webservice::OVH](https://metacpan.org/pod/Webservice::OVH)
 - Synopsis: Webservice::OVH->new\_from\_json("path/file");
 
 - application\_key      is generated when creating an application via ovh web interface
@@ -50,7 +50,7 @@ Create the api object. Credentials are given directly via %params
 Credentials can be generated via ovh web interface and ovh authentification
 
 - Parameter: %params - application\_key => value, application\_secret => value, consumer\_key => value
-- Return: [Webservice::OVH](https://metacpan.org/pod/Webservice%3A%3AOVH)
+- Return: [Webservice::OVH](https://metacpan.org/pod/Webservice::OVH)
 - Synopsis: Webservice::OVH->new(application\_key => $key, application\_secret => $secret, consumer\_key => $token);
 
 ## set\_timeout
@@ -64,42 +64,42 @@ Sets the timeout of the underlying LWP::Agent
 
 Main access to all /domain/ api methods 
 
-- Return: [Webservice::OVH::Domain](https://metacpan.org/pod/Webservice%3A%3AOVH%3A%3ADomain)
+- Return: [Webservice::OVH::Domain](https://metacpan.org/pod/Webservice::OVH::Domain)
 - Synopsis: $ovh->domain;
 
 ## me
 
 Main access to all /me/ api methods 
 
-- Return: [Webservice::OVH::Me](https://metacpan.org/pod/Webservice%3A%3AOVH%3A%3AMe)
+- Return: [Webservice::OVH::Me](https://metacpan.org/pod/Webservice::OVH::Me)
 - Synopsis: $ovh->me;
 
 ## order
 
 Main access to all /order/ api methods 
 
-- Return: [Webservice::OVH::Order](https://metacpan.org/pod/Webservice%3A%3AOVH%3A%3AOrder)
+- Return: [Webservice::OVH::Order](https://metacpan.org/pod/Webservice::OVH::Order)
 - Synopsis: $ovh->order;
 
 ## email
 
 Main access to all /email/ api methods 
 
-- Return: [Webservice::OVH::Email](https://metacpan.org/pod/Webservice%3A%3AOVH%3A%3AEmail)
+- Return: [Webservice::OVH::Email](https://metacpan.org/pod/Webservice::OVH::Email)
 - Synopsis: $ovh->email;
 
 ## cloud
 
 Main access to all /cloud/ api methods 
 
-- Return: [Webservice::OVH::Cloud](https://metacpan.org/pod/Webservice%3A%3AOVH%3A%3ACloud)
+- Return: [Webservice::OVH::Cloud](https://metacpan.org/pod/Webservice::OVH::Cloud)
 - Synopsis: $ovh->cloud;
 
 ## hosting
 
 Main access to all /hosting/ api methods 
 
-- Return: [Webservice::OVH::Cloud](https://metacpan.org/pod/Webservice%3A%3AOVH%3A%3ACloud)
+- Return: [Webservice::OVH::Cloud](https://metacpan.org/pod/Webservice::OVH::Cloud)
 - Synopsis: $ovh->cloud;
 
 # AUTHOR
