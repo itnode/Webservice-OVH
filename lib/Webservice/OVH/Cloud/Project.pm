@@ -362,15 +362,13 @@ sub instances {
 
     my $instance_array = $response->content;
     my $instances      = [];
-    my @instance_ids   = grep { $_ = $_->{id} } @$instance_array;
-    $self->{_available_images} = \@instance_ids;
+    my $instance_ids   = [map { $_->{id} } @$instance_array];
+    $self->{_available_instances} = $instance_ids;
 
-    foreach my $instance_id (@instance_ids) {
+    foreach my $instance_id (@$instance_ids) {
 
-        if ( $self->instance_exists( $instance_id, 1 ) ) {
-            my $instance = $self->{_instances}{$instance_id} = $self->{_instances}{$instance_id} || Webservice::OVH::Cloud::Project::Instance->_new_existing( wrapper => $api, project => $self, id => $instance_id, module => $self->{_module} );
-            push @$instances, $instance;
-        }
+        my $instance = Webservice::OVH::Cloud::Project::Instance->_new_existing( wrapper => $api, project => $self, id => $instance_id, module => $self->{_module} );
+        push @$instances, $instance;
     }
 
     return $instances;
